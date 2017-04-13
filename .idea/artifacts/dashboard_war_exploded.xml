@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="dashboard:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/dashboard_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="dashboard/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="dashboard" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Hibernate 5.2.9-5.2.9" />
+          <element id="library" level="project" name="JPA 2.1-2.1" />
+          <element id="library" level="project" name="org.postgresql:postgresql:9.2-1002-jdbc4" />
+          <element id="library" level="project" name="org.json:json:20140107" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
