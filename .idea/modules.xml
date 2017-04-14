@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/dashboard.iml" filepath="$PROJECT_DIR$/dashboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ei-dashboard.iml" filepath="$PROJECT_DIR$/.idea/modules/ei-dashboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ei-dashboard_main.iml" filepath="$PROJECT_DIR$/.idea/modules/ei-dashboard_main.iml" group="ei-dashboard" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ei-dashboard_test.iml" filepath="$PROJECT_DIR$/.idea/modules/ei-dashboard_test.iml" group="ei-dashboard" />
     </modules>
   </component>
 </project>
