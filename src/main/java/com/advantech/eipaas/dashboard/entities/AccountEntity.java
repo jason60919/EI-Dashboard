@@ -23,7 +23,7 @@ public class AccountEntity {
     @Id
     @SequenceGenerator(name="dashboard_aid_seq", sequenceName="dashboard_aid_seq", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="dashboard_aid_seq")
-    @Column(name = "idwebuser", updatable=false)    @Column(name = "aid")
+    @Column(name = "aid", updatable=false)
     public long getAid() {
         return aid;
     }
