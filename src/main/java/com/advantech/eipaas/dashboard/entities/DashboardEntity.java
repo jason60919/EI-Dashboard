@@ -17,6 +17,8 @@ public class DashboardEntity {
     private Timestamp createts;
 
     @Id
+    @SequenceGenerator(name="dashboard_did_seq", sequenceName="dashboard_did_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="dashboard_did_seq")
     @Column(name = "did")
     public long getDid() {
         return did;

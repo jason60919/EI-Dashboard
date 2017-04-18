@@ -21,7 +21,9 @@ public class AccountEntity {
     private Timestamp createts;
 
     @Id
-    @Column(name = "aid")
+    @SequenceGenerator(name="dashboard_aid_seq", sequenceName="dashboard_aid_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="dashboard_aid_seq")
+    @Column(name = "idwebuser", updatable=false)    @Column(name = "aid")
     public long getAid() {
         return aid;
     }
