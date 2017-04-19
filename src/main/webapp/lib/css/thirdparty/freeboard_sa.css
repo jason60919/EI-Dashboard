@@ -1,0 +1,120 @@
+/*            body {
+                background: #d1d4d9;
+            }
+
+            #board-content {
+                color: white;
+            }*/
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+#board_Header {
+    height: 72px;
+    background-image: url('../../../img/header_bg.png');
+    background-repeat: repeat-x;
+    background-size: 100% 100%;
+    position: relative;
+    z-index: 100;
+}
+
+#board_Header_Logo {
+    content: " ";
+    width: 248px;
+    height: 44px;
+    background-position-y: 50%; 
+    background: url('../../../img/logo_product.png');
+    background-repeat: no-repeat;
+}
+
+#board-tools {
+    //margin-top: 30px;
+}
+
+.board_Header_subtitle {
+    font-size: small;
+    position: absolute;
+    top: 43px;
+    left: 200px;
+    color: #999999;
+    text-shadow: none;
+}
+
+
+.code-window-toolbar-row .form-label{
+    width: 100px;
+}
+
+/* 
+            .column-icon {
+                background-color: #333333;
+            }
+
+            .board-toolbar li:hover{
+                background-color: #869bb5;
+            }
+
+            #admin-bar {
+                background-color: #48586c;
+            }
+
+            #toggle-header {
+                background-color: #48586c;
+            }
+
+            .board-toolbar li {
+                color: white;
+            }
+
+            .text-button {
+                color: white;
+            }
+
+            .gridster .gs_w {
+                background: #48586c;
+            }
+
+            .gridster header {
+                background-color: #384454;
+            }
+
+            #datasources .title {
+                color: #B0B0B0;
+            }*/
+/*
+            #datasources h2.title {
+                padding-bottom: 0px;
+            }*/
+
+/*            .datasource-list-container{
+                clear: both;
+                border: 1px solid rgb(169, 169, 169);
+            }*/
+
+/*            .datasource-list-container table th {
+                color: #B0B0B0;
+            }
+
+            .datasource-list-container table th, .datasource-list-container table td {
+                text-align: center;
+            }*/
+
+/*            #modal_overlay {
+                background: none;
+                background-image: url(../js/ess.global/images/dim.png);
+                background-size: 100% 100%;
+            }*/
+
+.modal section {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.datasource-container {
+    
+    background: rgb(49, 49, 49);   
+    
+}

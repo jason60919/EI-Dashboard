@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title  data-i18n="header.title"></title>
+        <link rel="shortcut icon" href="img/index.ico" />  
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="viewport" content = "width = device-width, initial-scale = 1, user-scalable = no" />
+        
+        <link type="text/css" href="lib/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/jquery-ui-1.10.3.min.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/jquery.gridster.min.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/codemirror.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/codemirror-ambiance.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/lint.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/colpick.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/validationEngine.jquery.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/template.css" rel="stylesheet" />
+        <link type="text/css" href="lib/charts/c3.min.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/selectivity-full.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/animate.css" rel="stylesheet" />
+        <link type="text/css" href="lib/js/thirdparty/jsonFrill/jsonFrill.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/thirdparty/bootstrap_partial.css" />
+        <link type="text/css" href="lib/css/thirdparty/widget.css" />
+        <link type="text/css" href="lib/css/thirdparty/freeboard_sa.css" rel="stylesheet"/>
+        <link type="text/css" href="lib/css/freeboard/styles.css" rel="stylesheet" />
+        <link type="text/css" href="lib/css/freeboard/theme_white.css" rel="stylesheet" />
+        <link type="text/css" href="lib/jRange-master/jquery.range.css" rel="stylesheet" />
+    </head>
+    <body>
+        <header id="main-header" data-bind="if:allow_edit">
+            <div id="admin-bar">
+                <div id="admin-menu">
+                    <a id="hamburger" href="#" data-bind="click: toggleBoardTools"><span></span></a>
+                    <h1 id="board-logo" class="title logo"><div id="board_Header_Logo"></div></h1>
+                    <!--board-tools (RIGHT)-->
+                    <div id="board-tools">
+                        <div id="board-actions">
+                            <h2 id="menutitle" class="title menu" data-i18n="menu.menu"></h2>
+                            <ul class="board-toolbar collapse">
+                                <li id="backtoHome" style="display: none;" data-bind="click: backtoHome"><a href="/"><i class="fa-w fa-home"></i><label data-i18n="menu.home">Home Page</label></a></li>
+                                <li class="bundleVerHide isEditable" id="queryShareAccount" class="buttonDropdown" data-bind="click: queryShareAccount"><i class="fa-w fa-users"></i><label></label></li>
+                                <li class="bundleVerHide isEditable" data-bind="click: saveDashboardtoLocalFile"><i class="fa-w fa-download"></i><label data-i18n="menu.export">Export</label></li>
+                                <li class="bundleVerHide isEditable" data-bind="click: loadDashboardFromLocalFile"><i class="fa-w fa-folder-open"></i><label id="full-screen" data-i18n="menu.import">Import</label></li> 
+                                <li id="loadDashboard" style="display: none;" data-bind="click: loadDashboardFromDataBase"><i id="full-screen-icon" class="fa-w fa-folder-open"></i><label id="full-screen" data-i18n="menu.load">Load</label></li>
+                                <!--<li id="saveDashboard" style="display: none;" data-bind="click: saveDashboard"><i class="fa-w fa-download"></i><label data-i18n="menu.save">Save</label></li>-->
+                                <li id="add-pane" data-bind="click: createPane"><i class="fa-w fa-plus"></i><label data-i18n="menu.addPanel">Add Pane</label></li>
+
+                                <li class="isEditable" id="add-contentPack" data-bind="click: addContentPack" style="display: none;"><i class="fa-w fa-tachometer"></i><label data-i18n="menu.addContentPack">Add Content Pack</label></li>
+                                <!--
+                                <li id="add-contentPack" data-bind="contentPackEditor"><i class="fa-w fa-plus"></i><label data-i18n="menu.addContentPack">Add Content Pack</label></li>
+                                -->
+                                <li id="themeWhite" data-bind="click: themeWhite"><i class="fa-w fa-paint-brush"></i><label data-i18n="menu.themeWhite">ClearWhite</label></li>
+                                <li style="display: none;" id="themeBlack" data-bind="click: themeBlack"><i class="fa-w fa-paint-brush"></i><label data-i18n="menu.themeBlack">DeepDark</label></li>
+                                <li id="widgetTempUsage" data-bind="click: widgetTempUsage" style="display: none;"><a href="/"><i class="fa-w fa-book"></i><label data-i18n="menu.widgetTempUsage">Widget Extention</label></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--/board-tools (RIGHT)-->
+                    <div id="board-configs">
+                        <div id="board-actions-right">
+                            <ul class="board-toolbar collapse">
+                                <li id="toggle-datasources" data-bind="click: toggleDatasources"><i class="fa-w fa-globe"></i><label data-i18n="menu.datasource">Datasources</label></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="toggle-header" data-bind="click: toggleEditing">
+                <i id="toggle-header-icon" class="fa-w fa-wrench"></i>
+            </div>
+        </header>
+
+        <div id="board-content">
+            <img id="dash-logo" data-bind="attr:{src: header_image}, visible:header_image()">
+            <div class="gridster responsive-column-width">
+                <ul data-bind="grid: true">
+                </ul>
+            </div>
+        </div>
+
+        <div id="datasources" class="datasource-container" data-bind="if:allow_edit">
+            <div class="datasource-container-header">
+                <h2 class="datasource-container-header title" data-i18n="datasource_panel.title">Datasources</h2>
+                <div>
+                    <ul class="board-toolbar collapse">
+                        <li data-bind="click: toggleDatasources"><i class="fa-w fa-remove"></i></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="datasource-container-list">
+                <table class="table table-condensed sub-table" id="datasources-list" data-bind="if: datasources().length">
+                    <thead>
+                        <tr>
+                            <th data-i18n="datasource_panel.given_name">Given Name</th>
+                            <th data-i18n="datasource_panel.lastupdated">Last updated</th>
+                            <th class="toolbar">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: datasources">
+                        <tr>
+                            <td>
+                                <span class="text-button datasource-name" data-bind="text: name, pluginEditor: {operation: 'edit', type: 'datasource'}"></span>
+                            </td>
+                            <td data-bind="text: last_updated"></td>
+                            <td>
+                                <ul class="board-toolbar">
+                                    <li data-bind="click: updateNow"><i class="fa-w fa-refresh"></i></li>
+                                    <li data-bind="pluginEditor: {operation: 'delete', type: 'datasource'}">
+                                        <i class="fa-w fa-trash"></i></li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="datasource-toolbar">
+                <ul class="board-toolbar collapse">
+                    <li data-bind="pluginEditor: {operation: 'add', type: 'datasource'}"><i class="fa-w fa-plus"></i><label data-i18n="datasource_panel.add">Add</label></li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="display:hidden">
+            <ul data-bind="template: { name: 'pane-template', foreach: panes}">
+            </ul>
+        </div>
+
+        <div id="tabs" class="pos-bottom">
+            <ul>
+                <li class="editLink isEditable bundleVerHide" style='display:none;'><a id="add-tab" data-bind="click: addNewSheet"><span class="fa-w fa-plus"></span></a></li>
+                <li class="editLink isEditable bundleVerHide" id="deleteLi" style="display: none;"><a id="delete-tab" data-bind="click: deleteSheet"><span class="fa fa-w fa-trash"></span></a></li>
+                <li class="editLink isEditable bundleVerHide" id="saveDashboard" style="display: none;"><a id="save-tab" data-bind="click: editPrivilegeCheck"><span class="fa fa-w fa-floppy-o"></span></a></li>
+                <li class="editLink bundleVerHide" id="refreshDashboard" style="display: none;"><a id="refresh-tab" data-bind="click: refreshDashboard"><span class="fa fa-w fa-refresh"></span><span class="notificationNumber" style="display: none;"></span></a></li>
+            </ul>
+        </div>
+
+        <!--PANE TEMPLATE-->
+        <script type="text/html" id="pane-template">
+        <li data-bind="pane: true">
+            <header>
+                <h1 data-bind="truncatedText: title" ></h1>
+                <ul class="board-toolbar pane-tools">
+                    <li data-bind="pluginEditor: {operation: 'add', type: 'widget'}">
+                        <i class="fa-w fa-plus"></i>
+                    </li>
+                    <li data-bind="pluginEditor: {operation: 'edit', type: 'pane'}">
+                        <i class="fa-w fa-wrench"></i>
+                    </li>
+                    <li data-bind="pluginEditor: {operation: 'delete', type: 'pane'}">
+                        <i class="fa-w fa-trash"></i>
+                    </li>
+                </ul>
+            </header>
+            <section data-bind="foreach: widgets">
+                <div class="sub-section" data-bind="css: 'sub-section-height-' + height()">
+                    <div class="widget" data-bind="widget: true, css:{fillsize:fillSize}"></div>
+                    <div class="sub-section-tools">
+                        <ul class="board-toolbar">
+                            <!-- ko if:$parent.widgetCanMoveUp($data) -->
+                            <li data-bind="click:$parent.moveWidgetUp"><i class="fa-w fa-chevron-up"></i></li>
+                            <!-- /ko -->
+                            <!-- ko if:$parent.widgetCanMoveDown($data) -->
+                            <li data-bind="click:$parent.moveWidgetDown"><i class="fa-w fa-chevron-down"></i></li>
+                            <!-- /ko -->
+                            <li data-bind="pluginEditor: {operation: 'edit', type: 'widget'}"><i class="fa-w fa-wrench"></i></li>
+                            <li data-bind="pluginEditor: {operation: 'delete', type: 'widget'}"><i class="fa-w fa-trash"></i></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </li>
+    </script>
+        <!--/PANE TEMPLATE-->
+
+        <script type="text/javascript" defer="defer" src="lib/jquery-1.12.3/jquery-1.12.3.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/jquery-ui-1.11.4/jquery-ui.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+        <script type="text/javascript" defer="defer" src="/login/RMMGlobal.js"></script>
+        <script type="text/javascript" defer="defer" src="util.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/SA3.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/i18next.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/i18next-init.js"></script>
+        <script type="text/javascript" language="javascript" src="locales/en-us_Local.js"></script> 
+
+        <script type="text/javascript" defer="defer" src="lib/log4javascript/log4javascript.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/jqplugins/jquery.cookie.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/jqplugins/jquery.base64.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/jqplugins/noty/js/noty/jquery.noty.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/jqplugins/noty/js/noty/themes/default.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/jqplugins/noty/js/noty/layouts/topCenter.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/charts/d3.v3.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/charts/c3.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/charts/raphael.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/charts/excanvas.min.js"></script>
+
+        <script type="text/javascript" defer="defer" src="lib/utils/store.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/utils/moment/moment.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/utils/moment/moment-timezone-with-data.min.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/utils/aes.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/utils/pad-zeropadding.js"></script>
+
+        <script type="text/javascript" defer="defer" src="lib/jRange-master/jquery.range-min.js"></script>
+
+        <script type="text/javascript" defer="defer" src="lib/sa/utils/log4jqConfig.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/sa/utils/log4jq.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/sa/utils/easydate.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/sa/utils/easyrandom.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/sa/utils/dataconverter.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/sa/utils/sort.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/sa/ui/fans.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/sa/ui/hwmonitor.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/sa/ui/progressbar.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/sa/ui/chart.js"></script>
+
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/knockout.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/lodash.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/jquery.gridster.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/jquery.caret.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/jquery.xdomainrequest.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/validationEngine/jquery.validationEngine.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/codemirror.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/codemirror-jshint.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/colpick.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/jsonFrill/jsonFrill.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/selectivity-full.js"></script>
+
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/FreeboardModel.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/DatasourceModel.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/PaneModel.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/WidgetModel.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/FreeboardUI.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/DialogBox.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/PluginEditor.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/ValueEditor.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/JSEditor.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/DeveloperConsole.js"></script>
+        
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/util/SA.REST.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/util/SA.ConnectionPool.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/util/SA.ConfigGenerator.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/editor/SA.ContentPackEditor.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/editor/SA.DeviceEditor.js"></script>
+
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/cp_gen/SA.ContentPackGenerator.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/cp_gen/SA.ServerOverviewContentPackGenerator.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/cp_gen/SA.Device2ContentPackGenerator.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/cp_gen/SA.DeviceSystemInfoContentPackGenerator.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/cp_gen/SA.DeviceHardwareStatusContentPackGenerator.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/cp_gen/SA.DeviceModBusStatusContentPackGenerator.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/cp_gen/SA.DeviceNetworkStatusContentPackGenerator.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/cp_gen/SA.DeviceHDDStatusContentPackGenerator.js"></script>
+        
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/adapter/SA.DataSourceAdapter.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/adapter/SA.DataAnalyticsDataSourceAdapter.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/adapter/SA.RealTimeDataDataSourceAdapter.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/adapter/SA.HistDataDataSourceAdapter.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/sa/adapter/SA.FuzzySearchDataSourceAdapter.js"></script>
+
+        <script type="text/javascript" defer="defer" src="lib/js/thirdparty/head.js"></script>
+        <script type="text/javascript" defer="defer" src="lib/js/freeboard/freeboard.js"></script>
+
+        <script type="text/javascript" defer="defer" src="plugins/thirdparty/gauged3.min.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/thirdparty/justgage.1.0.1.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/thirdparty/jquery.sparkline.min.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/SA.datasources.js"></script>
+
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.text.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.picture.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.html.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.pointer.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.indicator.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.gauge.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.fans.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.progressbar.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.ragIndicator.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.OnOff.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.nodeRedTreshold.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.table.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.c3js.js"></script>
+        <script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.multigooglemap.js"></script>
+
+        <script type="text/javascript" defer="defer" src="locales/lang.js"></script>
+        <script type="text/javascript" defer="defer" src="FreeBoard.js"></script>
+    </body>
+</html>
