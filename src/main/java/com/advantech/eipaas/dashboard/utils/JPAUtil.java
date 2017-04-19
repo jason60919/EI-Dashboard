@@ -3,7 +3,6 @@ package com.advantech.eipaas.dashboard.utils;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -34,7 +33,9 @@ public class JPAUtil implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent event) {
-        emf.close();
+        if (null != emf) {
+            emf.close();
+        }
     }
 
     public static EntityManager createEntityManager() {
@@ -48,7 +49,7 @@ public class JPAUtil implements ServletContextListener {
         Map<String, Object> env = new HashMap<>();
 
         String VCAP_SERVICES = System.getenv("VCAP_SERVICES");
-        if (null != VCAP_SERVICES && VCAP_SERVICES.length() > 0) {
+        if (VCAP_SERVICES.length() > 0) {
             JSONObject vcap_services = new JSONObject(VCAP_SERVICES);
             if (vcap_services.has("user-provided")) {
                 JSONArray jsons = vcap_services.getJSONArray("user-provided");
@@ -58,16 +59,16 @@ public class JPAUtil implements ServletContextListener {
                         continue;
 
                     String name = json.getString("name");
-                    if (name.equalsIgnoreCase("PostgreSQL")) {
+                    if (name.equals("PSQL-Dashboard")) {
                         JSONObject credentials = json.getJSONObject("credentials");
-                        if (json.has("url")) {
-                            env.put("hibernate.connection", json.getString("url"));
+                        if (credentials.has("url")) {
+                            env.put("hibernate.connection.url", credentials.getString("url"));
                         }
-                        if (json.has("username")) {
-                            env.put("hibernate.connection.username", json.getString("username"));
+                        if (credentials.has("username")) {
+                            env.put("hibernate.connection.username", credentials.getString("username"));
                         }
-                        if (json.has("password")) {
-                            env.put("hibernate.connection.password", json.getString("password"));
+                        if (credentials.has("password")) {
+                            env.put("hibernate.connection.password", credentials.getString("password"));
                         }
                         break;
                     }
