@@ -277,7 +277,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             data: '',
             contentType: "application/json",
             beforeSend: function (xhr) {
-                var authorization = 'Basic ' + $.base64.encode(g_AccountID + ':' + g_Password);
+                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
                 xhr.setRequestHeader("Authorization", authorization);
                 xhr.setRequestHeader("Accept", "application/json");
             },
@@ -350,7 +350,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             data: '',
             contentType: "application/json",
             beforeSend: function (xhr) {
-                var authorization = 'Basic ' + $.base64.encode(g_AccountID + ':' + g_Password);
+                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
                 xhr.setRequestHeader("Authorization", authorization);
                 xhr.setRequestHeader("Accept", "application/json");
             },
@@ -576,7 +576,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             data: body,
             contentType: "application/json",
             beforeSend: function (xhr) {
-                var authorization = 'Basic ' + $.base64.encode(g_AccountID + ':' + g_Password);
+                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
                 xhr.setRequestHeader("Authorization", authorization);
                 xhr.setRequestHeader("Accept", "application/json");
             },
@@ -722,7 +722,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                         data: body,
                                         contentType: "application/json",
                                         beforeSend: function (xhr) {
-                                            var authorization = 'Basic ' + $.base64.encode(g_AccountID + ':' + g_Password);
+                                            var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
                                             xhr.setRequestHeader("Authorization", authorization);
                                             xhr.setRequestHeader("Accept", "application/json");
                                         },
@@ -824,7 +824,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                 data: body,
                                 contentType: "application/json",
                                 beforeSend: function (xhr) {
-                                    var authorization = 'Basic ' + $.base64.encode(g_AccountID + ':' + g_Password);
+                                    var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
                                     xhr.setRequestHeader("Authorization", authorization);
                                     xhr.setRequestHeader("Accept", "application/json");
                                 },

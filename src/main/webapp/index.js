@@ -1,5 +1,8 @@
 var m_AzureAuthContext;
 var m_AzureUser;
+var m_Did = "1";
+//var m_AgentID = "00000001-0000-0000-0000-654A3A700000";
+var m_AgentID = "00000001-0000-0000-0000-305A3A700000";
 $(function () {
     window.config = {
         instance: 'https://login.microsoftonline.com/',
@@ -35,11 +38,9 @@ $(function () {
             oRMM.Login.password = "xxxxxx";
             oRMM.Login.profile = m_AzureUser.profile;
             _RMMGlobal.Set(oRMM);
-            index_afterLogin();
+            //index_afterLogin();
         }
     }
-
-    $('#frmMainLogin_UserName').focus();
 
     $('input').iCheck({
         checkboxClass: 'icheckbox_square-blue',
@@ -54,70 +55,50 @@ $(function () {
     });
 
     $('#frmMainLogin_rmmLoginBody button').click(function () {
-//        swal(
-//                'Good job!',
-//                'You clicked the button!',
-//                'success'
-//                )
-//        return;
         $('.RMMLoader').show();
-        var oRMM = _RMMGlobal.Get();
-        oRMM.Login = {};
-        oRMM.Login.aid = -1;
-        oRMM.Login.username = $('#frmMainLogin_UserName').val();
-        oRMM.Login.password = $('#frmMainLogin_Password').val();
-        _RMMGlobal.Set(oRMM);
-        index_afterLogin();
-        $('.RMMLoader').hide();
-        return;
-
         $.ajax({
             cache: false,
-            url: '/rmm/v1/accounts/login?username=' + $('#frmMainLogin_UserName').val() + '&password=' + $('#frmMainLogin_Password').val(),
+            url: "dashboard/api/account/login?username=" + $('#frmMainLogin_UserName').val() + "&password=" + $('#frmMainLogin_Password').val(),
             type: "get",
             contentType: 'application/json',
             dataType: 'json',
             beforeSend: function (xhr) {
             },
             error: function (xhr, exception) {
-                try
+                var oError = $.parseJSON(xhr.responseText);
+                if (!oError.success)
                 {
-                    var oError = $.parseJSON(xhr.responseText);
-                    if (typeof oError.ErrorCode != "undefined")
-                        BootstrapDialog.show({message: "Authentication failed - user name does not exist !"});
-                } catch (e) {
-                    BootstrapDialog.show({message: "Error :" + xhr.responseText});
+                    swal({
+                        title: "warning",
+                        text: "Authentication failed !!",
+                        type: "warning"
+                    });
                 }
 
                 $('#frmMainLogin_UserName').focus();
                 $('.RMMLoader').hide();
             },
             success: function (xhr) {
-                if (typeof xhr.ErrorCode == "undefined")
+                if (xhr.success)
                 {
-                    if (xhr.result)
-                    {
-                        var oRMM = _RMMGlobal.Get();
-                        oRMM.Login = {};
-                        oRMM.Login.aid = xhr.aid;
-                        oRMM.Login.username = $('#frmMainLogin_UserName').val();
-                        oRMM.Login.password = $('#frmMainLogin_Password').val();
-                        _RMMGlobal.Set(oRMM);
-                        index_afterLogin();
-                    }
-                    else
-                    {
-                        BootstrapDialog.show({message: "Authentication failed - password error !"});
-                        $('#frmMainLogin_Password').focus();
-                    }
-                    $('.RMMLoader').hide();
+                    var oRMM = _RMMGlobal.Get();
+                    oRMM.Login = {};
+                    oRMM.Login.aid = xhr.result.aid;
+                    oRMM.Login.username = $('#frmMainLogin_UserName').val();
+                    oRMM.Login.password = $('#frmMainLogin_Password').val();
+                    _RMMGlobal.Set(oRMM);
+                    window.location.href = "FreeBoard.html";
                 }
                 else
                 {
-                    BootstrapDialog.show({message: "Authentication failed - user name does not exist !"});
-                    $('.RMMLoader').hide();
-                    $('#frmMainLogin_UserName').focus();
+                    swal({
+                        title: "warning",
+                        text: "Authentication failed - password error !",
+                        type: "warning"
+                    });
+                    $('#frmMainLogin_Password').focus();
                 }
+                $('.RMMLoader').hide();
             }
         });
     });
@@ -137,13 +118,12 @@ $(function () {
     $('#frmMainLogin_rmmLoginBody').dblclick(function () {
         $(".agentInfo").show();
     });
-    frmMainLogin_rmmLoginBody
 
     $('#frmMainLogin_txtDid').val(m_Did);
     $('#frmMainLogin_txtAgentID').val(m_AgentID);
 
     $(".agentInfo").hide();
-
+    $('#frmMainLogin_UserName').focus();
 });
 
 function frmMainLogin_Logout()
@@ -155,8 +135,4 @@ function frmMainLogin_Logout()
             m_AzureAuthContext.logOut();
         }
     }
-}
-function getAccount()
-{
-
 }

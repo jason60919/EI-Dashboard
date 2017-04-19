@@ -8,10 +8,7 @@ myCookieExpiresDate.setTime(myCookieExpiresDate.getTime() + (1 * 365 * 24 * 60 *
 
 var g_agentID = "";
 var g_arySheet = [];
-var g_UserName = "alexshao";
-var g_Password = "84188418";
-var g_AccountID = "";
-
+var _oRMM = _RMMGlobal.Get();
 
 (function () {
     var dashboardLog = log4jq.getLogger({

@@ -702,7 +702,7 @@ var freeboard = (function () {
                                     data: body,
                                     contentType: "application/json",
                                     beforeSend: function (xhr) {
-                                        var authorization = 'Basic ' + $.base64.encode(g_AccountID + ':' + g_Password);
+                                        var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
                                         xhr.setRequestHeader("Authorization", authorization);
                                         xhr.setRequestHeader("Accept", "application/json");
                                     },
@@ -1004,19 +1004,20 @@ var freeboard = (function () {
 
             //Login
             $.ajax({
-                url: "dashboard/api/account/login?username=" + g_UserName + "&password=" + g_Password,
+                url: "dashboard/api/account/login?username=" + _oRMM.Login.username + "&password=" + _oRMM.Login.password,
                 type: "get",
                 data: "",
                 contentType: "application/json",
                 beforeSend: function (xhr) {
                 },
                 success: function (data) {
-                    debugger;
-                    g_AccountID = data.result.aid;
-                    theFreeboardModel.LoadDashboardSheetList();
+                    if (data.success)
+                        theFreeboardModel.LoadDashboardSheetList();
+                    else
+                        window.location.href = "index.html";
                 },
                 error: function (xhr, status, error) {
-                    console.log(xhr.responseText);
+                    window.location.href = "index.html";
                 }
             });
 
