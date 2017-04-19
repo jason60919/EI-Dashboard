@@ -1,0 +1,765 @@
+var _i18_local =
+        {
+            "en-us": {
+                "translation": {
+                    "header": {
+                        "title": "Dashboard"
+                    },
+                    "menu": {
+                        "menu": "",
+                        "load": "LOAD",
+                        "save": "SAVE",
+                        "import": "IMPORT",
+                        "export": "EXPORT",
+                        "home": "HOME",
+                        "addPanel": "Add Pane",
+                        "datasource": "DataSources",
+                        "themeWhite": "ClearWhite",
+                        "themeBlack": "DeepDark",
+                        "addContentPack": "Add Content Pack",
+                        "widgetTempUsage": "Widget Extention Guide"
+                    },
+                    "global": {
+                        "info": "Information",
+                        "yes": "Yes",
+                        "no": "No",
+                        "warning": "Warning",
+                        "error": "Error",
+                        "invaliddataformat": "Invalid Data Format",
+                        "date": "Date",
+                        "time": "Time",
+                        "title": "Title",
+                        "data": "Data",
+                        "value": "Value",
+                        "limit_value_characters": "A maximum of %s characters",
+                        "between_value": "Between %s-%s",
+                        "refresh": "Refresh Every",
+                        "refresh_suffix": "seconds",
+                        "symbol": {
+                            "comma": "Comma"
+                        },
+                        "plugins_wd": {
+                            "decimal": "Decimal",
+                            "metric_prefix": "Metric Prefix",
+                            "metric_prefix_desc": "A metric prefix is a unit prefix that precedes a basic unit of measure to indicate a decadic multiple or fraction of the unit. Each prefix has a unique symbol that is prepended to the unit symbol.",
+                            "units": "Units",
+                            "animate": "Animate Value Changes",
+                            "enableYaxisMaxMix": "Enable Y-axis Max/Mix",
+                            "chart_type": "Chart Type",
+                            "chart_type_options": {
+                                "line": "Line",
+                                "area": "Area",
+                                "bar": "Bar",
+                                "scatter": "Scatter",
+                                "donut": "Donut"
+                            },
+                            "enable_chart_width_heigth": "Enable customize width and height",
+                            "chart_width": "Chart Width (px)",
+                            "chart_height": "Chart Height (px)",
+                            "chart_line_color": "Line Color",
+                            "chart_background_color_of_grid": "Background Color of Grid",
+                            "chart_line_color_of_grid": "Line Color of Grid",
+                            "chart_border_color_of_grid": "Border Color of Grid",
+                            "default_color": "Default: %s",
+                            "blocks": "Height",
+                            "blocks_desc": "Number of blocks. 1 block 60 pixels. 20 to block.",
+                            "min_value": "Y-axis Min Value",
+                            "max_value": "Y-axis Max Value",
+                            "above_the_min": "Minimum value or more.",
+                            "tableOperation": "Add data source",
+                            "includeLegend": "Include Legend",
+                            "legend": "Legend",
+                            "legendDesc": "Comma-separated for multiple sparklines",
+                            "min_max_value": "Min/Max value",
+                            "min_max_value_desc": "Regardless of the order, to specify min / max",
+                            "deviceDisconnect": "Device disconnect."
+                        },
+                        "dialogMsg": {
+                            "bungleVer": "The dashboard is standard version. Some features are blocked in this edition.",
+                            "Error": "Error",
+                            "Error": "Error",
+                                    "Error_LoadFileFail": "Unable to load a file in this browser.",
+                            "Error_Occurred": "Error occurred in process.",
+                            "Error_LoadingFail": "Dashboard loading failed.",
+                            "Errorcode": "Errorcode: ",
+                            "Error_SavedFail": "Dashboard: %s saved failed.",
+                            "Error_DeleteFail": "Dashboard: %s deleted failed.",
+                            "Error_BrowserNoSupport": "This browser not supported.",
+                            "Error_ServerNotFound": "Server url not found.",
+                            "Error_WrongAuth": "Wrong user account or password.",
+                            "Error_NotMaster": "Server Not Master.",
+                            "Error_ValNotFound": "Item not found.",
+                            "Error_EnableSensorCalc": "Please Enable Schedule Calculation<br><br>C:\\Program Files (x86)\\Advantech\\RMM 3.2 Server\\Server\\iot\\dist\\Setting.xml <br>Set <font color='blue'>enableSensorCalc</font> => <font color='blue'>true</font><br><br>Do not show again?",
+                            "Confirm_Delete": "Are you sure you want to delete %s from the database",
+                            "Info_httpsConnection": "It's not allowed to get http server data on https connection dashboard. ",
+                            "Info_sheetAmount": "It must has at least one sheet in sheet list.",
+                            "Info_sheetAmountMax": "The sheet amount is over limitation. (Cannot bigger than 8.)",
+                            "Info_sheetNameNull": "The sheet name cannot be NULL.",
+                            "Info_sheetNameLength": "The sheet name string length must smaller than 256.",
+                            "Info_sheetNameDuplicated": "The sheet name is duplicated.",
+                            "Info_sheetRemoved": "The sheet has been removed, reload dashboard?",
+                            "Info_NoDevice": "No device in this user.",
+                            "Info_NoItem": "No item in this handler.",
+                            "Info_NoHandler": "No handler list in this device.",
+                            "Info_StartDateSelect": "Please choose start date first.",
+                            "Info_EndDateSelect": "End Date must bigger than start date.",
+                            "Info_wontSaved": "The dashboard won't be saved in standard version.",
+                            "Info_IEwontSaved": "The dashboard won't be saved automatically except in Chrome.",
+                            "Info_SavedSuccess": "The dashboard is already saved to server.",
+                            "info_shareAccNoDashboard": "No dashboard found.",
+                            "info_noPrivilege": "Invalid privilege.",
+                            "info_isEdit": "Dashboard content has been changed by others, overwrite it?",
+                            "info_isRefresh": "Dashboard content has been changed by others, refresh it?",
+                            "Token_Expired": "Token expired, please login again!"
+                        }
+                    },
+                    "datasource_panel": {
+                        "title": "DataSources",
+                        "given_name": "Given Name",
+                        "lastupdated": "Last Updated",
+                        "add": "Add"
+                    },
+                    "sheet": {
+                        "overflow": "The sheet amount is over limitation. (Cannot bigger than 8.)."
+                    },
+                    "JSEditor": {
+                        "javascript": {
+                            "exampleText": "// Example: Convert from Celsius to Fahrenheit, Truncation point two digits below",
+                            "codeWindowHeader": "This JavaScript will be re-evaluated each time reference data source is updated. And <span class='cm-keyword'> return value </span> will be displayed in the widget. You function <code> <span class='cm-keyword'> function </span> (<span class='cm-def'> datasources </span>) </code> can be used to describe the contents in JavaScript of argument datasources is an array of the added data source. <br />The argument <span class = \"cm-def \"> _ global </span> It is possible to store a variable of the script out of scope to. (Note: You can not be shared between different script.) <br />The following library functions you can use. jQuery 2.1.3, lodash 3.4.0, moment 2.9.0, moment-timezone 0.3.0."
+                        },
+                        "json": {
+                            "exampleText": "// Example: {title '\n //' value ': 10 \n} ';",
+                            "codeWindowHeader": " Among the string enclosed in use the appropriate escape sequence. <br> example: 'function (label, series) {return (\" ID: \"+ label);}'",
+                            "error": "Please correct the json error."
+                        },
+                        "jsonviewer": {
+                            "codeWindowHeader": "Use JSONViewer to quickly select data",
+                            "collapse": "Collapse All",
+                            "expand": "Expand  All"
+                        },
+                        "htmlmixed": {
+                            "codeWindowHeader": "<span class=\"cm-keyword\">HTML</span> and <span class=\"cm-keyword\">CSS</span>, <span class=\"cm-keyword\">javascript</span> can be described.(Note:The Datasources variable in the javascript code <span class=\"cm-def\">datasources</span> is not evaluated from the system.)"
+                        },
+                        "cancel": "Close"
+                    },
+                    "PluginEditor": {
+                        "contentpack": {
+                            "title": "Please Choose Content Pack",
+                            "server_overview": "Server Overview",
+                            "device_system_info": "Device Software Info",
+                            "device_hardware_status": "Device Hardware Status (SUSI Control)",
+                            "device_network_status": "Device Network Status",
+                            "device_hdd_status": "Device HDD Status",
+                            "device_Modbus_Handler": "Device Modbus Status",
+                            "error": "Fail to create content pack"
+                        },
+                        "device_editor": {
+                            "title": "Please select device",
+                            "select": "Select",
+                            "no_device_selected": "No device selected",
+                            "no_device_result": "No devices found"
+                        },
+                        "pane": {
+                            "title": "Pane",
+                            "edit": {
+                                "title": "Title",
+                                "title_desc": "A maximum of 20 characters",
+                                "colwidth": "Column Width",
+                                "colwidth_desc1": "Up to ",
+                                "colwidth_desc2": " block"
+                            }
+                        },
+                        "datasource": {
+                            "title": "DataSource",
+                            "given_name": "Given Name",
+                            "given_name_desc": "A maximum of 100 characters",
+                            "user": "User",
+                            "device": "Device"
+                        },
+                        "widget": {
+                            "title": "Widget",
+                            "advancedSetting": "Advanced Setting"
+                        },
+                        "delete": {
+                            "title": "Delete confirmation",
+                            "text": "Are you sure you want to delete"
+                        },
+                        "datasource_tool": "DataSource",
+                        "js_editor": "JS. EDITOR",
+                        "datasource_viewer": "JSON VIEWER",
+                        "table_operation": "Add",
+                        "dialog": {
+                            "yes": "Save",
+                            "no": "Cancel"
+                        },
+                        "type": "Type",
+                        "first_option": "Please select the type",
+                        "DS_option": "Please select the datasource"
+                    },
+                    "plugins_wd": {
+                        "text": {
+                            "display_name": "Text",
+                            "description": "This is a widget that can display text and sparkline chart.",
+                            "size": "TextSize",
+                            "size_options": {
+                                "regular": "Regular",
+                                "big": "Big"
+                            },
+                            "chart": "Include Sparkline",
+                            "chart_color": "Chart Color",
+                            "chart_minmax_color": "Color Range (max/min)"
+                        },
+                        "pointer": {
+                            "display_name": "Pointer",
+                            "description": "This is a widget that can display the direction and value.",
+                            "direction": "Direction",
+                            "direction_desc": "A maximum of 2000 characters<br />Enter the angle.",
+                            "value_text": "Value",
+                            "circle_color": "Circle color",
+                            "pointer_color": "Pointer color"
+                        },
+                        "picture": {
+                            "display_name": "Picture",
+                            "description": "This is a widget that can display the image. It is used to be used to display an image, such as a Web camera.",
+                            "src": "Image URL",
+                            "refresh_desc": "Leave blank if the image doesn't need to be refreshed."
+                        },
+                        "indicator": {
+                            "display_name": "Indicator Light",
+                            "description": "This widget is lit under the conditions of the specified value. 1 is turned on, should the value is set to 0 to OFF.",
+                            "on_text": "On Text",
+                            "off_text": "Off Text"
+                        },
+                        "gmap": {
+                            "display_name": "Google Map",
+                            "description": "This is a widget that can display a GoogleMap. When the value is set to latitude longitude map of its surroundings will be displayed.",
+                            "lat": "Latitude",
+                            "lon": "Longitude",
+                            "drawpath": "Draw path"
+                        },
+                        "gauge": {
+                            "display_name": "Gauge",
+                            "description": "This is a widget that can display a gauge.",
+                            "type_options": {
+                                "half": "Half",
+                                "quarter-left-top": "Quarter Left Top",
+                                "quarter-right-top": "Quarter Right Top",
+                                "quarter-left-bottom": "Quarter Left Bottom",
+                                "quarter-right-bottom": "Quarter Right Bottom",
+                                "threequarter-left-top": "ThreeQuarter Left Top",
+                                "threequarter-right-top": "ThreeQuarter Right Top",
+                                "threequarter-left-bottom": "ThreeQuarter Left Bottom",
+                                "threequarter-right-bottom": "ThreeQuarter Right Bottom",
+                                "threequarter-bottom": "ThreeQuarter Bottom"
+                            },
+                            "value_fontcolor": "Value FontColor",
+                            "gauge_upper_color": "Upper GaugeColor",
+                            "gauge_mid_color": "Mid GaugeColor",
+                            "gauge_lower_color": "Lower GaugeColor",
+                            "gauge_color": "Gauge BackgroundColor",
+                            "gauge_width": "Gauge Width",
+                            "show_minmax": "Show MinMax Value"
+                        },
+                        "c3js": {
+                            "display_name": "Chart",
+                            "description": "This is a widget that can display a variety of formats chart. For more information <a href=\"http://c3js.org/\" target=\"_blank\">http://c3js.org/</a>",
+                            "options": "Chart Options",
+                            "options_desc": "A maximum of 5000 characters. JSON format string.",
+                            "options_invalid": "Invalid chart options."
+                        },
+                        "html": {
+                            "display_name": "HTML",
+                            "description": "This is a widget that can display the HTML.",
+                            "contents": "HTML Contents",
+                            "contents_desc": "A maximum of 5000 characters.<br />Can be literal HTML, or JavaScript that outputs HTML."
+                        },
+                        "sparkline": {
+                            "display_name": "Sparkline"
+                        },
+                        "jqplot_line_monitor": {
+                            "display_name": "Real-Time Line Monitor",
+                            "description": "This is a widget that can display real-time line chart with jqPlot library."
+                        },
+                        "jqplot": {
+                            "display_name": "jqPlot Chart",
+                            "description": "This is a widget that can display a variety of formats chart"
+                        },
+                        "fans": {
+                            "display_name": "FAN",
+                            "description": "This is a widget that can display fan of image.",
+                            "on_off": "ON/OFF",
+                            "on_off_desc": "ON=1, OFF=0"
+                        },
+                        "multi_gmap": {
+                            "display_name": "Google Map",
+                            "description": "This is a widget that can display google map with multiple markers.",
+                            "locations": "Locations",
+                            "locations_description": "data format: [[\"Advantech\",25.0589972,121.3835085]]",
+                            "zoom_level": "Zoom Level",
+                            "zoom_level_description": "zoom level: 0~21",
+                            "auto_center": "Auto center",
+                            "auto_center_description": "map auto center by locations"
+                        },
+                        "progressbar": {
+                            "display_name": "Progressbar",
+                            "description": "This widget that can display horizontal progressboar."
+                        },
+                        "table": {
+                            "display_name": "Table",
+                            "description": "This is a widget that can display table of HTML.",
+                            "show_header": "Show header",
+                            "replace_value": "Replace blank values"
+                        },
+                        "RAG": {
+                            "display_name": "RAG Indicator",
+                            "description": "This is a widget that can display different lights (red, amber, green) according to the state.",
+                            "value": "VALUE (R=2,A=1,G=0)",
+                            "green_text": "GREEN TEXT",
+                            "amber_text": "AMBER TEXT",
+                            "red_text": "RED TEXT",
+                            "displayAll": "DISPLAY ALL",
+                            "type": "STYLE (NORMAL, DIM, FLASH)"
+                        },
+                        "OnOff": {
+                            "On": "On",
+                            "Off": "Off",
+                            "display_name": "On / Off",
+                            "description": "This widget that can switch On / Off.",
+                            "unableToSet": "Unable to set."
+                        },
+                        "nodeRedThreshold": {
+                            "display_name": "NodeRed Threshold",
+                            "description": "This widget that can set a threshold to NodeRed.",
+                            "nodeURL": "NodeRed URL",
+                            "sheetName": "Sheet Name",
+                            "nodeName": "Node Name",
+                            "sensor": "Sensor",
+                            "interval": "Refresh interval"
+                        }
+                    },
+                    "plugins_ds": {
+                        "clock": {
+                            "display_name": "Time Clock",
+                            "description": "This data source is updated at specified intervals, returns the current time in a different format.You can display a timer on the screen, the widget will be able to use in order to refresh at regular intervals.",
+                            "timezone": "Time Zone",
+                            "timezone_options": {
+                                "Etc/GMT+12": "(UTC-12:00) Etc/GMT+12",
+                                "Etc/GMT+11": "(UTC-11:00) Etc/GMT+11",
+                                "Pacific/Honolulu": "(UTC-10:00) Pacific/Honolulu",
+                                "America/Anchorage": "(UTC-09:00) America/Anchorage",
+                                "America/Santa_Isabel": "(UTC-08:00) America/Santa_Isabel",
+                                "America/Los_Angeles": "(UTC-08:00) America/Los_Angeles",
+                                "America/Chihuahua": "(UTC-07:00) America/Chihuahua",
+                                "America/Phoenix": "(UTC-07:00) America/Phoenix",
+                                "America/Denver": "(UTC-07:00) America/Denver",
+                                "America/Guatemala": "(UTC-06:00) America/Guatemala",
+                                "America/Chicago": "(UTC-06:00) America/Chicago",
+                                "America/Regina": "(UTC-06:00) America/Regina",
+                                "America/Mexico_City": "(UTC-06:00) America/Mexico_City",
+                                "America/Bogota": "(UTC-05:00) America/Bogota",
+                                "America/Indiana/Indianapolis": "(UTC-05:00) America/Indiana/Indianapolis",
+                                "America/New_York": "(UTC-05:00) America/New_York",
+                                "America/Caracas": "(UTC-04:30) America/Caracas",
+                                "America/Halifax": "(UTC-04:00) America/Halifax",
+                                "America/Asuncion": "(UTC-04:00) America/Asuncion",
+                                "America/La_Paz": "(UTC-04:00) America/La_Paz",
+                                "America/Cuiaba": "(UTC-04:00) America/Cuiaba",
+                                "America/Santiago": "(UTC-04:00) America/Santiago",
+                                "America/St_Johns": "(UTC-03:30) America/St_Johns",
+                                "America/Sao_Paulo": "(UTC-03:00) America/Sao_Paulo",
+                                "America/Godthab": "(UTC-03:00) America/Godthab",
+                                "America/Cayenne": "(UTC-03:00) America/Cayenne",
+                                "America/Argentina/Buenos_Aires": "(UTC-03:00) America/Argentina/Buenos_Aires",
+                                "America/Montevideo": "(UTC-03:00) America/Montevideo",
+                                "Etc/GMT+2": "(UTC-02:00) Etc/GMT+2",
+                                "America/Cape_Verde": "(UTC-01:00) America/Cape_Verde",
+                                "Atlantic/Azores": "(UTC-01:00) Atlantic/Azores",
+                                "America/Casablanca": "(UTC+00:00) America/Casablanca",
+                                "Atlantic/Reykjavik": "(UTC+00:00) Atlantic/Reykjavik",
+                                "Europe/London": "(UTC+00:00) Europe/London",
+                                "Etc/GMT": "(UTC+00:00) Etc/GMT",
+                                "Europe/Berlin": "(UTC+01:00) Europe/Berlin",
+                                "Europe/Paris": "(UTC+01:00) Europe/Paris",
+                                "Africa/Lagos": "(UTC+01:00) Africa/Lagos",
+                                "Europe/Budapest": "(UTC+01:00) Europe/Budapest",
+                                "Europe/Warsaw": "(UTC+01:00) Europe/Warsaw",
+                                "Africa/Windhoek": "(UTC+01:00) Africa/Windhoek",
+                                "Europe/Istanbul": "(UTC+02:00) Europe/Istanbul",
+                                "Europe/Kiev": "(UTC+02:00) Europe/Kiev",
+                                "Africa/Cairo": "(UTC+02:00) Africa/Cairo",
+                                "Asia/Damascus": "(UTC+02:00) Asia/Damascus",
+                                "Asia/Amman": "(UTC+02:00) Asia/Amman",
+                                "Africa/Johannesburg": "(UTC+02:00) Africa/Johannesburg",
+                                "Asia/Jerusalem": "(UTC+02:00) Asia/Jerusalem",
+                                "Asia/Beirut": "(UTC+02:00) Asia/Beirut",
+                                "Asia/Baghdad": "(UTC+03:00) Asia/Baghdad",
+                                "Europe/Minsk": "(UTC+03:00) Europe/Minsk",
+                                "Asia/Riyadh": "(UTC+03:00) Asia/Riyadh",
+                                "Africa/Nairobi": "(UTC+03:00) Africa/Nairobi",
+                                "Asia/Tehran": "(UTC+03:30) Asia/Tehran",
+                                "Europe/Moscow": "(UTC+04:00) Europe/Moscow",
+                                "Asia/Tbilisi": "(UTC+04:00) Asia/Tbilisi",
+                                "Asia/Yerevan": "(UTC+04:00) Asia/Yerevan",
+                                "Asia/Dubai": "(UTC+04:00) Asia/Dubai",
+                                "Asia/Baku": "(UTC+04:00) Asia/Baku",
+                                "Indian/Mauritius": "(UTC+04:00) Indian/Mauritius",
+                                "Asia/Kabul": "(UTC+04:30) Asia/Kabul",
+                                "Asia/Tashkent": "(UTC+05:00) Asia/Tashkent",
+                                "Asia/Karachi": "(UTC+05:00) Asia/Karachi",
+                                "Asia/Colombo": "(UTC+05:30) Asia/Colombo",
+                                "Indian/Kolkata": "(UTC+05:30) Indian/Kolkata",
+                                "Asia/Kathmandu": "(UTC+05:45) Asia/Kathmandu",
+                                "Asia/Almaty": "(UTC+06:00) Asia/Almaty",
+                                "Asia/Dhaka": "(UTC+06:00) Asia/Dhaka",
+                                "Asia/Yekaterinburg": "(UTC+06:00) Asia/Yekaterinburg",
+                                "Asia/Rangoon": "(UTC+06:30) Asia/Rangoon",
+                                "Asia/Bangkok": "(UTC+07:00) Asia/Bangkok",
+                                "Asia/Novosibirsk": "(UTC+07:00) Asia/Novosibirsk",
+                                "Asia/Krasnoyarsk": "(UTC+08:00) Asia/Krasnoyarsk",
+                                "Asia/Ulaanbaatar": "(UTC+08:00) Asia/Ulaanbaatar",
+                                "Asia/Shanghai": "(UTC+08:00) Asia/Shanghai",
+                                "Australia/Perth": "(UTC+08:00) Australia/Perth",
+                                "Asia/Singapore": "(UTC+08:00) Asia/Singapore",
+                                "Asia/Taipei": "(UTC+08:00) Asia/Taipei",
+                                "Asia/Irkutsk": "(UTC+09:00) Asia/Irkutsk",
+                                "Asia/Seoul": "(UTC+09:00) Asia/Seoul",
+                                "Asia/Tokyo": "(UTC+09:00) Asia/Tokyo",
+                                "Australia/Darwin": "(UTC+09:30) Australia/Darwin",
+                                "Australia/Adelaide": "(UTC+09:30) Australia/Adelaide",
+                                "Australia/Hobart": "(UTC+10:00) Australia/Hobart",
+                                "Asia/Yakutsk": "(UTC+10:00) Asia/Yakutsk",
+                                "Australia/Brisbane": "(UTC+10:00) Australia/Brisbane",
+                                "Pacific/Port_Moresby": "(UTC+10:00) Pacific/Port_Moresby",
+                                "Australia/Sydney": "(UTC+10:00) Australia/Sydney",
+                                "Asia/Vladivostok": "(UTC+11:00) Asia/Vladivostok",
+                                "Pacific/Guadalcanal": "(UTC+11:00) Pacific/Guadalcanal",
+                                "Etc/GMT-12": "(UTC+12:00) Etc/GMT-12",
+                                "Pacific/Fiji": "(UTC+12:00) Pacific/Fiji",
+                                "Asia/Magadan": "(UTC+12:00) Asia/Magadan",
+                                "Pacific/Auckland": "(UTC+12:00) Pacific/Auckland",
+                                "Pacific/Tongatapu": "(UTC+13:00) Pacific/Tongatapu",
+                                "Pacific/Apia": "(UTC+13:00) Pacific/Apia"
+                            },
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds"
+                        },
+                        "json": {
+                            "display_name": "JSON Content",
+                            "description": "This datasource will receive the JSON data from the specified URL.",
+                            "url": "URL",
+                            "use_thingproxy": "Try thingproxy",
+                            "use_thingproxy_desc": "A direct JSON connection will be tried first, if that fails, a JSONP connection will be tried. If that fails, you can use thingproxy, which can solve many connection problems to APIs. <a href=\"https://github.com/Freeboard/thingproxy\" target=\"_blank\">More information</a>.",
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds",
+                            "method": "Method",
+                            "body": "Body",
+                            "body_desc": "The body of the request. Normally only used if method is POST.",
+                            "headers": "Header",
+                            "headers_name": "Name",
+                            "headers_value": "Value"
+                        },
+                        "mqtt": {
+                            "display_name": "MQTT over Websocket",
+                            "description": "The <a href=\" http://mqtt.org/\", target=\"_blank\">MQTT</a> protocol through the WebSocket, you will receive a JSON data from MQTT broker server.",
+                            "hostname": "Hostname",
+                            "hostname_desc": "A maximum of 1000 characters<br />Set the hostname of the MQTT broker server.<br />e.g: location.hostname",
+                            "port": "Port Number",
+                            "clientID": "Client ID",
+                            "clientID_desc": "A maximum of 23 characters<br />Any client ID string.",
+                            "topic": "Topic",
+                            "topic_desc": "A maximum of 500 characters<br />Set the topic name to subscribe.<br />e.g: my/topic",
+                            "username": "(optional) UserName",
+                            "username_desc": "A maximum of 100 characters<br />If you do not need it to blank.",
+                            "password": "(optional) Password",
+                            "password_desc": "A maximum of 100 characters<br />If you do not need it to blank.",
+                            "reconnect": "Automatic Reconnection"
+                        },
+                        "node_js": {
+                            "display_name": "Node.js (Socket.io)",
+                            "description": "This datasource will receive the JSON data from node.js (<a href=\"http://socket.io/\", target=\"_blank\">Socket.io</a>) server.",
+                            "url": "URL",
+                            "url_desc": "A maximum of 1000 characters (optional) If you use a custom namespace, add the last name space of URL.<br />e.g: http://localhost/chat",
+                            "events": "Events",
+                            "events_desc": "Please specify the event name to be added to the data source.",
+                            "event_name": "Event Name",
+                            "rooms": "(optional) Rooms",
+                            "rooms_desc": "If you want to use the room, you must specify the room name you want to add. Leave blank otherwise.",
+                            "room_name": "Room Name",
+                            "room_event": "Room Event Name"
+                        },
+                        "owm": {
+                            "display_name": "Open Weather Map API",
+                            "description": "This datasource will receive a variety of weather data, including the weather and forecasts history.",
+                            "location": "Location",
+                            "location_desc": "A maximum of 200 characters<br />e.g: London, UK",
+                            "units": "Units",
+                            "units_metric": "Metric",
+                            "units_imperial": "Imperial",
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds"
+                        },
+                        "playback": {
+                            "display_name": "Playback",
+                            "description": "Play the continuous data at a specified interval. It will receive a valid JSON file that contains an array of objects.",
+                            "datafile": "Data File URL",
+                            "datafile_desc": "A link to a JSON array of data.",
+                            "is_jsonp": "Is JSONP",
+                            "loop": "Loop",
+                            "loop_desc": "Rewind and loop when finished",
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds"
+                        },
+                        "websocket": {
+                            "display_name": "WebSocket",
+                            "description": "This datasource will receive a JSON data by using the WebSocket API.",
+                            "uri": "URI",
+                            "uri_desc": "A maximum of 1000 characters e.g: ws://server:port/path",
+                            "reconnect": "Automatic Reconnection"
+                        },
+                        "yahooweather": {
+                            "display_name": "Yahoo Weather API",
+                            "description": "This datasource will receive a JSON data by using the <a href=\"https://developer.yahoo.com/weather/documentation.html\" target=\"_blank\">Yahoo Weather API</a>.",
+                            "location": "Location ZipCode",
+                            "location_desc": "A maximum of 100 characters. And also acceptable place name",
+                            "units": "Units",
+                            "units_metric": "Metric",
+                            "units_imperial": "Imperial",
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds",
+                            "cond_0": "Tornado",
+                            "cond_1": "Tropical storm",
+                            "cond_2": "Hurricane",
+                            "cond_3": "Severe thunderstorms",
+                            "cond_4": "Thunderstorms",
+                            "cond_5": "Mixed rain and snow",
+                            "cond_6": "Mixed rain and sleet",
+                            "cond_7": "Mixed snow and sleet",
+                            "cond_8": "Freezing drizzle",
+                            "cond_9": "Drizzle",
+                            "cond_10": "Freezing rain",
+                            "cond_11": "Showers",
+                            "cond_12": "Showers",
+                            "cond_13": "Snow flurries",
+                            "cond_14": "Light snow showers",
+                            "cond_15": "Blowing snow",
+                            "cond_16": "Snow",
+                            "cond_17": "Hail",
+                            "cond_18": "Sleet",
+                            "cond_19": "Dust",
+                            "cond_20": "Foggy",
+                            "cond_21": "Haze",
+                            "cond_22": "Smoky",
+                            "cond_23": "Blustery",
+                            "cond_24": "Windy",
+                            "cond_25": "Cold",
+                            "cond_26": "Cloudy",
+                            "cond_27": "Mostly cloudy (night)",
+                            "cond_28": "Mostly cloudy (day)",
+                            "cond_29": "Partly cloudy (night)",
+                            "cond_30": "Partly cloudy (day)",
+                            "cond_31": "Clear (night)",
+                            "cond_32": "Sunny",
+                            "cond_33": "Fair (night)",
+                            "cond_34": "Fair (day)",
+                            "cond_35": "Mixed rain and hail",
+                            "cond_36": "Hot",
+                            "cond_37": "Isolated thunderstorms",
+                            "cond_38": "Scattered thunderstorms",
+                            "cond_39": "Scattered thunderstorms",
+                            "cond_40": "Scattered showers",
+                            "cond_41": "Heavy snow",
+                            "cond_42": "Scattered snow showers",
+                            "cond_43": "Heavy snow",
+                            "cond_44": "Heavy snow",
+                            "cond_45": "Scattered snow showers",
+                            "cond_46": "Heavy snow",
+                            "cond_47": "Isolated thundershowers"
+                        },
+                        "SrvStatus": {
+                            "display_name": "WISE-PaaS/RMM - Server status",
+                            "description": "This datasource will receive a Server Status JSON data.",
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds",
+                            "serverurl": "Server Url",
+                            "serverurl_desc": "Complete url includes protocol, ip and port. eg, http://127.0.0.1:8080/",
+                            "account": "Account",
+                            "password": "Password"
+                        },
+                        "FuzzySearch": {
+                            "display_name": "WISE-PaaS/RMM : Device Information",
+                            "description": "This datasource will receive all device data by account.",
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds"
+                        },
+                        "dataAnalyze": {
+                            "display_name": "WISE-PaaS/RMM : Data Analytics",
+                            "description": "This datasource will receive a JSON data Analyze result. Please make sure agent auto report is opened for getting data.",
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds",
+                            "user": "User",
+                            "device": "Device",
+                            "senhub": "Senhub",
+                            "handler": "Handler",
+                            "source": "Source",
+                            "method": "Method",
+                            "timerange": "TimeRange",
+                            "year": "Year",
+                            "month": "Month",
+                            "week": "Week",
+                            "day": "Day",
+                            "hour": "Hour",
+                            "custom": "Custom"
+                        },
+                        "realtimedata": {
+                            "display_name": "WISE-PaaS : Real-time Data",
+                            "description": "This datasource will receive a real time JSON data. Please make sure agent auto report is opened for getting data.",
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds",
+                            "user": "User",
+                            "device": "Device",
+                            "senhub": "Senhub",
+                            "handler": "Handler",
+                            "source": "Source"
+                        },
+                        "getHistData": {
+                            "display_name": "WISE-PaaS : Historical data",
+                            "description": "This datasource will receive a historical data JSON data. Please make sure agent auto report is opened for getting data.",
+                            "refresh": "Refresh Every",
+                            "refresh_suffix": "seconds",
+                            "amount": "Amount",
+                            "user": "User",
+                            "device": "Device",
+                            "senhub": "Senhub",
+                            "handler": "Handler",
+                            "source": "Source"
+                        },
+                        "NRwebsocket": {
+                            "display_name": "WebSocket – Data Stream",
+                            "description": "This datasource will receive a JSON data by using the WebSocket.",
+                            "wsUrl": "WebSocket Url",
+                            "wsUrl_desc": "Complete url includes protocol, ip and port. eg, ws://127.0.0.1:9876/ "
+                        }
+
+                    },
+                    "validationEngine": {
+                        "required": {
+                            "alertText": "* This field is required",
+                            "alertTextCheckboxMultiple": "* Please select an option",
+                            "alertTextCheckboxe": "* This checkbox is required",
+                            "alertTextDateRange": "* Both date range fields are required"
+                        },
+                        "requiredInFunction": {
+                            "alertText": "* Field must equal test"
+                        },
+                        "dateRange": {
+                            "regex": "none",
+                            "alertText": "* Invalid ",
+                            "alertText2": "Date Range"
+                        },
+                        "dateTimeRange": {
+                            "alertText": "* Invalid ",
+                            "alertText2": "Date Time Range"
+                        },
+                        "minSize": {
+                            "alertText": "* Minimum ",
+                            "alertText2": " characters required"
+                        },
+                        "maxSize": {
+                            "alertText": "* Maximum ",
+                            "alertText2": " characters allowed"
+                        },
+                        "groupRequired": {
+                            "alertText": "* You must fill one of the following fields",
+                            "alertTextCheckboxMultiple": "* Please select an option",
+                            "alertTextCheckboxe": "* This checkbox is required"
+                        },
+                        "min": {
+                            "alertText": "* Minimum value is "
+                        },
+                        "max": {
+                            "alertText": "* Maximum value is "
+                        },
+                        "past": {
+                            "alertText": "* Date prior to "
+                        },
+                        "future": {
+                            "alertText": "* Date past "
+                        },
+                        "maxCheckbox": {
+                            "alertText": "* Maximum ",
+                            "alertText2": " options allowed"
+                        },
+                        "minCheckbox": {
+                            "alertText": "* Please select ",
+                            "alertText2": " options"
+                        },
+                        "equals": {
+                            "alertText": "* Fields do not match"
+                        },
+                        "creditCard": {
+                            "alertText": "* Invalid credit card number"
+                        },
+                        "phone": {
+                            "alertText": "* Invalid phone number"
+                        },
+                        "email": {
+                            "alertText": "* Invalid email address"
+                        },
+                        "fullname": {
+                            "alertText": "* Must be first and last name"
+                        },
+                        "zip": {
+                            "alertText": "* Invalid zip format"
+                        },
+                        "integer": {
+                            "alertText": "* Not a valid integer"
+                        },
+                        "number": {
+                            "alertText": "* Invalid floating decimal number"
+                        },
+                        "date": {
+                            "alertText": "* Invalid date, must be in YYYY-MM-DD format"
+                        },
+                        "ipv4": {
+                            "alertText": "* Invalid IP address"
+                        },
+                        "url": {
+                            "alertText": "* Invalid URL"
+                        },
+                        "onlyNumberSp": {
+                            "alertText": "* Numbers only"
+                        },
+                        "onlyLetterSp": {
+                            "alertText": "* Letters only"
+                        },
+                        "onlyLetterAccentSp": {
+                            "alertText": "* Letters only (accents allowed)"
+                        },
+                        "onlyLetterNumber": {
+                            "alertText": "* No special characters allowed"
+                        },
+                        "validate2fields": {
+                            "alertText": "* Please input HELLO"
+                        },
+                        "dateFormat": {
+                            "alertText": "* Invalid Date"
+                        },
+                        "dateTimeFormat": {
+                            "alertText": "* Invalid Date or Date Format",
+                            "alertText2": "Expected Format: ",
+                            "alertText3": "mm/dd/yyyy hh:mm:ss AM|PM or ",
+                            "alertText4": "yyyy-mm-dd hh:mm:ss AM|PM"
+                        },
+                        "hexcolor": {
+                            "alertText": "* Invalid color"
+                        },
+                        "alreadyusedname": {
+                            "alertText": "* This name is already in use"
+                        },
+                        "illegalEscapeChar": {
+                            "alertText": "* The special characters are input disabled. eg, & ` ' < > \" # % "
+                        }
+                    }
+                }
+            }
+        };
