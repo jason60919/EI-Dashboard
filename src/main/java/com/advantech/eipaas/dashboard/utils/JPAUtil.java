@@ -49,7 +49,7 @@ public class JPAUtil implements ServletContextListener {
         Map<String, Object> env = new HashMap<>();
 
         String VCAP_SERVICES = System.getenv("VCAP_SERVICES");
-        if (VCAP_SERVICES.length() > 0) {
+        if (null != VCAP_SERVICES && VCAP_SERVICES.length() > 0) {
             JSONObject vcap_services = new JSONObject(VCAP_SERVICES);
             if (vcap_services.has("user-provided")) {
                 JSONArray jsons = vcap_services.getJSONArray("user-provided");
