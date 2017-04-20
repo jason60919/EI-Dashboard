@@ -277,9 +277,19 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             data: '',
             contentType: "application/json",
             beforeSend: function (xhr) {
-                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
-                xhr.setRequestHeader("Authorization", authorization);
-                xhr.setRequestHeader("Accept", "application/json");
+                switch (oRMM.Login.type) {
+                    case "Azure" :
+                        var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                        break;
+                    case "Self" :
+                    default:
+                        var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                        break;
+                }
             },
             success: function (data) {
                 logger.debug('success to load sheet as below: ');
@@ -350,9 +360,19 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             data: '',
             contentType: "application/json",
             beforeSend: function (xhr) {
-                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
-                xhr.setRequestHeader("Authorization", authorization);
-                xhr.setRequestHeader("Accept", "application/json");
+                switch (oRMM.Login.type) {
+                    case "Azure" :
+                        var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                        break;
+                    case "Self" :
+                    default:
+                        var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                        break;
+                }
             },
             success: function (data) {
                     $("div#tabs .ui-state-default").remove();
@@ -408,9 +428,10 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                         $('<li class="newTab"><a title="NewBoard" href="javascript:void(0)">NewBoard</a></li>').insertBefore($("#add-tab").parent());
                         $('<div id="tab1"></div>').insertAfter('#tabs ul');
                         $("div#tabs").tabs("refresh");
-                        if (!$('body').data('bundleVer') && $('body').data('isEditable')) {
-                            self.editPrivilegeCheck($("div#tabs ul li.ui-state-default").eq(0));
-                        }
+                        //if (!$('body').data('bundleVer') && $('body').data('isEditable')) {
+                        //    self.editPrivilegeCheck($("div#tabs ul li.ui-state-default").eq(0));
+                        //}
+                        self.saveDashboard($("div#tabs ul li.ui-state-default").eq(0));
                         $('body').data('Content', JSON.stringify(self.serialize()));
                         $('div#tabs').tabs({
                             active: 0
@@ -450,9 +471,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
 
         }
 
-        if (self.longPollingWebSocket === null) {
-            self.startNotification();
-        }
+        //if (self.longPollingWebSocket === null) {
+        //    self.startNotification();
+        //}
     };
     this.bindSortableTab = function () {
 
@@ -576,9 +597,19 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             data: body,
             contentType: "application/json",
             beforeSend: function (xhr) {
-                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
-                xhr.setRequestHeader("Authorization", authorization);
-                xhr.setRequestHeader("Accept", "application/json");
+                switch (oRMM.Login.type) {
+                    case "Azure" :
+                        var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                        break;
+                    case "Self" :
+                    default:
+                        var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                        break;
+                }
             },
             success: function (data) {
                 if (!_.isUndefined(data.result.ErrorCode)) {
@@ -722,9 +753,19 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                         data: body,
                                         contentType: "application/json",
                                         beforeSend: function (xhr) {
-                                            var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
-                                            xhr.setRequestHeader("Authorization", authorization);
-                                            xhr.setRequestHeader("Accept", "application/json");
+                                            switch (oRMM.Login.type) {
+                                                case "Azure" :
+                                                    var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                                                    xhr.setRequestHeader("Authorization", authorization);
+                                                    xhr.setRequestHeader("Accept", "application/json");
+                                                    break;
+                                                case "Self" :
+                                                default:
+                                                    var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                                                    xhr.setRequestHeader("Authorization", authorization);
+                                                    xhr.setRequestHeader("Accept", "application/json");
+                                                    break;
+                                            }
                                         },
                                         success: function (data) {
                                             if (!TokenValidation(data))
@@ -824,9 +865,19 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                 data: body,
                                 contentType: "application/json",
                                 beforeSend: function (xhr) {
-                                    var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
-                                    xhr.setRequestHeader("Authorization", authorization);
-                                    xhr.setRequestHeader("Accept", "application/json");
+                                    switch (oRMM.Login.type) {
+                                        case "Azure" :
+                                            var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                                            xhr.setRequestHeader("Authorization", authorization);
+                                            xhr.setRequestHeader("Accept", "application/json");
+                                            break;
+                                        case "Self" :
+                                        default:
+                                            var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                                            xhr.setRequestHeader("Authorization", authorization);
+                                            xhr.setRequestHeader("Accept", "application/json");
+                                            break;
+                                    }
                                 },
                                 success: function (data) {
                                     if (!TokenValidation(data))

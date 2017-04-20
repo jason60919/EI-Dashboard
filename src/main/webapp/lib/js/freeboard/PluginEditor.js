@@ -21,9 +21,10 @@ PluginEditor = function (jsEditor, valueEditor) {
     function _getlistfn(name, getlistfn, accept, appendpath, data, currentValues) {
         var loadingIndicator = $('<div class="wrapperloading"><div class="loading up" ></div><div class="loading down"></div></div>');
         loadingIndicator.removeClass('hide').appendTo('body').addClass('show');
+        var strURL = currentValues.serverUrl + getlistfn.url;
 
         $.ajax({
-            url: getlistfn.url,
+            url: strURL,
             type: getlistfn.method,
             data: data,
             contentType: accept,
