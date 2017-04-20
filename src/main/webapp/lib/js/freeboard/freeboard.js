@@ -518,6 +518,55 @@ var freeboard = (function () {
             return true;
         }
 
+        $(window).bind('beforeunload', function () {
+            if (!head.browser.chrome || navigator.userAgent.indexOf('Edge') >= 0) {
+                var prevData = JSON.parse($('body').data('Content'));
+                var content = freeboard.serialize();
+                if (Object.equals(prevData, content) == false) {
+                    return $.i18n.t('global.dialogMsg.Info_IEwontSaved');
+                }
+            } else {
+                if (!$('body').data('bundleVer') && $('body').data('isEditable')) {
+                    $('.notificationNumber').html("0").hide();
+                    var prevData = JSON.parse($('body').data('Content'));
+                    var content = freeboard.serialize();
+                    if (Object.equals(prevData, content) == false) {
+                        theFreeboardModel.editPrivilegeCheck();
+                    }
+                    var currentUrl = document.URL.split('dashboard.jsp')[0];
+                    currentUrl = "/";
+                    //var accountId = $.cookie('mobileacountId');
+                    var accountId = $('#queryShareAccount label').attr('aid');
+                    var requestURL = requestURL = encodeURI(currentUrl + 'webresources/AccountMgmt/' + accountId);
+                    var method = "PUT";
+                    var body = '{"request": {"account": {"item": [{"@name": "theme","@value": "' + $.cookie('themeType') + '"}]}}}';
+                    $.ajax({
+                        url: requestURL,
+                        type: method,
+                        data: body,
+                        contentType: "application/json",
+                        beforeSend: function (xhr) {
+                            try {
+                                var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);
+                                xhr.setRequestHeader("Authorization", authorization);
+                                xhr.setRequestHeader("Accept", "application/json");
+                            }
+                            catch (e) {
+                            }
+                        },
+                        success: function (data) {
+                            if (!TokenValidation(data))
+                                return;
+                        },
+                        error: function (xhr, status, error) {
+
+                        }
+                    });
+                } else {
+                    return $.i18n.t('global.dialogMsg.Info_wontSaved');
+                }
+            }
+        });
         $('body').on('click', function (e) {
 
             var $this = $(e.target);
@@ -540,7 +589,7 @@ var freeboard = (function () {
             $.cookie('changeType', 'true', {
                 path: '/'
             });
-            window.location = '/';
+            location = '/';
         });
         $('#board-content').appendTo('#tab1');
         $("div#tabs").tabs({
@@ -653,19 +702,9 @@ var freeboard = (function () {
                                     data: body,
                                     contentType: "application/json",
                                     beforeSend: function (xhr) {
-                                        switch (oRMM.Login.type) {
-                                            case "Azure" :
-                                                var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
-                                                xhr.setRequestHeader("Authorization", authorization);
-                                                xhr.setRequestHeader("Accept", "application/json");
-                                                break;
-                                            case "Self" :
-                                            default:
-                                                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
-                                                xhr.setRequestHeader("Authorization", authorization);
-                                                xhr.setRequestHeader("Accept", "application/json");
-                                                break;
-                                        }
+                                        var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
+                                        xhr.setRequestHeader("Authorization", authorization);
+                                        xhr.setRequestHeader("Accept", "application/json");
                                     },
                                     success: function (data) {
                                         if (!TokenValidation(data))
@@ -914,7 +953,7 @@ var freeboard = (function () {
                 $.cookie('redirectSource', '', {
                     path: '/'
                 });
-                window.location = '/';
+                location = '/';
             });
 //            alert('This browser not supported');
             return;
@@ -965,14 +1004,11 @@ var freeboard = (function () {
 
             //Login
             $.ajax({
-                url: "dashboard/api/account/login",
+                url: "dashboard/api/account/login?username=" + _oRMM.Login.username + "&password=" + _oRMM.Login.password,
                 type: "get",
                 data: "",
                 contentType: "application/json",
                 beforeSend: function (xhr) {
-                    var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
-                    xhr.setRequestHeader("Authorization", authorization);
-                    xhr.setRequestHeader("Accept", "application/json");
                 },
                 success: function (data) {
                     if (data.success)
