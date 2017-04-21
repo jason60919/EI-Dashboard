@@ -17,7 +17,6 @@ import javax.crypto.spec.PBEKeySpec;
  */
 public final class PasswordUtil {
     private static final String ALGORITHM = "PBKDF2WithHmacSHA512";
-    private static final String PREFIX = "ei-paas";
     private static final int ITERATIONS = 5000;
     private static final int LEN_KEY = 256;
     private static final String DELIMETER = "$";
@@ -25,14 +24,14 @@ public final class PasswordUtil {
 
     public boolean authenticate(String password, String sentinel) {
         String[] tokens = sentinel.split(RE_DELIMETER);
-        if (tokens.length != 3) {
+        if (tokens.length != 2) {
             return false;
         }
 
         Base64.Decoder b64 = Base64.getUrlDecoder();
         byte[] salt, hash, checked;
-        salt = b64.decode(tokens[1]);
-        hash = b64.decode(tokens[2]);
+        salt = b64.decode(tokens[0]);
+        hash = b64.decode(tokens[1]);
 
         try {
             checked = getHash(password.toCharArray(), salt);
@@ -49,11 +48,10 @@ public final class PasswordUtil {
         return diff == 0;
     }
 
-    private String hashedPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException{
+    public String hashedPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException{
         byte[] salt = getSalt();
         Base64.Encoder b64 = Base64.getUrlEncoder().withoutPadding();
-        return PREFIX + DELIMETER +
-               b64.encodeToString(salt) + DELIMETER +
+        return b64.encodeToString(salt) + DELIMETER +
                b64.encodeToString(getHash(password.toCharArray(), salt));
     }
 
@@ -71,21 +69,11 @@ public final class PasswordUtil {
     }
 
     public static void main(String[] argv) throws Exception {
-        System.out.print("Password original: ");
-        String password1 = System.console().readLine();
-
-        System.out.print("Password checked: ");
-        String password2 = System.console().readLine();
-
-        System.out.println("");
+        System.out.print("Please input password: ");
+        char[] password = System.console().readPassword();
 
         PasswordUtil self = new PasswordUtil();
-        String sentinel = self.hashedPassword(password1);
-        Boolean result = self.authenticate(password2, sentinel);
-
-        System.out.println("[main] ORIGINAL: " + password1);
-        System.out.println("[main] SENTINEL: " + sentinel);
-        System.out.println("[main] CHECKED: " + password2);
-        System.out.println("[main] RESULT: " + result);
+        String hashedPassword = self.hashedPassword(String.valueOf(password));
+        System.out.println("The hashed password: " + hashedPassword);
     }
 }
