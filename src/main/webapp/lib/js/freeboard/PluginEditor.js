@@ -21,7 +21,8 @@ PluginEditor = function (jsEditor, valueEditor) {
     function _getlistfn(name, getlistfn, accept, appendpath, data, currentValues) {
         var loadingIndicator = $('<div class="wrapperloading"><div class="loading up" ></div><div class="loading down"></div></div>');
         loadingIndicator.removeClass('hide').appendTo('body').addClass('show');
-        var strURL = currentValues.serverUrl + getlistfn.url;
+        //var strURL = currentValues.serverUrl + getlistfn.url;
+        var strURL = $("#setting-value-container-serverUrl").find("input").val() + getlistfn.url;
 
         $.ajax({
             url: strURL,
@@ -432,7 +433,7 @@ PluginEditor = function (jsEditor, valueEditor) {
                                 dNow = new Date(dNow.setDate(dNow.getDate() + 1));
                                 var strendTs = dNow.getUTCFullYear() + "-" + (dNow.getUTCMonth() + 1) + "-" + dNow.getUTCDate() + " " + dNow.getUTCHours() + ":" + dNow.getUTCMinutes() + ":" + dNow.getUTCSeconds() + ":000";
                                 var dPre = new Date();
-                                dPre = new Date(dPre.setDate(dPre.getDate() - 1));
+                                dPre = new Date(dPre.setDate(dPre.getDate() - 365));
                                 var strbeginTs = dPre.getUTCFullYear() + "-" + (dPre.getUTCMonth() + 1) + "-" + dPre.getUTCDate() + " " + dPre.getUTCHours() + ":" + dPre.getUTCMinutes() + ":" + dPre.getUTCSeconds() + ":000";
                                 var strParameter = "agentId=" + m_AgentID + "&beginTs=" + strbeginTs + "&endTs=" + strendTs + "&amount=60&order=desc";
                                 var oListFun = nextData.getlistfn;
@@ -447,7 +448,7 @@ PluginEditor = function (jsEditor, valueEditor) {
                                 dNow = new Date(dNow.setDate(dNow.getDate() + 1));
                                 var strendTs = dNow.getUTCFullYear() + "-" + (dNow.getUTCMonth() + 1) + "-" + dNow.getUTCDate() + " " + dNow.getUTCHours() + ":" + dNow.getUTCMinutes() + ":" + dNow.getUTCSeconds() + ":000";
                                 var dPre = new Date();
-                                dPre = new Date(dPre.setDate(dPre.getDate() - 1));
+                                dPre = new Date(dPre.setDate(dPre.getDate() - 365));
                                 var strbeginTs = dPre.getUTCFullYear() + "-" + (dPre.getUTCMonth() + 1) + "-" + dPre.getUTCDate() + " " + dPre.getUTCHours() + ":" + dPre.getUTCMinutes() + ":" + dPre.getUTCSeconds() + ":000";
                                 var strParameter = "agentId=" + m_AgentID + "&plugin=" + m_plugin + "&beginTs=" + strbeginTs + "&endTs=" + strendTs + "&amount=60&order=desc";
                                 var oListFun = nextData.getlistfn;
@@ -852,36 +853,36 @@ PluginEditor = function (jsEditor, valueEditor) {
                 .addClass(_toValidateClassString(settingDef.validate, 'text-input'))
                 .attr('style', settingDef.style)
                 .appendTo(valueCell).change(function () {
+                    if (settingDef.type == 'number')
+                    {
+                        if ($(this).val() == "")
+                            newSettings.settings[settingDef.name] = "";
+                        else
+                            newSettings.settings[settingDef.name] = Number($(this).val());
+                    }
+                    else
+                        newSettings.settings[settingDef.name] = $(this).val();
 
-            if (settingDef.type == 'number')
-            {
-                if ($(this).val() == "")
-                    newSettings.settings[settingDef.name] = "";
-                else
-                    newSettings.settings[settingDef.name] = Number($(this).val());
-            }
-            else
-                newSettings.settings[settingDef.name] = $(this).val();
-
-        }).keyup(function () {
-
-//            if (settingDef.name == 'serverurl') {
-//
-//                $('#setting-value-container-account input').val('');
-//                $('#setting-value-container-password input').val('');
-//
-//            } else 
-
-            if (settingDef.name == 'account') {
-
-                $('#setting-value-container-password input').val('');
-
-            }
-
-        });
+                }).keyup(function () {
+                    if (settingDef.name == 'account') {
+                        $('#setting-value-container-password input').val('');
+                    }
+                });
 
         if (settingDef.name in currentSettingsValues) {
             input.val(currentSettingsValues[settingDef.name]);
+        }
+        if (settingDef.name == 'serverUrl')
+        {
+            $('<div class="table-operation text-button">Connect to get device list</div>').appendTo(valueCell).click(function () {
+                $("#setting-row-device").show();
+                $("#setting-row-plugin").hide();
+                $("#setting-row-source").hide();
+                var settingDef = JSON.parse($("#setting-row-device").attr("settingDef"));
+                var oSelect = $("#setting-value-container-device").find('select');
+                oSelect.find('option:not(:first)').remove();
+                _getlistfn(settingDef.name, settingDef.getlistfn, settingDef.accept, oSelect, "", currentSettingsValues);
+            });
         }
     }
 
@@ -982,6 +983,7 @@ PluginEditor = function (jsEditor, valueEditor) {
                     currentSettingsValues[settingDef.name] = _.unescape(currentSettingsValues[settingDef.name]);
 
                 var valueCell = createSettingRow(form, settingDef.name, displayName, settingDef.initial, ' ' + settingDef.addClass);
+                valueCell.parent().attr("settingDef",JSON.stringify(settingDef));
                 var input, defaultValue;
 
                 switch (settingDef.type) {

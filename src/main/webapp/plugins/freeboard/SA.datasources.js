@@ -13,7 +13,6 @@
         },
         FuzzySearch: {
             url: "common/v1/devices",
-            //url:  "common/v1/data/1/latestdata?agentId=00000001-0000-0000-0000-654A3A700000&plugin=SUSIControl&sensorId=/Hardware%20Monitor/Voltage/Vcore",
             method: "GET"
         },
         Plugins: {
@@ -274,67 +273,6 @@
     });
 
     //Type Weather Map API
-    var openWeatherMapDatasource = function (settings, updateCallback) {
-        var self = this;
-        var updateTimer = null;
-        var currentSettings = settings;
-
-        function updateRefresh(refreshTime) {
-            if (updateTimer) {
-                clearInterval(updateTimer);
-            }
-
-            updateTimer = setInterval(function () {
-                self.updateNow();
-            }, refreshTime);
-        }
-
-        function toTitleCase(str) {
-            return str.replace(/\w\S*/g, function (txt) {
-                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            });
-        }
-
-        updateRefresh(currentSettings.refresh * 1000);
-
-        this.updateNow = function () {
-            $.ajax({
-                url: "http://api.openweathermap.org/data/2.5/weather?q=" + encodeURIComponent(currentSettings.location) + "&units=" + currentSettings.units,
-                dataType: "JSONP",
-                success: function (data) {
-                    // Rejigger our data into something easier to understand
-                    var newData = {
-                        place_name: data.name,
-                        sunrise: (new Date(data.sys.sunrise * 1000)).toLocaleTimeString(),
-                        sunset: (new Date(data.sys.sunset * 1000)).toLocaleTimeString(),
-                        conditions: toTitleCase(data.weather[0].description),
-                        current_temp: data.main.temp,
-                        high_temp: data.main.temp_max,
-                        low_temp: data.main.temp_min,
-                        pressure: data.main.pressure,
-                        humidity: data.main.humidity,
-                        wind_speed: data.wind.speed,
-                        wind_direction: data.wind.deg
-                    };
-
-                    updateCallback(newData);
-                },
-                error: function (xhr, status, error) {
-                }
-            });
-        }
-
-        this.onDispose = function () {
-            clearInterval(updateTimer);
-            updateTimer = null;
-        }
-
-        this.onSettingsChanged = function (newSettings) {
-            currentSettings = newSettings;
-            self.updateNow();
-            updateRefresh(currentSettings.refresh * 1000);
-        }
-    };
     var yahooWeatherDatasource = function (settings, updateCallback) {
         var self = this;
         var updateTimer = null;
@@ -680,14 +618,15 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "https://zwebapp-zsafe-attemperator.advantech.pcf-on-azure.net/",
+                default_value: "http://zwebapp-zsafe-attemperator.advantech.pcf-on-azure.net/",
+                //default_value: "http://localhost:8081/",
                 description: ""
             },
             {
                 name: "device",
                 display_name: $.i18n.t('plugins_ds.realtimedata.device'),
                 type: "option",
-                initial: true,
+                initial: false,
                 dynamiclist: true,
                 getlistfn: SUSI_DS_CONFIG.FuzzySearch,
                 accept: "application/json",
@@ -699,7 +638,7 @@
                 display_name: "plugin",
                 type: "option",
                 initial: false,
-                dynamiclist: false,
+                dynamiclist: true,
                 getlistfn: SUSI_DS_CONFIG.Plugins,
                 accept: "application/json",
                 options: [
@@ -826,14 +765,15 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "https://zwebapp-zsafe-attemperator.advantech.pcf-on-azure.net/",
+                default_value: "http://zwebapp-zsafe-attemperator.advantech.pcf-on-azure.net/",
+                //default_value: "http://localhost:8081/",
                 description: ""
             },
             {
                 name: "device",
                 display_name: $.i18n.t('plugins_ds.realtimedata.device'),
                 type: "option",
-                initial: true,
+                initial: false,
                 dynamiclist: true,
                 getlistfn: SUSI_DS_CONFIG.FuzzySearch,
                 accept: "application/json",
@@ -845,7 +785,7 @@
                 display_name: "plugin",
                 type: "option",
                 initial: false,
-                dynamiclist: false,
+                dynamiclist: true,
                 getlistfn: SUSI_DS_CONFIG.Plugins,
                 accept: "application/json",
                 options: [
