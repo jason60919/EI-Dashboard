@@ -1004,11 +1004,24 @@ var freeboard = (function () {
 
             //Login
             $.ajax({
-                url: "dashboard/api/account/login?username=" + _oRMM.Login.username + "&password=" + _oRMM.Login.password,
+                url: "dashboard/api/account/login",
                 type: "get",
                 data: "",
                 contentType: "application/json",
                 beforeSend: function (xhr) {
+                    switch (_oRMM.Login.type) {
+                        case "Azure" :
+                            var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                            xhr.setRequestHeader("Authorization", authorization);
+                            xhr.setRequestHeader("Accept", "application/json");
+                            break;
+                        case "Self" :
+                        default:
+                            var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                            xhr.setRequestHeader("Authorization", authorization);
+                            xhr.setRequestHeader("Accept", "application/json");
+                            break;
+                    }
                 },
                 success: function (data) {
                     if (data.success)

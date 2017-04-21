@@ -80,6 +80,7 @@ $(function () {
 
                 $('#frmMainLogin_UserName').focus();
                 $('.RMMLoader').hide();
+                //window.location.href = "FreeBoard.html";
             },
             success: function (xhr) {
                 if (xhr.success)

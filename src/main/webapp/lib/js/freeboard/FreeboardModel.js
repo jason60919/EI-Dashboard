@@ -277,7 +277,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             data: '',
             contentType: "application/json",
             beforeSend: function (xhr) {
-                switch (oRMM.Login.type) {
+                switch (_oRMM.Login.type) {
                     case "Azure" :
                         var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
                         xhr.setRequestHeader("Authorization", authorization);
@@ -360,7 +360,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             data: '',
             contentType: "application/json",
             beforeSend: function (xhr) {
-                switch (oRMM.Login.type) {
+                switch (_oRMM.Login.type) {
                     case "Azure" :
                         var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
                         xhr.setRequestHeader("Authorization", authorization);
@@ -597,7 +597,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             data: body,
             contentType: "application/json",
             beforeSend: function (xhr) {
-                switch (oRMM.Login.type) {
+                switch (_oRMM.Login.type) {
                     case "Azure" :
                         var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
                         xhr.setRequestHeader("Authorization", authorization);
@@ -753,7 +753,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                         data: body,
                                         contentType: "application/json",
                                         beforeSend: function (xhr) {
-                                            switch (oRMM.Login.type) {
+                                            switch (_oRMM.Login.type) {
                                                 case "Azure" :
                                                     var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
                                                     xhr.setRequestHeader("Authorization", authorization);
@@ -865,7 +865,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                 data: body,
                                 contentType: "application/json",
                                 beforeSend: function (xhr) {
-                                    switch (oRMM.Login.type) {
+                                    switch (_oRMM.Login.type) {
                                         case "Azure" :
                                             var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
                                             xhr.setRequestHeader("Authorization", authorization);
