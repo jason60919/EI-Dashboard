@@ -12,15 +12,16 @@
             method: "GET"
         },
         FuzzySearch: {
-            url: "../common/v1/devices",
+            url: "common/v1/devices",
+            //url:  "common/v1/data/1/latestdata?agentId=00000001-0000-0000-0000-654A3A700000&plugin=SUSIControl&sensorId=/Hardware%20Monitor/Voltage/Vcore",
             method: "GET"
         },
         Plugins: {
-            url: "../common/v1/devices/{did}/plugins",
+            url: "common/v1/devices/{did}/plugins",
             method: "GET"
         },
         Sensors: {
-            url: "../common/v1/devices/{did}/sensors",
+            url: "common/v1/devices/{did}/sensors",
             method: "GET"
         },
         getSensorID: {

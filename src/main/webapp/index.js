@@ -35,8 +35,8 @@ $(function () {
             var oRMM = _RMMGlobal.Get();
             oRMM.Login = {};
             oRMM.Login.username = m_AzureUser.userName;
-            oRMM.Login.password = "xxxxxx";
-            oRMM.Login.profile = m_AzureUser.profile;
+            oRMM.Login.sso = m_AzureUser;
+            oRMM.Login.type = "Azure";
             _RMMGlobal.Set(oRMM);
             //index_afterLogin();
         }
@@ -58,11 +58,14 @@ $(function () {
         $('.RMMLoader').show();
         $.ajax({
             cache: false,
-            url: "dashboard/api/account/login?username=" + $('#frmMainLogin_UserName').val() + "&password=" + $('#frmMainLogin_Password').val(),
+            url: "dashboard/api/account/login",
             type: "get",
             contentType: 'application/json',
             dataType: 'json',
             beforeSend: function (xhr) {
+                var authorization = 'Basic ' + $.base64.encode($('#frmMainLogin_UserName').val() + ':' + $('#frmMainLogin_Password').val());
+                xhr.setRequestHeader("Authorization", authorization);
+                xhr.setRequestHeader("Accept", "application/json");
             },
             error: function (xhr, exception) {
                 var oError = $.parseJSON(xhr.responseText);
@@ -86,6 +89,7 @@ $(function () {
                     oRMM.Login.aid = xhr.result.aid;
                     oRMM.Login.username = $('#frmMainLogin_UserName').val();
                     oRMM.Login.password = $('#frmMainLogin_Password').val();
+                    oRMM.Login.type = "Self";
                     _RMMGlobal.Set(oRMM);
                     window.location.href = "FreeBoard.html";
                 }
