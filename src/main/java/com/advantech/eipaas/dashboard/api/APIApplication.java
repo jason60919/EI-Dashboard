@@ -7,11 +7,11 @@ import java.util.Set;
 
 
 @ApplicationPath("/dashboard")
-public class Application extends javax.ws.rs.core.Application {
+public class APIApplication extends javax.ws.rs.core.Application {
     @Override
     public Set<Class<?>> getClasses() {
         HashSet hash = new HashSet<Class<?>>();
-        hash.add(API.class);
+        hash.add(APIResource.class);
         return hash;
     }
 }
