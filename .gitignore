@@ -1,0 +1,8 @@
+.gradle/
+.idea/artifacts/
+.idea/dataSources.local.xml
+.idea/dataSources.xml
+.idea/dataSources/
+.idea/workspace.xml
+.idea/uiDesigner.xml
+build/

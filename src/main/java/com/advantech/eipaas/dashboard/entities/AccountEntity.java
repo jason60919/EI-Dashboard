@@ -1,11 +1,10 @@
 package com.advantech.eipaas.dashboard.entities;
 
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 
-/**
- * Created by Alex.Shao on 2017/4/14.
- */
+
 @Entity
 @Table(name = "account", schema = "dashboard", catalog = "wisepaas")
 public class AccountEntity {

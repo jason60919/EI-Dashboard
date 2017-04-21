@@ -27,7 +27,9 @@ public class JPAUtil implements ServletContextListener {
             emf = Persistence.createEntityManagerFactory("DashboardPU");
         }
         else {
-            emf = Persistence.createEntityManagerFactory("DashboardPU", properties);
+            emf = Persistence.createEntityManagerFactory(
+                "DashboardPU", properties
+            );
         }
     }
 
@@ -39,7 +41,7 @@ public class JPAUtil implements ServletContextListener {
     }
 
     public static EntityManager createEntityManager() {
-        if (emf == null) {
+        if (null == emf) {
             throw new IllegalStateException("Context is not initialized yet.");
         }
         return emf.createEntityManager();
@@ -60,15 +62,25 @@ public class JPAUtil implements ServletContextListener {
 
                     String name = json.getString("name");
                     if (name.equals("PSQL-Dashboard")) {
-                        JSONObject credentials = json.getJSONObject("credentials");
+                        JSONObject credentials = json.getJSONObject(
+                            "credentials");
                         if (credentials.has("url")) {
-                            env.put("hibernate.connection.url", credentials.getString("url"));
+                            env.put(
+                                "hibernate.connection.url",
+                                credentials.getString("url")
+                            );
                         }
                         if (credentials.has("username")) {
-                            env.put("hibernate.connection.username", credentials.getString("username"));
+                            env.put(
+                                "hibernate.connection.username",
+                                credentials.getString("username")
+                            );
                         }
                         if (credentials.has("password")) {
-                            env.put("hibernate.connection.password", credentials.getString("password"));
+                            env.put(
+                                "hibernate.connection.password",
+                                credentials.getString("password")
+                            );
                         }
                         break;
                     }

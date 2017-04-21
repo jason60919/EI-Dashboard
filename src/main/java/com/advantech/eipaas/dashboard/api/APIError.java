@@ -5,18 +5,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public enum Error {
+public enum APIError {
     ServerError(
         1000, "E_SERVER_INTERNAL",
         "server encountered internal problem"
     ),
-    AuthorizationError(
+    AuthError(
         1001, "E_AUTH",
-        "authorization failed"
+        "authentication/authorization error"
     ),
     AccountNotEnabledError(
         1002, "E_ACCOUNT_NOT_ENABLED",
-        "given account not enabled"
+        "given account not enabled in this system"
     ),
     DataNotCompleteError(
         1003, "E_DATA_NOT_COMPLETE",
@@ -33,30 +33,42 @@ public enum Error {
     SequenceOutOfBoundError(
         1006, "E_Sequence_OUT_OF_BOUND",
         "given sequence value is out of bound"
+    ),
+    AuthNotProvidedError(
+        1007, "E_AUTH_NOT_PROVIDED",
+        "authentication/authorization data not provided in header"
+    ),
+    AuthNotSupportedError(
+        1008, "E_AUTH_NOT_SUPPORTED",
+        "authentication/authorization type not supported in header"
+    ),
+    AuthDataError(
+        1001, "E_AUTH_DATA",
+        "authentication/authorization data provided in header error"
     );
 
     private int code;
     private String name;
     private String description;
-    private static Map<Integer, Error> mapping;
+    private static Map<Integer, APIError> mapping;
 
-    Error(int code, String name, String description) {
+    APIError(int code, String name, String description) {
         this.code = code;
         this.name = name;
         this.description = description;
     }
 
-    public static Error getErrorInstance(int i) {
+    public static APIError getErrorInstance(int i) {
         if (null == mapping) {
             initMapping();
         }
-        Error e = mapping.get(i);
-        return null == e ? Error.ServerError : e;
+        APIError e = mapping.get(i);
+        return null == e ? APIError.ServerError : e;
     }
 
     private static void initMapping() {
         mapping = new HashMap<>();
-        for (Error e : values()) {
+        for (APIError e : values()) {
             mapping.put(e.code, e);
         }
     }
