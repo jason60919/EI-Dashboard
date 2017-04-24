@@ -38,6 +38,7 @@ $(function () {
         if (typeof m_AzureUser.profile != "undefined")
         {
             var _oRMM = _RMMGlobal.Get();
+            
             _oRMM.Login = {};
             _oRMM.Login.username = m_AzureUser.userName;
             _oRMM.Login.sso = m_AzureUser;
