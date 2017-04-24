@@ -1002,7 +1002,7 @@ var freeboard = (function () {
 
             freeboardUI.processResize(true, true);
 
-            //Login
+            //Login for check
             $.ajax({
                 url: "dashboard/api/account/login",
                 type: "get",
