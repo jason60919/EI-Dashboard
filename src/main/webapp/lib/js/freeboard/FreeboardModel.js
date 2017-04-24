@@ -1237,7 +1237,6 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
         }
     };
     this.addNewSheet = function () {
-        debugger;
         logger.info('create an New tab');
 
         if (!self.privilegeCheck()) {
