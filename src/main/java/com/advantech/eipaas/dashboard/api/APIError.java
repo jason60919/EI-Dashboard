@@ -43,7 +43,7 @@ public enum APIError {
         "authentication/authorization type not supported in header"
     ),
     AuthDataError(
-        1001, "E_AUTH_DATA",
+        1009, "E_AUTH_DATA",
         "authentication/authorization data provided in header error"
     );
 
