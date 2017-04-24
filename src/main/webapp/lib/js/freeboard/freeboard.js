@@ -704,7 +704,7 @@ var freeboard = (function () {
                                     beforeSend: function (xhr) {
                                         switch (_oRMM.Login.type) {
                                             case "Azure" :
-                                                var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                                                var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
                                                 xhr.setRequestHeader("Authorization", authorization);
                                                 xhr.setRequestHeader("Accept", "application/json");
                                                 break;
@@ -1012,37 +1012,51 @@ var freeboard = (function () {
 
             freeboardUI.processResize(true, true);
 
+            theFreeboardModel.themeWhite();
             //Login for check
-            $.ajax({
-                url: "dashboard/api/account/login",
-                type: "get",
-                data: "",
-                contentType: "application/json",
-                beforeSend: function (xhr) {
-                    switch (_oRMM.Login.type) {
-                        case "Azure" :
-                            var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
-                            xhr.setRequestHeader("Authorization", authorization);
-                            xhr.setRequestHeader("Accept", "application/json");
-                            break;
-                        case "Self" :
-                        default:
-                            var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
-                            xhr.setRequestHeader("Authorization", authorization);
-                            xhr.setRequestHeader("Accept", "application/json");
-                            break;
-                    }
-                },
-                success: function (data) {
-                    if (data.success)
-                        theFreeboardModel.LoadDashboardSheetList();
-                    else
+            if (location.protocol == "file:")
+            {
+                $('.isEditable').hide();
+                $('.editLink').hide();
+                var content = '{"version":1,"allow_edit":true,"plugins":[],"panes":[],"datasources":[],"columns":3}';
+                theFreeboardModel.loadDashboard(content);
+                setTimeout(function () {
+                    $('.isEditable').hide();
+                    $('.editLink').hide();
+                }, 1000)
+            }
+            else {
+                $.ajax({
+                    url: "dashboard/api/account/login",
+                    type: "get",
+                    data: "",
+                    contentType: "application/json",
+                    beforeSend: function (xhr) {
+                        switch (_oRMM.Login.type) {
+                            case "Azure" :
+                                var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                                xhr.setRequestHeader("Authorization", authorization);
+                                xhr.setRequestHeader("Accept", "application/json");
+                                break;
+                            case "Self" :
+                            default:
+                                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                                xhr.setRequestHeader("Authorization", authorization);
+                                xhr.setRequestHeader("Accept", "application/json");
+                                break;
+                        }
+                    },
+                    success: function (data) {
+                        if (data.success)
+                            theFreeboardModel.LoadDashboardSheetList();
+                        else
+                            window.location.href = "index.html";
+                    },
+                    error: function (xhr, status, error) {
                         window.location.href = "index.html";
-                },
-                error: function (xhr, status, error) {
-                    window.location.href = "index.html";
-                }
-            });
+                    }
+                });
+            }
 
             try
             {
@@ -1050,7 +1064,6 @@ var freeboard = (function () {
             }
             catch (e){}
 
-            theFreeboardModel.themeWhite();
             /*
                         theFreeboardModel.addNewSheet();
 

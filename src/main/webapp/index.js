@@ -4,6 +4,12 @@ var m_Did = "1";
 //var m_AgentID = "00000001-0000-0000-0000-654A3A700000";
 var m_AgentID = "00000001-0000-0000-0000-305A3A700000";
 $(function () {
+
+    if (location.protocol == "file:")
+    {
+        window.location.href = "FreeBoard.html";
+    }
+
     window.config = {
         instance: 'https://login.microsoftonline.com/',
         //tenant: '[Enter your tenant here, e.g. contoso.onmicrosoft.com]',
@@ -11,8 +17,6 @@ $(function () {
         //tenant: 'Advantecher.onmicrosoft.com',
         //clientId: '816122fa-ee54-4c21-a3e2-c8faed48c464',
         tenant: 'wisesso.onmicrosoft.com',
-        //clientId: 'd14cc4b0-33be-4dfe-abaa-772508ef1314',
-        //clientId: '853eb8e0-30ff-472f-94d1-eff74d796403',
         clientId: '750f3881-58f7-40ff-8794-ed004c442031',
         postLogoutRedirectUri: window.location.origin,
         cacheLocation: 'localStorage', // enable this for IE, as sessionStorage does not work for localhost.
@@ -33,13 +37,55 @@ $(function () {
     {
         if (typeof m_AzureUser.profile != "undefined")
         {
-            var oRMM = _RMMGlobal.Get();
-            oRMM.Login = {};
-            oRMM.Login.username = m_AzureUser.userName;
-            oRMM.Login.sso = m_AzureUser;
-            oRMM.Login.type = "Azure";
+            var _oRMM = _RMMGlobal.Get();
+            _oRMM.Login = {};
+            _oRMM.Login.username = m_AzureUser.userName;
+            _oRMM.Login.sso = m_AzureUser;
+            _oRMM.Login.type = "Azure";
             _RMMGlobal.Set(oRMM);
-            //index_afterLogin();
+            $('.RMMLoader').show();
+            $.ajax({
+                cache: false,
+                url: "dashboard/api/account/login",
+                type: "get",
+                contentType: 'application/json',
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                    xhr.setRequestHeader("Authorization", authorization);
+                    xhr.setRequestHeader("Accept", "application/json");
+                },
+                error: function (xhr, exception) {
+                    var oError = $.parseJSON(xhr.responseText);
+                    if (!oError.success)
+                    {
+                        swal({
+                            title: "warning",
+                            text: "Authentication failed !!",
+                            type: "warning"
+                        });
+                    }
+
+                    $('#frmMainLogin_UserName').focus();
+                    $('.RMMLoader').hide();
+                },
+                success: function (xhr) {
+                    if (xhr.success)
+                    {
+                        window.location.href = "FreeBoard.html";
+                    }
+                    else
+                    {
+                        swal({
+                            title: "warning",
+                            text: "Authentication failed - password error !",
+                            type: "warning"
+                        });
+                        $('#frmMainLogin_Password').focus();
+                    }
+                    $('.RMMLoader').hide();
+                }
+            });
         }
     }
 
