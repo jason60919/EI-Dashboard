@@ -12,7 +12,8 @@ $(function () {
         //clientId: '816122fa-ee54-4c21-a3e2-c8faed48c464',
         tenant: 'wisesso.onmicrosoft.com',
         //clientId: 'd14cc4b0-33be-4dfe-abaa-772508ef1314',
-        clientId: '853eb8e0-30ff-472f-94d1-eff74d796403',
+        //clientId: '853eb8e0-30ff-472f-94d1-eff74d796403',
+        clientId: '750f3881-58f7-40ff-8794-ed004c442031',
         postLogoutRedirectUri: window.location.origin,
         cacheLocation: 'localStorage', // enable this for IE, as sessionStorage does not work for localhost.
     };

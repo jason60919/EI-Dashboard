@@ -581,7 +581,7 @@
                 console.log("Datasource isn't sent. Name: " + self.name);
                 return;
             }
-            var strURL = "../common/v1/data/" + currentSettings.did + "/latestdata?agentId=" + currentSettings.agentId + "&plugin=" + currentSettings.plugin + "&sensorId=" + currentSettings.source;
+            var strURL = currentSettings.serverUrl + "common/v1/data/" + currentSettings.did + "/latestdata?agentId=" + currentSettings.agentId + "&plugin=" + currentSettings.plugin + "&sensorId=" + currentSettings.source;
             var ajaxOpts = {
                 cache: false,
                 url: strURL,
@@ -715,7 +715,7 @@
             var dPre = new Date();
             dPre = new Date(dPre.setDate(dPre.getDate() - 1));
             var strbeginTs = dPre.getUTCFullYear() + "-" + (dPre.getUTCMonth() + 1) + "-" + dPre.getUTCDate() + " " + dPre.getUTCHours() + ":" + dPre.getUTCMinutes() + ":" + dPre.getUTCSeconds() + ":000";
-            var strURL = "../common/v1/data/" + currentSettings.did + "/histdata?agentId=" + currentSettings.agentId + "&plugin=" + currentSettings.plugin + "&sensorId=" + currentSettings.source  + "&beginTs=" + strbeginTs + "&endTs=" + strendTs + "&amount=60&order=desc";
+            var strURL = currentSettings.serverUrl + "common/v1/data/" + currentSettings.did + "/histdata?agentId=" + currentSettings.agentId + "&plugin=" + currentSettings.plugin + "&sensorId=" + currentSettings.source  + "&beginTs=" + strbeginTs + "&endTs=" + strendTs + "&amount=60&order=desc";
             var ajaxOpts = {
                 cache: false,
                 url: strURL,

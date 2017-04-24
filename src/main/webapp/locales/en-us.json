@@ -619,7 +619,7 @@
             "source": "Source"
         },
         "getHistData": {
-            "display_name": "WISE-PaaS : Historical data",
+            "display_name": "WISE-PaaS : Historical Data",
             "description": "This datasource will receive a historical data JSON data. Please make sure agent auto report is opened for getting data.",
             "refresh": "Refresh Every",
             "refresh_suffix": "seconds",

@@ -875,7 +875,7 @@ PluginEditor = function (jsEditor, valueEditor) {
         }
         if (settingDef.name == 'serverUrl')
         {
-            $('<div class="table-operation text-button">Connect to get device list</div>').appendTo(valueCell).click(function () {
+            $('<div class="table-operation text-button button-serverUrl">Connect to get device list</div>').appendTo(valueCell).click(function () {
                 $("#setting-row-device").show();
                 $("#setting-row-plugin").hide();
                 $("#setting-row-source").hide();
@@ -884,6 +884,9 @@ PluginEditor = function (jsEditor, valueEditor) {
                 oSelect.find('option:not(:first)').remove();
                 _getlistfn(settingDef.name, settingDef.getlistfn, settingDef.accept, oSelect, "", currentSettingsValues);
             });
+            setTimeout(function () {
+                $(".button-serverUrl").trigger("click");
+            }, 100)
         }
     }
 
