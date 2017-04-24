@@ -886,7 +886,7 @@ PluginEditor = function (jsEditor, valueEditor) {
             });
             setTimeout(function () {
                 $(".button-serverUrl").trigger("click");
-            }, 100)
+            }, 101)
         }
     }
 
