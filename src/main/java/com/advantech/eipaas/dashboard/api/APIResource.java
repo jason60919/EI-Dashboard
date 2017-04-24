@@ -281,6 +281,7 @@ public class APIResource {
             sheet.setContent(json.get("content").toString());
         }
 
+        em.getTransaction().begin();
         try {
             em.merge(sheet);
 
