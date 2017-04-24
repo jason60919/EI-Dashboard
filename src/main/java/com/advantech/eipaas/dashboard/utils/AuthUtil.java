@@ -6,7 +6,7 @@ import java.util.Base64;
 import java.io.UnsupportedEncodingException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.ws.rs.core.Response;
 
 import org.json.JSONObject;
@@ -155,7 +155,7 @@ public class AuthUtil {
             em.close();
             return account;
         }
-        catch (EntityNotFoundException e) {
+        catch (NoResultException e) {
             // create this SSO account in our database below
         }
         catch (Exception e) {
@@ -182,8 +182,14 @@ public class AuthUtil {
             ));
         }
 
-        int num_name = 0;
         account = new AccountEntity();
+        account.setName(username);
+        account.setEnabled(true);
+        account.setPassword("eipaas1234");
+        account.setMail(profile.getString("email"));
+        account.setCreatets(new Timestamp(System.currentTimeMillis()));
+
+        int num_name = 0;
         if (profile.has("given_name")) {
             num_name += 1;
             account.setFirstname(profile.getString("given_name"));
@@ -197,11 +203,6 @@ public class AuthUtil {
                 account.getFirstname() + " " + account.getLastname()
             );
         }
-
-        account.setName(username);
-        account.setEnabled(true);
-        account.setPassword("eipaas1234");
-        account.setCreatets(new Timestamp(System.currentTimeMillis()));
 
         em.getTransaction().begin();
         try {
