@@ -56,8 +56,9 @@ public class APIResource {
 
         EntityManager em = JPAUtil.createEntityManager();
         account.setLogints(new Timestamp(System.currentTimeMillis()));
+        em.getTransaction().begin();
         try {
-            em.getTransaction().begin();
+            em.merge(account);
             em.getTransaction().commit();
             em.detach(account);
         }
