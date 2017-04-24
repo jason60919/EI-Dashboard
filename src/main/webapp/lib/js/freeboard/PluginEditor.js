@@ -24,6 +24,7 @@ PluginEditor = function (jsEditor, valueEditor) {
         //var strURL = currentValues.serverUrl + getlistfn.url;
         var strURL = $("#setting-value-container-serverUrl").find("input").val() + getlistfn.url;
 
+        jQuery.support.cors = true;
         $.ajax({
             url: strURL,
             type: getlistfn.method,

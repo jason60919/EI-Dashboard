@@ -849,7 +849,6 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 var phraseElement = $('<p>' + _ask + ' ？</p>');
                 var db = new DialogBox(phraseElement, _title, _yes, _no, function (okcancel) {
                     if (okcancel === 'ok') {
-
                         logger.debug('start to call delete sheet API');
                         var currentUrl = document.URL.split('dashboard.jsp')[0];
                         currentUrl = "/";

@@ -702,9 +702,19 @@ var freeboard = (function () {
                                     data: body,
                                     contentType: "application/json",
                                     beforeSend: function (xhr) {
-                                        var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.aid + ':' + _oRMM.Login.password);
-                                        xhr.setRequestHeader("Authorization", authorization);
-                                        xhr.setRequestHeader("Accept", "application/json");
+                                        switch (_oRMM.Login.type) {
+                                            case "Azure" :
+                                                var authorization = 'Basic ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                                                xhr.setRequestHeader("Authorization", authorization);
+                                                xhr.setRequestHeader("Accept", "application/json");
+                                                break;
+                                            case "Self" :
+                                            default:
+                                                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                                                xhr.setRequestHeader("Authorization", authorization);
+                                                xhr.setRequestHeader("Accept", "application/json");
+                                                break;
+                                        }
                                     },
                                     success: function (data) {
                                         if (!TokenValidation(data))
