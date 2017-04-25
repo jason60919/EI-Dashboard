@@ -582,6 +582,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 method = "POST";
                 content = '{"version":1,"allow_edit":true,"plugins":[],"panes":[],"datasources":[],"columns":3}';
                 sequence = targetItem.data('sequence');
+                sheetName = targetItem.find('a').attr('title');
                 body = '{"sheet" : "' + sheetName + '","content" : ' + content + ',"sequence" : ' + sequence + '}';
                 sheetName = targetItem.find('a').attr('title');
             }
