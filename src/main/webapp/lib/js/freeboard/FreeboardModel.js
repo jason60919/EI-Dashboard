@@ -283,6 +283,11 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                         xhr.setRequestHeader("Authorization", authorization);
                         xhr.setRequestHeader("Accept", "application/json");
                         break;
+                    case "AzureIII" :
+                        var authorization = 'Bearer ' + _oRMM.Login.sso;
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                        break;
                     case "Self" :
                     default:
                         var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
@@ -363,6 +368,11 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 switch (_oRMM.Login.type) {
                     case "Azure" :
                         var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                        break;
+                    case "AzureIII" :
+                        var authorization = 'Bearer ' + _oRMM.Login.sso;
                         xhr.setRequestHeader("Authorization", authorization);
                         xhr.setRequestHeader("Accept", "application/json");
                         break;
@@ -604,6 +614,11 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                         xhr.setRequestHeader("Authorization", authorization);
                         xhr.setRequestHeader("Accept", "application/json");
                         break;
+                    case "AzureIII" :
+                        var authorization = 'Bearer ' + _oRMM.Login.sso;
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                        break;
                     case "Self" :
                     default:
                         var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
@@ -760,6 +775,11 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                                     xhr.setRequestHeader("Authorization", authorization);
                                                     xhr.setRequestHeader("Accept", "application/json");
                                                     break;
+                                                case "AzureIII" :
+                                                    var authorization = 'Bearer ' + _oRMM.Login.sso;
+                                                    xhr.setRequestHeader("Authorization", authorization);
+                                                    xhr.setRequestHeader("Accept", "application/json");
+                                                    break;
                                                 case "Self" :
                                                 default:
                                                     var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
@@ -868,6 +888,11 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                     switch (_oRMM.Login.type) {
                                         case "Azure" :
                                             var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                                            xhr.setRequestHeader("Authorization", authorization);
+                                            xhr.setRequestHeader("Accept", "application/json");
+                                            break;
+                                        case "AzureIII" :
+                                            var authorization = 'Bearer ' + _oRMM.Login.sso;
                                             xhr.setRequestHeader("Authorization", authorization);
                                             xhr.setRequestHeader("Accept", "application/json");
                                             break;
@@ -1163,6 +1188,32 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
         $.cookie('themeType', 1, {
             path: '/'
         });
+    };
+    this.exitDashboard = function () {
+        switch (_oRMM.Login.type) {
+            case "Azure" :
+                if (m_AzureUser != null)
+                {
+                    if (typeof m_AzureUser.profile != "undefined")
+                    {
+                        m_AzureAuthContext.logOut();
+                    }
+                }
+                break;
+            case "AzureIII" :
+                $.ajax({
+                    url: GLOBAL_CONFIG.hostUrl + '/sso/auth',
+                    method: 'DELETE'
+                }).done(function() {
+                    var redirectUrl = 'https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=' + GLOBAL_CONFIG.hostUrl + '/web/index.html';
+                    window.location.href = redirectUrl;
+                });
+                break;
+            case "Self" :
+            default:
+                window.location.href = "/";
+                break;
+        }
     };
     this.toFixed = function (x) {
         if (Math.abs(x) < 1.0) {
