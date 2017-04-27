@@ -93,7 +93,7 @@ $(function () {
     }
 
     //Azure III
-    if (typeof Cookies.get('WISEAccessToken') !== 'undefined')
+    if (typeof Cookies.get('WISEName') !== 'undefined')
     {
         var _oRMM = _RMMGlobal.Get();
 
