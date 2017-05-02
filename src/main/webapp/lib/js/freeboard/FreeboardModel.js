@@ -1626,10 +1626,10 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             $('.gridster .gs_w').css({cursor: 'default'});
             if (head.browser.ie) {
                 $('#main-header').css('top', '-' + barHeight + 'px');
-                $('#board-content').css('top', '20px');
+                $('#board-content').css('top', '80px');
             } else {
                 $('#main-header').css('transform', 'translateY(-' + barHeight + 'px)');
-                $('#board-content').css('transform', 'translateY(20px)');
+                $('#board-content').css('transform', 'translateY(80px)');
                 _.delay(function () {
 //                    $('#admin-menu').css('display', 'none');
                 }, 200);

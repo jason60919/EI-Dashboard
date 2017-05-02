@@ -1,7 +1,7 @@
 
 
 .theme_white #board_Header_Logo {
-    background: url('/images/logo_product_484848.png');
+    background: url(../../../img/logo_product_484848.png);
 }
 
 .theme_white mark {

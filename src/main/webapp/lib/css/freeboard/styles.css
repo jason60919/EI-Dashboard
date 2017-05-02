@@ -1014,10 +1014,9 @@ header h1 {
     /*    width: 350px;*/
     height: 100%;
     float: left;
-    //position: absolute;
-    //left: 280px;
-    display: table;
-    vertical-align: middle;
+    position: absolute;
+    left: 280px;
+    display: block;
 }
 
 #board-actions {
@@ -1447,7 +1446,6 @@ td.form-table-value > input[type="checkbox"] {
 #board-logo {
     float: left;
     margin-top: 13px;
-    display: none;
 }
 
 #menutitle {
@@ -1762,6 +1760,10 @@ html.boardtools-opening #hamburger:after
 
     .editLink {
         display: none;
+    }
+
+    ##board-logo {
+        display: inline;
     }
 
     #board-tools {
