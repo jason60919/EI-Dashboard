@@ -38,7 +38,7 @@ $(function () {
             _oRMM.Login = {};
             _oRMM.Login.username = m_AzureUser.userName;
             _oRMM.Login.sso = m_AzureUser;
-            _oRMM.Login.type = "AzureIII";
+            _oRMM.Login.type = "Azure";
             _RMMGlobal.Set(_oRMM);
             $('.RMMLoader').show();
             $.ajax({
