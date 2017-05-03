@@ -228,7 +228,7 @@ $(function () {
 
     $('#frmLogin_btnoAzureIIILogin').click(function () {
         debugger;
-        var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=' + GLOBAL_CONFIG.hostUrl + '/web/redirectPage.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
+        var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=' + GLOBAL_CONFIG.hostUrl + '/index.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
         window.location.href = redirectUrl;
     });
 
