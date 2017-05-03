@@ -187,7 +187,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
         location.href = '/';
     };
     this.widgetTempUsage = function () {
-        window.open('Help.html');
+        window.open('FreeboardHelp');
     };
     this.loadDashboard = function (dashboardData, contentsource, callback) {
         logger.info('loadDashboard');

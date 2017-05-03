@@ -1024,7 +1024,7 @@ var freeboard = (function () {
             //Login for check
             if ((typeof _oRMM.Login) == "undefined")
             {
-                window.location.href = "index.html";
+                window.location.href = "FreeboardHelp/index.html";
                 return;
             }
             if (location.protocol == "file:")
