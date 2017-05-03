@@ -1019,9 +1019,14 @@ var freeboard = (function () {
             }
 
             freeboardUI.processResize(true, true);
-
             theFreeboardModel.themeWhite();
+
             //Login for check
+            if ((typeof _oRMM.Login) == "undefined")
+            {
+                window.location.href = "index.html";
+                return;
+            }
             if (location.protocol == "file:")
             {
                 $('.isEditable').hide();
@@ -1076,16 +1081,6 @@ var freeboard = (function () {
                 $('#queryShareAccount label').attr('aid', _RMMGlobal.Get().Login.username).html(_RMMGlobal.Get().Login.username);
             }
             catch (e){}
-
-            /*
-                        theFreeboardModel.addNewSheet();
-
-                        var strData = '{"version":1,"allow_edit":true,"plugins":[],"panes":[{"title":"","width":1,"row":{"5":1},"col":{"4":1,"5":1},"col_width":2,"widgets":[{"type":"text","settings":{"title":"","value":"return \\"Demo_305A3A700000\\";","size":"regular","decimal":2,"comma":false,"metric_prefix":false,"units":"","animate":true,"chart_type":"line","chart_color":"#ff9900","chart_minmax_color":"#0496ff","height":2}},{"type":"picture","settings":{"title":"","blocks":4,"src":"../images/UNO-4000.png"}},{"type":"html","settings":{"title":"","value":"<iframe width=\\"100%\\" height=\\"100%\\" src=\\"https://www.youtube.com/embed/lxPfZLSRCXE?ecver=1&rel=0&autoplay=1\\" frameborder=\\"0\\" allowfullscreen></iframe>","blocks":5}}]},{"title":"","width":1,"row":{"4":13,"5":13,"6":13},"col":{"4":3,"5":3,"6":3},"col_width":2,"widgets":[{"type":"c3js","settings":{"title":"","blocks":5,"value1":"datasources[\\"History\\"]","options":""}}]},{"title":"","width":1,"row":{"4":1,"5":23,"7":23},"col":{"4":3,"5":3,"7":3},"col_width":2,"widgets":[{"type":"gauge","settings":{"title":"","blocks":5,"type":"half","value":"datasources[\\"RealTime\\"][\\"itemList\\"][\\"0\\"][\\"v\\"]","decimal":0,"comma":false,"metric_prefix":false,"animate":true,"units":"","value_fontcolor":"#d3d4d4","gauge_upper_color":"#ff0000","gauge_mid_color":"#f9c802","gauge_lower_color":"#a9d70b","gauge_color":"#edebeb","gauge_width":50,"show_minmax":true,"min_value":0,"max_value":100}}]}],"datasources":[{"name":"RealTime","type":"realtimedata","settings":{"refresh":5,"device":"00000001-0000-0000-0000-305A3A700000","plugin":"SUSIControl","source":"/Hardware Monitor/Temperature/System","did":"1","agentId":"00000001-0000-0000-0000-305A3A700000"}},{"name":"History","type":"getHistData","settings":{"refresh":5,"device":"00000001-0000-0000-0000-305A3A700000","plugin":"SUSIControl","source":"/Hardware Monitor/Temperature/System","did":"1","agentId":"00000001-0000-0000-0000-305A3A700000"}}],"columns":5}';
-                        //for pcf platform
-                        //strData = strData.replace('00000001-0000-0000-0000-305A3A700000', '00000001-0000-0000-0000-654A3A700000');
-                        var jsonObject = JSON.parse(strData);
-                        //theFreeboardModel.loadDashboard(jsonObject);
-                        */
         },
         addContentPack: function () {
             logger.debug('addContentPack: show dialogbox');
