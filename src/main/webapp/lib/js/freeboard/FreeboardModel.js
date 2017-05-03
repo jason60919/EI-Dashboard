@@ -187,12 +187,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
         location.href = '/';
     };
     this.widgetTempUsage = function () {
-
-        if (window.location.origin)
-            window.open(window.location.origin + '/widgetUsage.html');
-        else
-            window.open(window.location.protocol + "//" + window.location.hostname + (window.location.port ? ':' + window.location.port : '') + '/widgetUsage.html');
-
+        window.open('Help.html');
     };
     this.loadDashboard = function (dashboardData, contentsource, callback) {
         logger.info('loadDashboard');

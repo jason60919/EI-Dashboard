@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>EIS-DashBoard : Creating your customized dashboard widget</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link type="text/css" rel="stylesheet" href="lib/bootstrap-3.3.6/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="lib/font-awesome-4.6.1/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/atelier-dune-light.min.css">
+
+        <script type="text/javascript" src="lib/jquery-1.12.3/jquery-1.12.3.min.js"></script>
+        <script type="text/javascript" src="lib/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+        <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#on').bind('click', function (e) {
+                    $('body').addClass('toggle');
+                    e.preventDefault();
+                });
+                $('#off').bind('click', function (e) {
+                    $('body').removeClass('toggle');
+                    e.preventDefault();
+                });
+
+            });
+        </script>
+        <style type="text/css">
+            html,
+            body {
+                position: relative;
+                margin: 0px;
+                padding: 0px;
+                width: 100%;
+                height: 100%;
+                overflow-x: hidden;
+                background-color: #eee;
+                color: #555;
+                font-size: 14px;
+                line-height: 20px;
+                font-family: "Helvetica Neue", Helvetica, "Open Sans", Meiryo, "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
+            }
+
+            .header{
+                position: fixed;
+                z-index: 50;
+                top: 0px;
+                right: 0px;
+                left: 0px;
+                background-color: #313131;
+                height: 72px;
+                color: #fff;
+                padding: 0px 20px;
+            }   
+
+            .header .container {
+                margin-top: 0px;
+                background-color: #313131;
+                padding: 0px;
+            }
+
+            .header h1{
+                font-size: 3em;
+                font-weight: 300;
+                line-height: 72px;
+                font-family: fantasy, Impact;
+                margin: 0px;
+                display: inline-block;
+            }
+
+            .header p{
+                display: inline-block;
+                padding-left: 15px;
+                margin-bottom: 15px;
+            }
+
+            .container {
+                margin-top: 72px;
+                padding: 0 20px;
+                background-color: #fff;
+                min-height: 100%;
+            }
+
+            .nav-side-menu {
+                overflow: auto;
+                font-family: verdana;
+                font-size: 12px;
+                font-weight: 200;
+                background-color: #f8f8f8;
+                height: 100%;
+                color: #e1ffff;
+                margin-top: 15px;
+            }
+            .header .container .toggle-btn {
+                display: none;
+            }
+            .nav-side-menu ul,
+            .nav-side-menu li {
+                background-color: #e3968a;
+                list-style: none;
+                padding: 0px;
+                margin: 0px;
+                line-height: 42px;
+                cursor: pointer;
+            }
+            .nav-side-menu li a:before {
+                font-family: FontAwesome;
+                content: "\f0c9";
+                display: inline-block;
+                padding-left: 10px;
+                padding-right: 10px;
+                vertical-align: middle;
+            }
+            .nav-side-menu ul .active,
+            .nav-side-menu li .sub-menu .active {
+                border-left: 3px solid #e3968a;
+            }
+            .nav-side-menu ul .sub-menu li,
+            .nav-side-menu li .sub-menu li,
+            .nav-side-menu ul .sub-menu li a,
+            .nav-side-menu li .sub-menu li a {
+                padding: 6px 10px 6px 0px;
+                display: block;
+                color: #777;
+                font-weight: normal;
+            }
+            .nav-side-menu ul .sub-menu li.active,
+            .nav-side-menu li .sub-menu li.active,
+            .nav-side-menu ul .sub-menu li.active a,
+            .nav-side-menu li .sub-menu li.active a {
+                color: #333;
+            }
+            .nav-side-menu ul .sub-menu li,
+            .nav-side-menu li .sub-menu li {
+                background-color: #f3f3f3;
+                border: none;
+                line-height: 1em;
+                border-bottom: 1px #e5e5e5 solid;
+                margin-left: 0px;
+            }
+            .nav-side-menu ul .sub-menu li a:before,
+            .nav-side-menu li .sub-menu li a:before {
+                font-family: FontAwesome;
+                content: "\f105";
+                display: inline-block;
+                padding-left: 10px;
+                padding-right: 10px;
+                vertical-align: middle;
+            }
+            .nav-side-menu li,
+            .nav-side-menu li a {
+                text-decoration: none;
+                color: #fff;
+            }
+            .nav-side-menu li a i {
+                padding-left: 10px;
+                width: 20px;
+                padding-right: 20px;
+            }
+            .nav-side-menu .sub-menu li:hover {
+                border-left: 3px solid #e3968a;
+                -webkit-transition: all 0.1s ease;
+                -moz-transition: all 0.1s ease;
+                -o-transition: all 0.1s ease;
+                -ms-transition: all 0.1s ease;
+                transition: all 0.1s ease;
+            }
+            .nav-side-menu .sub-menu li:hover a {
+                color: #333;
+            }
+            @media (max-width: 768px) {
+                .nav-side-menu {
+                    position: relative;
+                    width: 100%;
+                    margin-bottom: 10px;
+                    margin-top: 0px;
+                }
+                .header .container .toggle-btn {
+                    display: block;
+                    cursor: pointer;
+                    position: absolute;
+                    right: 10px;
+                    top: 19px;
+                    z-index: 10 !important;
+                    padding: 3px;
+                    background-color: #ffffff;
+                    color: #000;
+                    width: 40px;
+                    text-align: center;
+                }
+                
+                .header .container p {
+                    display: none;
+                }
+            }
+            @media (min-width: 767px) {
+                .nav-side-menu .menu-list .menu-content {
+                    display: block;
+                }
+            }
+
+            .doc h1, .doc h3 {
+                font-family: "Roboto Slab", Verdana;
+                margin-left: -10px;
+            }    
+
+            .doc h1 {
+                border-bottom: 2px solid #e3968a;
+                padding-bottom: 10px;
+                margin-top: 30px;
+                margin-bottom: -50px;
+            }
+
+            .doc{
+                font-size: 16px;
+                line-height: 1.6em;
+            }
+
+            .doc table {
+                font-size: 14px;
+            }
+
+            .doc table tr th {
+                text-align: center;
+            }
+
+            .doc table tr td:nth-child(1){
+                width:10%;
+            }
+
+            .doc-content {
+                margin-bottom: -50px;
+            }
+
+            .doc-content:last-child {
+                margin-bottom: 50px;
+            }
+
+            .doc-content a {
+                color: #e3968a;
+            }
+
+            .prettyprint {
+                margin-right: 20px;
+            }
+
+            li.L0, li.L1, li.L2, li.L3, li.L5, li.L6, li.L7, li.L8, li.L9
+            { 
+                list-style-type: decimal !important;
+                background-color: #fefbec !important;
+            }
+
+            .highlighter {
+                background-color: #f2dede;
+                font-family: Menlo,Bitstream Vera Sans Mono,DejaVu Sans Mono,Monaco,Consolas,monospace;
+                color: #000;
+            }
+
+            .targetOffset {
+                display: block;
+                height: 72px;
+            }
+
+            .required {
+                color: red;
+                background-color: transparent;
+            }
+
+            .scrollToTop{
+                width:100px; 
+                height:130px;
+                padding:10px; 
+                text-align:center; 
+                background: whiteSmoke;
+                font-weight: bold;
+                color: #444;
+                text-decoration: none;
+                position:fixed;
+                top:75px;
+                right:40px;
+                display:none;
+            }
+            .scrollToTop:hover{
+                text-decoration:none;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="container">
+                <h1>EIS-DashBoard</h1>
+                <p>Creating your customized dashboard widget</p>
+                <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="nav-side-menu">
+                        <div class="menu-list">
+                            <ul id="menu-content" class="menu-content collapse out">
+                                <li>
+                                    <a href="#">Overview</a>
+                                </li>
+                                <li>
+                                    <ul class="sub-menu">
+                                        <li><a href="#Overview">Overview</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">Create Widgets</a>
+                                </li>
+                                <li>
+                                    <ul class="sub-menu">
+                                        <li><a href="#Customized-Widget">Customized Widget</a></li>
+                                        <li><a href="#JavaScript-File">JavaScript File</a></li>
+                                        <li><a href="#Widget-Settings-Properties">Widget Settings Properties</a></li>
+                                        <li><a href="#New-Widget-Instance">New Widget Instance</a></li>
+                                        <li><a href="#Widget-Instance-Properties">Widget Instance Properties</a></li>
+                                        <li><a href="#Include-Widget">Include Widget</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">Multi-Language</a>
+                                </li>
+                                <li>
+                                    <ul class="sub-menu">
+                                        <li><a href="#Multi-Language">Multi-Language</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12">
+                    <div class="doc">
+                        <h1 class="docs-title">Creat Customized Widget</h1>
+                        <h3 id="Overview"><span class='targetOffset'></span>Overview</h3>
+                        <div class="doc-content">
+                            <p>EIS-DashBoard widget is extensible for flexible used.</p>
+                            <p>This guide will help you customize a widget then exactly implement in your own server.</p>
+                            <ul>
+                                <li><a href="#Customized-Widget">Customized Widget</a></li>
+                                <li><a href="#JavaScript-File">JavaScript File</a></li>
+                                <li><a href="#Widget-Settings-Properties">Widget Settings Properties</a></li>
+                                <li><a href="#New-Widget-Instance">New Widget Instance</a></li>
+                                <li><a href="#Widget-Instance-Properties">Widget Instance Properties</a></li>
+                                <li><a href="#Include-Widget">Include Widget</a></li>
+                                <li><a href="#Multi-Language">Multi-Language</a></li>
+                            </ul>
+                        </div>
+                        <h3 id="Customized-Widget"><span class='targetOffset'></span>Customized Widget</h3>
+                        <div class="doc-content">
+                            <p>Widgets get created when a dashboard is initialized, each widget instance is created by settings. They reveive data when value changed.   </p>
+                            <p>A <a href="#JavaScript-File">JavaScript file</a> defines <a href="#Widget-Instance-Properties">what the widget does</a> and <a href="#Widget-Settings-Properties"> what the setting’s properties</a>.</p>
+                            <p>After <a href="#Include-Widget">included into main program</a>, you can see the customized widget which just be created on widget type dropdown list.</p>
+                            <p>All widget function and feature is developed and defined in <code class="highlighter">JavaScript</code>.</p>
+                        </div>
+                        <h3 id="JavaScript-File"><span class='targetOffset'></span>JavaScript File</h3>
+                        <div class="doc-content">
+                            <p>The file is also located in the widget directory of your user directory: under <code class="highlighter">~/js/FreeBoard/plugins/freeboard/wg/</code> folder.</p>
+                            <p>Clone a widget file then customized a new widget.</P>
+                            <p>The following template is a simple widget instance.</p>
+                            <pre class="prettyprint linenums">
+(function () {
+
+    var tempWidgetLog = log4jq.getLogger({
+        loggerName: 'SA.wg.template.js'
+    });
+    tempWidgetLog.info('SA.wg.template.js loaded');
+
+    freeboard.loadWidgetPlugin({
+        type_name: 'templateWidget',
+        display_name: 'Template Widget',
+        fill_size: true,
+        settings: [
+            {
+                name: 'Value',
+                display_name: 'Value',
+                description: 'Value Of Data Source ',
+                type: 'calculated'
+            }
+        ],
+        newInstance: function (settings, newInstanceCallback)
+        {
+            tempWidgetLog.info('freeboard.loadWidgetPlugin: templateWidget newInstance');
+            newInstanceCallback(new templateWidget(settings));
+        }
+    });
+
+ 
+    var templateWidget = function (settings)
+    {
+        tempWidgetLog.info('templateWidget init');
+
+        var self = this;
+        var currentSettings = settings;
+
+        self.render = function (containerElement)
+        {
+            //parent elem of widget
+            var $containerElement = $(containerElement);
+        };
+
+        self.getHeight = function ()
+        {
+            tempWidgetLog.info('getHeight');
+            return 4;
+        };
+
+        self.onSettingsChanged = function (newSettings)
+        {
+            tempWidgetLog.info('onSettingsChanged');
+
+            currentSettings = newSettings;
+        };
+        
+        self.onCalculatedValueChanged = function (settingName, newValue)
+        {
+            tempWidgetLog.info('onCalculatedValueChanged: ' + newValue);
+           
+        };
+
+        self.onDispose = function ()
+        {
+            tempWidgetLog.info('onDispose');
+        };
+
+        self.onSettingsChanged(currentSettings);
+    };
+
+}());</pre>
+                            <p>The widget object is defined by a function. The function calls the <code class="highlighter">freeboard.loadWidgetPlugin</code> function to initialize each widget setting option. After <code class="highlighter">newInstanceCallback(new templateWidget(settings))</code>, the widget object is created.</p>
+                            <p>A widget .js file defines following things:</p>
+                            <ul>
+                                <li>the setting option for each widget</li>
+                                <li>what widget instance do after initialized</li>
+                            </ul>
+                        </div>
+                        <h3 id="Widget-Settings-Properties"><span class='targetOffset'></span>Widget Settings Properties</h3>
+                        <div class="doc-content">
+                            <p>A widget must be defined with <code class="highlighter">freeboard.loadWidgetPlugin</code>.</p>
+                            <p>It's a definition that tells dashboard that we are giving it a widget plugin. It expects an object with the following: </p>
+                            <pre class="prettyprint linenums">
+freeboard.loadWidgetPlugin({
+    // widget option definition
+    type_name   : "my_widget_plugin",
+    display_name: "Widget Plugin Example",
+    description : "Some sort of description with optional html!",
+    external_scripts: [
+	"http://mydomain.com/myscript1.js", 
+        "http://mydomain.com/myscript2.js"
+	],
+    fill_size : false,
+    settings: [
+        {
+            name: "the_text",
+            display_name: "Some Text",
+            description: 'Value Of Data Source ',
+            type: "text",
+            default_value: "John",
+            required: true
+	},
+	{
+            name: "size",
+            display_name: "Size",
+            type: "option",
+            options: [
+                {
+                    name: "Regular",
+                    value: "regular"
+                },
+                {
+                    name: "Big",
+                    value: "big"
+                }
+            ]
+    }],
+    newInstance: function(settings, newInstanceCallback)
+    {
+        newInstanceCallback(new myWidgetPlugin(settings));
+    }
+});</pre>
+                            <ul>
+                                <li><code class="highlighter">type_name</code><code class="required">*</code>: An unique name for this widget. This name should be as unique as possible to avoid collisions with other widget, and should follow naming conventions for javascript variable and function declarations.</li>
+                                <li><code class="highlighter">display_name</code>: The pretty name that will be used for display purposes for this widget. If the name is not defined, type_name will be used instead.</li>
+                                <li><code class="highlighter">description</code>: A description of the widget. This description will be displayed when the widget is selected. The description may contain HTML if needed.</li>
+                                <li><code class="highlighter">external_scripts</code>: Any external scripts that should be loaded before the widget instance is created.</li>
+                                <li><code class="highlighter">fill_size</code>: If this is set to true, the widget will fill be allowed to fill the entire space given it, otherwise it will contain an automatic padding of around 10 pixels around it.</li>
+                                <li><code class="highlighter">settings</code>: An array of settings that will be displayed for this widget when the user adds it.</li>
+                                <li style="list-style-type:none;">
+                                    <ul>
+                                        <li><code class="highlighter">name</code>: The name of the setting. This value will be used in your code to retrieve the value specified by the user. This should follow naming conventions for javascript variable and function declarations.</li>
+                                        <li><code class="highlighter">display_name</code>: The pretty name that will be shown to the user when they adjust this setting.</li>
+                                        <li><code class="highlighter">description</code>: Text that will be displayed below the setting to give the user any extra information.</li>
+                                        <li><code class="highlighter">default_value</code>: A default value for this setting.</li>
+                                        <li><code class="highlighter">required</code>: If set to true, the field will be required to be filled in by the user. Defaults to false if not specified.</li>
+                                        <li><code class="highlighter">type</code><code class="required">*</code>: The type of input expected for this setting. 
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Type</td>
+                                                        <td>Display a single text box input. Examples of other types will follow in this documentation.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>number</td>
+                                                        <td>Display a data of a numerical type which requires the user to enter a numerical value.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>calculated</td>
+                                                        <td>This is a special text input box that may contain javascript formulas and references to datasources in the dashboard. We'll use a calculated setting because we want what's displayed in this widget to be dynamic based on something changing (like a datasource).</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>boolean</td>
+                                                        <td>Display a checkbox indicating a true/false setting.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>option</td>
+                                                        <td>Display a dropdown box with a list of choices.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </li>
+                                        <li><code class="highlighter">options</code>: An array of options to be populated in the dropdown.
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>name<code class="required">*</code></td>
+                                                        <td>The text to be displayed in the dropdown.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>value</td>
+                                                        <td>The value of the option. If not specified, the name parameter will be used.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><code class="highlighter">newInstance</code><code class="required">*</code>: A function that will be called when a new instance of this widget is requested.
+                                    <table class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>settings</td>
+                                                <td>A javascript object with the initial settings set by the user. The names of the properties in the object will correspond to the setting names defined above.</td>
+                                            </tr>
+                                            <tr>
+                                                <td>newInstanceCallback</td>
+                                                <td>A callback function that you'll call when the new instance of the widget is ready. This function expects a single argument, which is the new instance of your widget object.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </li>
+                            </ul>
+                        </div>
+                        <h3 id="New-Widget-Instance"><span class='targetOffset'></span>New Widget Instance</h3>
+                        <div class="doc-content">
+                            <p>Once a widget setting is saved, a new widget instance will be created with the setting.</p>
+                            <pre class="prettyprint linenums">
+freeboard.loadWidgetPlugin({
+    // widget option definition
+    
+    ...
+
+    newInstance: function(settings, newInstanceCallback)
+    {
+        newInstanceCallback(new myWidgetPlugin(settings));
+    }
+});
+
+var myWidgetPlugin = function(settings)
+{
+    // widget instance
+
+    ...
+
+}</pre>
+                        </div>
+                        <h3 id="Widget-Instance-Properties"><span class='targetOffset'></span>Widget Instance Properties</h3>
+                        <div class="doc-content">
+                            <p>The widget instance object is also defined in the widget directory of your user directory, typically <code class="highlighter">~/js/FreeBoard/plugins/freeboard/wg</code>.</p>
+                            <pre class="prettyprint linenums">
+var myWidgetPlugin = function(settings)
+{
+    // To create a variable to hold on to our settings, because they might change in the future. See below.
+    var self = this;
+    var currentSettings = settings;
+
+    var myTextElement = $("&lt;span&gt;&lt;/span&gt;");
+
+    self.render = function(containerElement)
+    {
+        // Here we append our text element to the widget container element.
+        $(containerElement).append(myTextElement);
+    }
+
+    self.getHeight = function()
+    {
+        if(currentSettings.size == "big"){
+                return 2;
+        }else{
+                return 1;
+        }
+    }
+
+    self.onSettingsChanged = function(newSettings)
+    {	
+        currentSettings = newSettings;
+    }
+
+    self.onCalculatedValueChanged = function(settingName, newValue)
+    {
+        // Remember we defined "the_text" up above in our settings.
+	if(settingName == "the_text")
+	{
+            // Here we do the actual update of the value that's displayed in on the screen.
+            $(myTextElement).html(newValue);
+	}
+    }
+
+    self.onDispose = function()
+    {
+    }
+}</pre>     
+                            <ul>
+                                <li><code class="highlighter">self.render</code><code class="required">*</code>: A public function we must implement that will be called when freeboard wants us to render the contents of our widget. The container element is the DIV that will surround the widget.</li>
+                                <li><code class="highlighter">self.getHeight</code><code class="required">*</code>: A public function we must implement that will be called when freeboard wants to know how big we expect to be when we render, and returns a height. This function will be called any time a user updates their settings (including the first time they create the widget). Note here that the height is not in pixels, but in blocks. A block in freeboard is currently defined as a rectangle that is fixed at 300 pixels wide and around 45 pixels multiplied by the value you return here.</li>
+                                <li><code class="highlighter">self.onSettingsChanged</code><code class="required">*</code>: A public function we must implement that will be called when a user makes a change to the settings.</li>
+                                <li><code class="highlighter">self.onCalculatedValueChanged</code><code class="required">*</code>: A public function we must implement that will be called when a calculated value changes. Since calculated values can change at any time (like when a datasource is updated) we handle them in a special callback function here.</li>
+                                <li><code class="highlighter">self.onDispose</code><code class="required">*</code>: A public function we must implement that will be called when this instance of this plugin is no longer needed. Do anything you need to cleanup after yourself here.</li>
+                            </ul>
+                        </div>
+                        <h3 id="Include-Widget"><span class='targetOffset'></span>Include Widget</h3>
+                        <div class="doc-content">
+                            <p>After both customized widget plugin and insiance are finshed, the widget <code class="highlighter">.js</code> file need to be included in your server. </p>
+                            <p>The file is also in the js page module folder of your user directory: <code class="highlighter">~/js/page_module/Freeboard/frmFreeboard.js</code>.</p>
+                            <pre class="prettyprint linenums">(function () {
+    
+    head.js(
+            
+        // jquery/jquery-ui core
+        ...
+
+        function() {
+            head.js(
+                // Common libs
+                ...
+
+                //SA Libs
+                ...
+
+                //SA UI
+                ...
+
+                //freeboard 3-rd module
+                ...
+
+                //validator language
+                ...
+
+                //freeboard core module
+                ...
+
+                //SA extend modules
+                ...
+
+                // *** Load more plugins here ***
+                function () {
+
+                    // The Firefox only load order is different measures
+                    head.js(
+                        //3rd ui
+                                
+                        //widgets of freeboard
+                        //
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/plugin.wg.text.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/plugin.wg.picture.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/plugin.wg.html.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/plugin.wg.pointer.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/plugin.wg.indicator.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/plugin.wg.gauge.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/SA.wg.fans.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/SA.wg.progressbar.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/plugin.wg.ragIndicator.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/SA.wg.OnOff.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/SA.wg.nodeRedTreshold.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/SA.wg.table.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/plugin.wg.c3js.js',
+                        jsLocation + 'js/FreeBoard/plugins/freeboard/wg/SA.wg.multigooglemap.js'
+                        
+                        //Include new widget here!!! 
+
+                    );
+                    
+                    $(function (){
+
+                            //DOM READY
+                            ...
+
+                    });
+                };
+            )
+        }
+    );    
+}());</pre>     
+                            <p>Add below function to include new widgets: <code class="highlighter">jsLocation + &lt;widget file path&gt;</code>. </p>
+                        </div>
+                        <h3 id="Multi-Language"><span class='targetOffset'></span>Multi-Language</h3>
+                        <div class="doc-content">
+                            <p>Widget UI content will be displayed in what defined in widget object. EIS-DashBoard also support multi language based on the server location. </p>
+                            <p>For example, the display_name content will be transplated based on server location and the <code class="highlighter">plugins_wd.pointer.display_name</code> multi-language key value. </p>
+                            <pre class="prettyprint linenums">freeboard.loadWidgetPlugin({
+        type_name: 'pointer',
+        display_name: $.i18n.t('plugins_wd.pointer.display_name'),
+        description: $.i18n.t('plugins_wd.pointer.description'),
+        settings: [
+            ...
+        ],
+        newInstance: function (settings, newInstanceCallback) {
+            newInstanceCallback(new pointerWidget(settings));
+        }
+});</pre>
+                            <p>The multi-language transplation table is maintained in <code class="highlighter">json</code> format.</p>
+                            <p>All multi-language translate table are listed under <code class="highlighter">~/js/FreeBoard/locales/</code> folder of your user directory.</p>
+                            <pre class="prettyprint linenums">{   
+    "plugins_wd": {
+        "text": {
+            "display_name": "Text",
+            "description": "This is a widget that can display text and sparkline chart.",
+            "size": "TextSize",
+            "size_options": {
+                "regular": "Regular",
+                "big": "Big"
+            },
+            "chart": "Include Sparkline",
+            "chart_color": "Chart Color",
+            "chart_minmax_color": "Color Range (max/min)"
+        },
+        "pointer": {
+            "display_name": "Pointer",
+            "description": "This is a widget that can display the direction and value.",
+            "direction": "Direction",
+            "direction_desc": "A maximum of 2000 characters&lt;br /&gt;Enter the angle.",
+            "value_text": "Value",
+            "circle_color": "Circle color",
+            "pointer_color": "Pointer color"
+        },
+        "picture": {
+            "display_name": "Picture",
+            "description": "This is a widget that can display the image. It is used to be used to display an image, such as a Web camera.",
+            "src": "Image URL",
+            "refresh_desc": "Leave blank if the image doesn't need to be refreshed."
+        },
+        "indicator": {
+            "display_name": "Indicator Light",
+            "description": "This widget is lit under the conditions of the specified value. 1 is turned on, should the value is set to 0 to OFF.",
+            "on_text": "On Text",
+            "off_text": "Off Text"
+        },
+        "gmap": {
+            "display_name": "Google Map",
+            "description": "This is a widget that can display a GoogleMap. When the value is set to latitude longitude map of its surroundings will be displayed.",
+            "lat": "Latitude",
+            "lon": "Longitude",
+            "drawpath": "Draw path"
+        },
+        "gauge": {
+            "display_name": "Gauge",
+            "description": "This is a widget that can display a gauge.",
+            "type_options": {
+                "half": "Half",
+                "quarter-left-top": "Quarter Left Top",
+                "quarter-right-top": "Quarter Right Top",
+                "quarter-left-bottom": "Quarter Left Bottom",
+                "quarter-right-bottom": "Quarter Right Bottom",
+                "threequarter-left-top": "ThreeQuarter Left Top",
+                "threequarter-right-top": "ThreeQuarter Right Top",
+                "threequarter-left-bottom": "ThreeQuarter Left Bottom",
+                "threequarter-right-bottom": "ThreeQuarter Right Bottom",
+                "threequarter-bottom": "ThreeQuarter Bottom"
+            },
+            "value_fontcolor": "Value FontColor",
+            "gauge_upper_color": "Upper GaugeColor",
+            "gauge_mid_color": "Mid GaugeColor",
+            "gauge_lower_color": "Lower GaugeColor",
+            "gauge_color": "Gauge BackgroundColor",
+            "gauge_width": "Gauge Width",
+            "show_minmax": "Show MinMax Value"
+        },
+        "c3js": {
+            "display_name": "Chart",
+            "description": "This is a widget that can display a variety of formats chart. For more information &lt;a href=\"http://c3js.org/\" target=\"_blank\"&gt;http://c3js.org/&lt;/a&gt;",
+            "options": "Chart Options",
+            "options_desc": "A maximum of 5000 characters. JSON format string.",
+            "options_invalid": "Invalid chart options."
+        },
+        "html": {
+            "display_name": "HTML",
+            "description": "This is a widget that can display the HTML.",
+            "contents": "HTML Contents",
+            "contents_desc": "A maximum of 5000 characters.&lt;br /&gt;Can be literal HTML, or JavaScript that outputs HTML."
+        },
+        "sparkline": {
+            "display_name": "Sparkline"
+        },
+        "jqplot_line_monitor": {
+            "display_name": "Real-Time Line Monitor",
+            "description": "This is a widget that can display real-time line chart with jqPlot library."
+        },
+        "jqplot": {
+            "display_name": "jqPlot Chart",
+            "description": "This is a widget that can display a variety of formats chart"
+        },
+        "fans":{
+            "display_name":"FAN",
+            "description":"This is a widget that can display fan of image.",
+            "on_off":"ON/OFF",
+            "on_off_desc":"ON=1, OFF=0"
+        },
+        "multi_gmap":{
+            "display_name":"Google Map",
+            "description":"This is a widget that can display google map with multiple markers.",
+            "locations":"Locations",
+            "locations_description":"data format: [[\"Advantech\",25.0589972,121.3835085]]",
+            "zoom_level":"Zoom Level",
+            "zoom_level_description":"zoom level: 1~20",
+            "auto_center":"Auto center",
+            "auto_center_description":"map auto center by locations"
+        },
+        "progressbar":{
+            "display_name":"Progressbar",
+            "description":"This widget that can display horizontal progressboar."
+        },
+        "table":{
+            "display_name":"Table",
+            "description":"This is a widget that can display table of HTML.",
+            "show_header":"Show header",
+            "replace_value":"Replace blank values"
+        },
+        "RAG":{
+            "display_name":"RAG Indicator",
+            "description":"This is a widget that can display different lights (red, amber, green) according to the state.",
+            "value":"VALUE (R=2,A=1,G=0)",
+            "green_text":"GREEN TEXT",
+            "amber_text":"AMBER TEXT",
+            "red_text":"RED TEXT",
+            "displayAll":"DISPLAY ALL",
+            "type":"STYLE (NORMAL, DIM, FLASH)"
+        },
+        "OnOff":{
+            "On":"On",
+            "Off":"Off",
+            "display_name":"On / Off",
+            "description":"This widget that can switch On / Off.",
+            "unableToSet":"Unable to set."
+        },
+        "nodeRedThreshold":{
+            "display_name":"NodeRed Threshold",
+            "description":"This widget that can set a threshold to NodeRed.",
+            "nodeURL":"NodeRed URL",
+			"sheetName":"Sheet Name",
+			"nodeName":"Node Name",
+            "sensor":"Sensor",
+            "interval":"Refresh interval"
+        }
+    },
+}</pre>  
+                            <p>In this case, <code class="highlighter">plugins_wd.pointer.display_name</code> will be displayed in different content.</p>
+                            <pre class="prettyprint linenums">//[en-us] ~/js/FreeBoard/locales/en-us.json
+"plugins_wd": {
+    "pointer": {
+    ...
+        "display_name": "Pointer",
+    ...
+    },
+}      
+
+//[ja-jp] ~/js/FreeBoard/locales/ja-jp.json
+"plugins_wd": {
+    "pointer": {
+    ...
+        "display_name": "ポインタ",
+    ...
+    },
+}      
+
+//[zh-cn] ~/js/FreeBoard/locales/zh-cn.json
+"plugins_wd": {
+    "pointer": {
+    ...
+        "display_name": "指針",
+    ...
+    },
+}      
+
+//[zh-tw] ~/js/FreeBoard/locales/zh-tw.json
+"plugins_wd": {
+    "pointer": {
+    ...
+        "display_name": "指針",
+    ...
+    },
+} </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

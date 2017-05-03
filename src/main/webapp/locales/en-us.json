@@ -121,7 +121,7 @@
     },
     "JSEditor": {
         "javascript": {
-            "exampleText": "// Example: Convert from Celsius to Fahrenheit, Truncation point two digits below",
+            "exampleText": "// Example: Convert from Celsius to Fahrenheit, Truncation point two digits below<br>var i = 0;<br>var j = 1;",
             "codeWindowHeader": "This JavaScript will be re-evaluated each time reference data source is updated. And <span class='cm-keyword'> return value </span> will be displayed in the widget. You function <code> <span class='cm-keyword'> function </span> (<span class='cm-def'> datasources </span>) </code> can be used to describe the contents in JavaScript of argument datasources is an array of the added data source. <br />The argument <span class = \"cm-def \"> _ global </span> It is possible to store a variable of the script out of scope to. (Note: You can not be shared between different script.) <br />The following library functions you can use. jQuery 2.1.3, lodash 3.4.0, moment 2.9.0, moment-timezone 0.3.0."
         },
         "json": {
