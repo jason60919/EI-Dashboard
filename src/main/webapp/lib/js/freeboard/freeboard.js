@@ -1027,6 +1027,14 @@ var freeboard = (function () {
                 window.location.href = "FreeboardHelp/index.html";
                 return;
             }
+            if (_oRMM.Login.username == "demo")
+            {
+                setTimeout(function () {
+                    $('.isEditable').hide();
+                    $('.editLink').hide();
+                    $('#board-configs').hide();
+                }, 1000)
+            }
             if (location.protocol == "file:")
             {
                 $('.isEditable').hide();

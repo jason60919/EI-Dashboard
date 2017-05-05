@@ -1,0 +1,14 @@
+{
+  "name": "RMM Restful API",
+  "version": "1.0.0",
+  "description": "xun's test project",
+  "title": "mysails",
+  "sampleUrl": "http://localhost:8080/webresources",
+  "apidoc": "0.2.0",
+  "generator": {
+    "name": "apidoc",
+    "time": "2017-04-07T03:35:49.174Z",
+    "url": "http://apidocjs.com",
+    "version": "0.15.1"
+  }
+}

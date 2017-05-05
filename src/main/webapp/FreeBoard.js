@@ -44,4 +44,23 @@ var _oRMM = _RMMGlobal.Get();
     } else {
         dashboardLog.error('CANNOT find freeboard instance');
     }
+
+    $('body').keydown(function (evt) {
+        // ctrl + F12
+        if (evt.ctrlKey && (evt.keyCode == 123))
+        {
+            if ($('#board-configs').is(':visible'))
+            {
+                $('.isEditable').hide();
+                $('.editLink').hide();
+                $('#board-configs').hide();
+            }
+            else
+            {
+                $('.isEditable').show();
+                $('.editLink').show();
+                $('#board-configs').show();
+            }
+        }
+    });
 }());

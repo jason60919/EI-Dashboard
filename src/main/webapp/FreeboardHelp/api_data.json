@@ -1,0 +1,456 @@
+[
+  {
+    "type": "GET",
+    "url": "/v1/data/<primary-key>/latestdata?<Parameter>",
+    "title": "Get Latest Data",
+    "name": "GET_API_1",
+    "group": "data",
+    "version": "1.0.0",
+    "description": "<p>Retrieve lastest data by device Id.</p>",
+    "parameter": {
+      "fields": {
+        "URL Parameter": [
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "Primary-key",
+            "description": "<p>device Id</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "agentId",
+            "description": "<p>Agent Id</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "plugin",
+            "description": "<p>Plugin Name</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "sensorId",
+            "description": "<p>Sensor Id</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "URL-Parameter Pattern:",
+          "content": "agentId=<agentId>&plugin=<plugin>&sensorId=<sensorId>",
+          "type": "xml"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "ResponseExample (json)",
+          "content": "{\n  \"connected\":false,\n  \"itemList\":[\n     {\n        \"sv\":\"1.0.14207\",\n        \"sensorId\":\"/SUSIIoT Information/version\",\n        \"ts\":\"Tue Mar 07 18:15:55 CST 2017\"\n     },\n     {\n        \"v\":250,\n        \"sensorId\":\"/Backlight/Backlight 1/Brightness\",\n        \"ts\":\"Tue Mar 07 18:15:55 CST 2017\"\n     },\n     {\n        \"sv\":\"ARK-DS520\",\n        \"sensorId\":\"/Platform Information/Board name\",\n        \"ts\":\"Tue Mar 07 18:15:55 CST 2017\"\n     },\n     {\n        \"v\":136957,\n        \"sensorId\":\"/DiskInfo/Disk C Total Disk Space\",\n        \"ts\":\"Tue Mar 07 18:15:55 CST 2017\"\n     }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "D:/Zach_Chih/Wise-PaaS_2_0_NEW/trunk/Server/Common Service/WebApp/src/java/com/rest/data/DataAPIDoc.java",
+    "groupTitle": "data"
+  },
+  {
+    "type": "GET",
+    "url": "/v1/data/<primary-key>/histdata?<Parameter>",
+    "title": "Get Hist Data",
+    "name": "GET_API_2",
+    "group": "data",
+    "version": "1.0.0",
+    "description": "<p>Retrieve historic data by device Id. The maximum number of values is 10000.</p>",
+    "parameter": {
+      "fields": {
+        "URL Parameter": [
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "Primary-key",
+            "description": "<p>device Id</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "agentId",
+            "description": "<p>Agent Id</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "plugin",
+            "description": "<p>Plugin Name</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "sensorId",
+            "description": "<p>Sensor Id</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "beginTs",
+            "description": "<p>Begin Timestamp</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "endTs",
+            "description": "<p>End Timestamp</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "amount",
+            "description": "<p>Amount</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "order",
+            "description": "<p>Sensor Id</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "URL-Parameter Pattern:",
+          "content": "agentId=<agentId>&plugin=<plugin>&sensorId=<sensorId>&beginTs=<beginTs>&endTs=<endTs>&amount=<amount>&order=<order>",
+          "type": "xml"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "ResponseExample (json)",
+          "content": "{\n  \"connected\":false,\n  \"total\":4,\n  \"itemList\":[\n     {\n        \"sv\":\"1.0.14207\",\n        \"sensorId\":\"/SUSIIoT Information/version\",\n        \"ts\":\"2017-03-07 10:15:55:055\"\n     },\n     {\n        \"v\":250,\n        \"sensorId\":\"/Backlight/Backlight 1/Brightness\",\n        \"ts\":\"2017-03-07 10:15:55:055\"\n     },\n     {\n        \"v\":250,\n        \"sensorId\":\"/Backlight/Backlight 1/Brightness\",\n        \"ts\":\"2017-03-07 10:15:45:045\"\n     },\n     {\n        \"sv\":\"1.0.14207\",\n        \"sensorId\":\"/SUSIIoT Information/version\",\n        \"ts\":\"2017-03-07 10:15:45:045\"\n     }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "D:/Zach_Chih/Wise-PaaS_2_0_NEW/trunk/Server/Common Service/WebApp/src/java/com/rest/data/DataAPIDoc.java",
+    "groupTitle": "data"
+  },
+  {
+    "type": "GET",
+    "url": "/v1/data/<primary-key>/statisticdata?<Parameter>",
+    "title": "Get Statistic Data",
+    "name": "GET_API_3",
+    "group": "data",
+    "version": "1.0.0",
+    "description": "<p>Retrieve statistic data by device Id from a range of date (Less than 31 days.)</p>",
+    "parameter": {
+      "fields": {
+        "URL Parameter": [
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "Primary-key",
+            "description": "<p>device Id</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "agentId",
+            "description": "<p>Agent Id</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "plugin",
+            "description": "<p>Plugin Name</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "sensorId",
+            "description": "<p>Sensor Id</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "beginTs",
+            "description": "<p>Begin Timestamp</p>"
+          },
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "endTs",
+            "description": "<p>End Timestamp</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "URL-Parameter Pattern:",
+          "content": "agentId=<agentId>&plugin=<plugin>&sensorId=<sensorId>&beginTs=<beginTs>&endTs=<endTs>",
+          "type": "xml"
+        }
+      ]
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "ResponseExample (json)",
+          "content": "{\n  \"unit\":\"Day\",\n  \"itemList\":[\n     {\n        \"val\":\"250\",\n        \"unit\":\"2017-03-06\",\n        \"count\":\"10\"\n     },\n     {\n        \"val\":\"250\",\n        \"unit\":\"2017-03-07\",\n        \"count\":\"9\"\n     }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "D:/Zach_Chih/Wise-PaaS_2_0_NEW/trunk/Server/Common Service/WebApp/src/java/com/rest/data/DataAPIDoc.java",
+    "groupTitle": "data"
+  },
+  {
+    "type": "delete",
+    "url": "/v1/devices/<Primary-key>",
+    "title": "Delete Device",
+    "name": "DELETE_API_1",
+    "group": "devices",
+    "version": "1.0.0",
+    "description": "<p>Delete specific device by device Id.</p>",
+    "parameter": {
+      "fields": {
+        "URL Parameter": [
+          {
+            "group": "URL Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "Primary-key",
+            "description": "<p>Device Id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Response Example(json)",
+          "content": "{\n  \"result\":true\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "D:/Zach_Chih/Wise-PaaS_2_0_NEW/trunk/Server/Common Service/WebApp/src/java/com/rest/device/DeviceAPIDoc.java",
+    "groupTitle": "devices"
+  },
+  {
+    "type": "GET",
+    "url": "/v1/devices",
+    "title": "Get Devices",
+    "name": "GET_API_1",
+    "group": "devices",
+    "version": "1.0.0",
+    "description": "<p>Retrieve all device information.</p>",
+    "success": {
+      "examples": [
+        {
+          "title": "ResponseExample(json)",
+          "content": "{\n  \"devices\":[\n     {\n        \"connected\":false,\n        \"agentId\":\"00000005-0000-0000-000a-rkksa0451099\",\n        \"name\":\"WISE-152cc0\",\n        \"coordinates\":\"25.037531,121.5639969\",\n        \"createTS\":\"2017-04-05 15:42:48.745\",\n        \"did\":2,\n        \"parentId\":\"\",\n        \"loginTS\":\"2017-04-05 15:42:48.745\"\n     },\n     {\n        \"connected\":false,\n        \"agentId\":\"00000001-0000-0000-0000-000babbb7ef5\",\n        \"name\":\"ARK-DS52cc0\",\n        \"coordinates\":\"25.037531,121.5639969\",\n        \"createTS\":\"2017-04-05 15:42:48.744\",\n        \"did\":1,\n        \"parentId\":\"00000001-0000-0000-0000-000babbb7ef4\",\n        \"loginTS\":\"2017-04-05 15:42:48.744\"\n     }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "D:/Zach_Chih/Wise-PaaS_2_0_NEW/trunk/Server/Common Service/WebApp/src/java/com/rest/device/DeviceAPIDoc.java",
+    "groupTitle": "devices"
+  },
+  {
+    "type": "GET",
+    "url": "/v1/devices/<primary-key>",
+    "title": "Get Device",
+    "name": "GET_API_2",
+    "group": "devices",
+    "version": "1.0.0",
+    "description": "<p>Retrieve specific device information by device Id.</p>",
+    "parameter": {
+      "fields": {
+        "URL Parameter": [
+          {
+            "group": "URL Parameter",
+            "type": "long",
+            "optional": false,
+            "field": "Primary-key",
+            "description": "<p>Device Id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "ResponseExample(json)",
+          "content": "{\n  \"devices\":[\n     {\n        \"connected\":true,\n        \"agentId\":\"00000001-0000-0000-0000-000babbb7ef3\",\n        \"name\":\"ARK-DS520\",\n        \"coordinates\":\"25.037531,121.5639969\",\n        \"parentId\":\"00000001-0000-0000-0000-000babbb7ef4\",\n        \"createTS\":\"2017-02-07 11:22:33.526\",\n        \"did\":1,\n        \"loginTS\":\"2017-02-07 11:22:33.526\"\n     }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "D:/Zach_Chih/Wise-PaaS_2_0_NEW/trunk/Server/Common Service/WebApp/src/java/com/rest/device/DeviceAPIDoc.java",
+    "groupTitle": "devices"
+  },
+  {
+    "type": "Post",
+    "url": "/v1/devices",
+    "title": "Add Devices",
+    "name": "POST_API_1",
+    "group": "devices",
+    "version": "1.0.0",
+    "description": "<p>Add device information.</p>",
+    "parameter": {
+      "fields": {
+        "Body Content": [
+          {
+            "group": "Body Content",
+            "type": "string",
+            "optional": false,
+            "field": "agentId",
+            "description": "<p>Device agent Id</p>"
+          },
+          {
+            "group": "Body Content",
+            "type": "string",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Device name</p>"
+          },
+          {
+            "group": "Body Content",
+            "type": "boolean",
+            "optional": true,
+            "field": "connected",
+            "description": "<p>Device connected status</p>"
+          },
+          {
+            "group": "Body Content",
+            "type": "string",
+            "optional": true,
+            "field": "coordinates",
+            "description": "<p>Device location (latitude and longitude)</p>"
+          },
+          {
+            "group": "Body Content",
+            "type": "string",
+            "optional": true,
+            "field": "parentId",
+            "description": "<p>Device parent Id</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Request Example(json)",
+        "content": "{\n  \"device\":[\n     {\n        \"agentId\":\"00000001-0000-0000-0000-000babbb7ef3\",\n        \"name\":\"ARK-DS520\",\n        \"connected\":true,\n        \"coordinates\":\"25.037531,121.5639969\",\n        \"parentId\":\"00000001-0000-0000-0000-000babbb7ef4\"\n     },\n     {\n        \"agentId\":\"00000005-0000-0000-000a-rkksa0451097\",\n        \"name\":\"WISE-1520\",\n        \"connected\":false,\n        \"coordinates\":\"25.037531,121.5639969\",\n     }\n  ]\n}",
+        "type": "json"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Response Example(json)",
+          "content": "{\n  \"result\":true\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "D:/Zach_Chih/Wise-PaaS_2_0_NEW/trunk/Server/Common Service/WebApp/src/java/com/rest/device/DeviceAPIDoc.java",
+    "groupTitle": "devices"
+  },
+  {
+    "type": "put",
+    "url": "/v1/devices",
+    "title": "Edit Devices",
+    "name": "PUT_API_1",
+    "group": "devices",
+    "version": "1.0.0",
+    "description": "<p>Edit specific device information by device Id.</p>",
+    "parameter": {
+      "fields": {
+        "Body Content": [
+          {
+            "group": "Body Content",
+            "type": "long",
+            "optional": false,
+            "field": "did",
+            "description": "<p>Device Id</p>"
+          },
+          {
+            "group": "Body Content",
+            "type": "string",
+            "optional": true,
+            "field": "agentId",
+            "description": "<p>Device agent Id</p>"
+          },
+          {
+            "group": "Body Content",
+            "type": "string",
+            "optional": true,
+            "field": "name",
+            "description": "<p>Device name</p>"
+          },
+          {
+            "group": "Body Content",
+            "type": "boolean",
+            "optional": true,
+            "field": "connected",
+            "description": "<p>Device connected status</p>"
+          },
+          {
+            "group": "Body Content",
+            "type": "string",
+            "optional": true,
+            "field": "coordinates",
+            "description": "<p>Device location (latitude and longitude)</p>"
+          },
+          {
+            "group": "Body Content",
+            "type": "string",
+            "optional": true,
+            "field": "parentId",
+            "description": "<p>Device parent Id</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Request Example(json)",
+        "content": "{\n  \"device\":[\n     {\n        \"did\":1,\n        \"agentId\":\"00000001-0000-0000-0000-000babbb7ef3\",\n        \"name\":\"ARK-DS520\",\n        \"connected\":true,\n        \"coordinates\":\"25.037531,121.5639969\",\n        \"parentId\":\"00000001-0000-0000-0000-000babbb7ef4\"\n     },\n     {\n        \"did\":2,\n        \"agentId\":\"00000005-0000-0000-000a-rkksa0451097\",\n        \"name\":\"WISE-1520\",\n        \"connected\":false,\n        \"coordinates\":\"25.037531,121.5639969\"\n     }\n  ]\n}",
+        "type": "json"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Response Example(json)",
+          "content": "{\n  \"result\":true\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "D:/Zach_Chih/Wise-PaaS_2_0_NEW/trunk/Server/Common Service/WebApp/src/java/com/rest/device/DeviceAPIDoc.java",
+    "groupTitle": "devices"
+  }
+]
