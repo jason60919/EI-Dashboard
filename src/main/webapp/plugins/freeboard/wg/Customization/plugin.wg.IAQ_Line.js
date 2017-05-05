@@ -25,9 +25,6 @@
         display_name: 'IAQ 曲線圖',
         description:'IAQ 曲線圖...',
         fill_size: true,
-		external_scripts: [
-            'plugins/thirdparty/c3.min.js',
-        ],
         settings: [
             {
                 name: 'value',

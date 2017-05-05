@@ -727,7 +727,6 @@
                 error: function (xhr, exception) {
                 },
                 success: function (xhr) {
-                    debugger;
                     updateCallback(xhr);
                 }
             };

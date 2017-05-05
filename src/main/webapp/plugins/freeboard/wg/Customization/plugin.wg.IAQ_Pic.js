@@ -25,9 +25,6 @@
         display_name: 'IAQ 圖片',
         description:'IAQ PIC...',
         fill_size: true,
-		external_scripts: [
-            'plugins/thirdparty/c3.min.js',
-        ],
         settings: [
 			{
 				name : 'myWgHeight',

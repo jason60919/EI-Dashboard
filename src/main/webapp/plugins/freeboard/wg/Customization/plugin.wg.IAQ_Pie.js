@@ -26,11 +26,6 @@
         display_name: 'IAQ 圓餅圖',
         description:'IAQ 圓餅圖 : (1) 取得資料來源的getCountSensorVal (例如: datasources["Co2"] ) (2)並設定門檻值畫出圓餅圖',
         fill_size: true,
-		external_scripts: [
-            'js/FreeBoard/plugins/thirdparty/c3.min.js',
-			//'js/FreeBoard/plugins/thirdparty/c3.min.411.js',
-			// 'js/FreeBoard/plugins/freeboard/wg/Customization/c3.min.411.js',
-        ],
         settings: [
             {
                 name: 'value',

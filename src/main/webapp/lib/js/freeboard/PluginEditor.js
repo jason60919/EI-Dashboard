@@ -455,6 +455,8 @@ PluginEditor = function (jsEditor, valueEditor) {
                                 var oListFun = nextData.getlistfn;
                                 oListFun.url = oListFun.url.replace("{did}", m_Did);
                                 _getlistfn(nextData.name, oListFun, nextData.accept, appendpath, strParameter, currentSettingsValues);
+                                if (typeof currentSettingsValues.source != "undefined")
+                                    $('#dialog-ok').show();
                             } else if (settingDef.name == "source") {
                                 appendpath.parents().eq(2).show();
                                 $('#dialog-ok').show();
