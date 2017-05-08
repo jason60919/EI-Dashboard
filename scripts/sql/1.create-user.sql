@@ -1,0 +1,8 @@
+CREATE USER dashboard
+  WITH LOGIN
+       ENCRYPTED PASSWORD 'dashboard'
+       NOSUPERUSER
+       INHERIT
+       NOCREATEDB
+       NOCREATEROLE
+       NOREPLICATION;
