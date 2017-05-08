@@ -12,6 +12,15 @@ var g_agentID = "";
 var g_arySheet = [];
 var _oRMM = _RMMGlobal.Get();
 
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}
+
 (function () {
     window.config = {
         instance: 'https://login.microsoftonline.com/',

@@ -215,9 +215,9 @@
      * Default options
      */
     $.fn[pluginName].defaults = {
-         icon: 'images/fans.png',
-         on: 'images/fans_on.gif',
-         off: 'images/fans.png'
+         icon: 'img/fans.png',
+         on: 'img/fans_on.gif',
+         off: 'img/fans.png'
          
     };
 

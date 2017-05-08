@@ -437,7 +437,7 @@ PluginEditor = function (jsEditor, valueEditor) {
                                 dPre = new Date(dPre.setDate(dPre.getDate() - 365));
                                 var strbeginTs = dPre.getUTCFullYear() + "-" + (dPre.getUTCMonth() + 1) + "-" + dPre.getUTCDate() + " " + dPre.getUTCHours() + ":" + dPre.getUTCMinutes() + ":" + dPre.getUTCSeconds() + ":000";
                                 var strParameter = "agentId=" + m_AgentID + "&beginTs=" + strbeginTs + "&endTs=" + strendTs + "&amount=60&order=desc";
-                                var oListFun = nextData.getlistfn;
+                                var oListFun = clone(nextData.getlistfn);
                                 oListFun.url = oListFun.url.replace("{did}", m_Did);
                                 _getlistfn(nextData.name, oListFun, nextData.accept, appendpath, strParameter, currentSettingsValues);
                             } else if (settingDef.name == "plugin") {
@@ -452,7 +452,7 @@ PluginEditor = function (jsEditor, valueEditor) {
                                 dPre = new Date(dPre.setDate(dPre.getDate() - 365));
                                 var strbeginTs = dPre.getUTCFullYear() + "-" + (dPre.getUTCMonth() + 1) + "-" + dPre.getUTCDate() + " " + dPre.getUTCHours() + ":" + dPre.getUTCMinutes() + ":" + dPre.getUTCSeconds() + ":000";
                                 var strParameter = "agentId=" + m_AgentID + "&plugin=" + m_plugin + "&beginTs=" + strbeginTs + "&endTs=" + strendTs + "&amount=60&order=desc";
-                                var oListFun = nextData.getlistfn;
+                                var oListFun = clone(nextData.getlistfn);
                                 oListFun.url = oListFun.url.replace("{did}", m_Did);
                                 _getlistfn(nextData.name, oListFun, nextData.accept, appendpath, strParameter, currentSettingsValues);
                                 if (typeof currentSettingsValues.source != "undefined")

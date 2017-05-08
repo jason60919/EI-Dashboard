@@ -1,0 +1,99 @@
+
+/* 
+    Widget componemt css
+    Created on : 2015/8/19, 上午 09:31:50
+    Author     : Ken.Tsai
+*/
+
+.widget-demo{
+    text-align: center;
+}
+/*Widget FANS START*/
+.widget-fans {
+    text-align: center;
+}
+.widget-fans img{
+    margin: auto 0;
+    padding-top:  10px;
+    width: 200px;
+    height: 200px;
+    /*display: none;*/
+}
+/*Widget FANS END*/
+
+/*Widget BULB START*/
+.widget-bulb {
+    text-align: center;
+}
+.widget-bulb-bg{
+    margin: auto 0;
+    padding: 5px;
+}
+.widget-bulb-on{
+    background:  #FBFB07;
+}
+.widget-bulb img{
+    margin: auto 0;
+}
+/*Widget BULB END*/
+
+/*Widget Active Value Start*/
+.widget-activevalue{
+    position: relative;
+}
+
+.widget-activevalue-number{
+    padding-top: 30px;
+    text-align:center;
+    vertical-align:middle; 
+}
+
+.widget-activevalue-number span{
+    position: relative;
+    font-size: 100px;
+}
+
+.widget-activevalue-unit{
+    padding-top: 10px;
+    text-align: center;
+    font-size: 20px;
+}
+.widget-activevalue-unit-text{
+    margin-right: 5px;
+    padding-right: 5px;
+    border-right: 1px solid #000;
+}
+
+/*Widget Active Value END*/
+
+/*Widget G Sensor END*/
+.widget-gsensor{
+
+}
+.widget-gsensor ul{
+    padding-top: 20px;
+    text-align: center;
+}
+.widget-gsensor li {
+    line-height: 50px;
+}
+.widget-gsensor li span.widget-gsensor-val{
+    font-size:  100px;
+}
+/*Widget G Sensor END*/
+
+/*Widget HtmlImage START*/
+.widget-htmlimage {
+    text-align: center;
+}
+.widget-htmlimage-bg{
+    margin: auto 0;
+    padding: 5px;
+}
+.widget-htmlimage-on{
+
+}
+.widget-htmlimage img{
+    margin: auto 0;
+}
+/*Widget HtmlImage END*/
