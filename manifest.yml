@@ -3,4 +3,3 @@ applications:
   path: build/libs/ei-dashboard.war
   services:
     - PSQL-Dashboard
-  

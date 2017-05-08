@@ -16,6 +16,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.persistence.EntityManager;
@@ -45,10 +46,11 @@ public class APIResource {
     @GET
     @Path("/account/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@HeaderParam("Authorization") String authorization) {
+    public Response login(@HeaderParam("Authorization") String authorization,
+                          @CookieParam("WISEAccessToken") String jwt) {
         AccountEntity account;
         try {
-            account = authUtil.decodeAccount(authorization);
+            account = authUtil.decodeAccount(authorization, jwt);
         }
         catch (APIException e) {
             return e.getErrorResponse();
@@ -76,10 +78,11 @@ public class APIResource {
     @GET
     @Path("/sheet")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSheets(@HeaderParam("Authorization") String authorization) {
+    public Response getSheets(@HeaderParam("Authorization") String authorization,
+                              @CookieParam("WISEAccessToken") String jwt) {
         AccountEntity account;
         try {
-            account = authUtil.decodeAccount(authorization);
+            account = authUtil.decodeAccount(authorization, jwt);
         }
         catch (APIException e) {
             return e.getErrorResponse();
@@ -117,10 +120,12 @@ public class APIResource {
     @Path("/sheet")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createSheet(@HeaderParam("Authorization") String authorization, String sheetData) {
+    public Response createSheet(@HeaderParam("Authorization") String authorization,
+                                @CookieParam("WISEAccessToken") String jwt,
+                                String sheetData) {
         AccountEntity account;
         try {
-            account = authUtil.decodeAccount(authorization);
+            account = authUtil.decodeAccount(authorization, jwt);
         }
         catch (APIException e) {
             return e.getErrorResponse();
@@ -195,10 +200,13 @@ public class APIResource {
     @Path("/sheet/{did}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSheet(@HeaderParam("Authorization") String authorization, @PathParam("did") long did, String sheetData) {
+    public Response updateSheet(@HeaderParam("Authorization") String authorization,
+                                @CookieParam("WISEAccessToken") String jwt,
+                                @PathParam("did") long did,
+                                String sheetData) {
         AccountEntity account;
         try {
-            account = authUtil.decodeAccount(authorization);
+            account = authUtil.decodeAccount(authorization, jwt);
         }
         catch (APIException e) {
             return e.getErrorResponse();
@@ -320,10 +328,12 @@ public class APIResource {
     @DELETE
     @Path("/sheet/{did}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteSheet(@HeaderParam("Authorization") String authorization, @PathParam("did") long did) {
+    public Response deleteSheet(@HeaderParam("Authorization") String authorization,
+                                @CookieParam("WISEAccessToken") String jwt,
+                                @PathParam("did") long did) {
         AccountEntity account;
         try {
-            account = authUtil.decodeAccount(authorization);
+            account = authUtil.decodeAccount(authorization, jwt);
         }
         catch (APIException e) {
             return e.getErrorResponse();

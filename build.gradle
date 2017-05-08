@@ -1,6 +1,6 @@
 plugins {
     id 'war'
-    id "org.akhikhl.gretty" version "1.4.2"
+    id 'org.akhikhl.gretty' version '1.4.2'
 }
 
 sourceCompatibility = 1.8
@@ -12,7 +12,7 @@ repositories {
 dependencies {
     compile 'javax.servlet:javax.servlet-api:3.1.0'
 
-	compile 'org.hibernate:hibernate-core:5.2.9.Final'
+    compile 'org.hibernate:hibernate-core:5.2.9.Final'
     compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
 
     compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.6'
@@ -22,8 +22,5 @@ dependencies {
 
     compile 'org.postgresql:postgresql:9.4.1212'
     compile 'org.json:json:20160810'
-
-    testCompile 'junit:junit:4.12'
 }
-
 
