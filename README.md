@@ -3,19 +3,19 @@ EI-Dashboard keeps all its metadata in PostgreSQL database.
 If you want to persist the data, you should prepare an such environment.
 Simply execute following steps in order.
 
-  1. To create an user named dashboard:
+  1. Create an user named dashboard:
   
      ```sh
      $ psql -f scripts/sql/1.create-user.sql -U postgres -h <host>
      ```
      
-  2. To create a schema named `dashboard` under existed database `wisepaas`:
+  2. Create a schema named `dashboard` under existed database `wisepaas`:
 
      ```sh
      $ psql -f scripts/sql/2.create-schema.sql -U postgres -h <host> -d wisepaas
      ```
 
-  3. To create tables under the `dashboard` schema created in step 2:
+  3. Create tables under the `dashboard` schema created in step 2:
 
      ```sh
      $ psql -f scripts/sql/3.create-tables.sql -U dashboard -h <host> -d wisepaas
