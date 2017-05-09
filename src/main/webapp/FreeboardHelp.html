@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>EI-DashBoard : Creating your customized dashboard widget</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <link type="text/css" rel="stylesheet" href="../dashboard/libs/bootstrap-3.3.6/css/bootstrap.min.css" />
+        <link type="text/css" rel="stylesheet" href="../dashboard/libs/font-awesome-4.6.1/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/atelier-dune-light.min.css">
+
+        <script type="text/javascript" src="../dashboard/libs/jquery-1.12.3/jquery-1.12.3.min.js"></script>
+        <script type="text/javascript" src="../dashboard/libs/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+        <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#on').bind('click', function (e) {
+                    $('body').addClass('toggle');
+                    e.preventDefault();
+                });
+                $('#off').bind('click', function (e) {
+                    $('body').removeClass('toggle');
+                    e.preventDefault();
+                });
+
+            });
+        </script>
+        <style type="text/css">
+            html,
+            body {
+                position: relative;
+                margin: 0px;
+                padding: 0px;
+                width: 100%;
+                height: 100%;
+                overflow-x: hidden;
+                background-color: #eee;
+                color: #555;
+                font-size: 14px;
+                line-height: 20px;
+                font-family: "Helvetica Neue", Helvetica, "Open Sans", Meiryo, "Hiragino Kaku Gothic Pro", Osaka, Arial, sans-serif;
+            }
+
+            .header{
+                position: fixed;
+                z-index: 50;
+                top: 0px;
+                right: 0px;
+                left: 0px;
+                background-color: #313131;
+                height: 72px;
+                color: #fff;
+                padding: 0px 20px;
+            }   
+
+            .header .container {
+                margin-top: 0px;
+                background-color: #313131;
+                padding: 0px;
+            }
+
+            .header h1{
+                font-size: 3em;
+                font-weight: 300;
+                line-height: 72px;
+                font-family: fantasy, Impact;
+                margin: 0px;
+                display: inline-block;
+            }
+
+            .header p{
+                display: inline-block;
+                padding-left: 15px;
+                margin-bottom: 15px;
+            }
+
+            .container {
+                margin-top: 72px;
+                padding: 0 20px;
+                background-color: #fff;
+                min-height: 100%;
+            }
+
+            .nav-side-menu {
+                overflow: auto;
+                font-family: verdana;
+                font-size: 12px;
+                font-weight: 200;
+                background-color: #f8f8f8;
+                height: 100%;
+                color: #e1ffff;
+                margin-top: 15px;
+            }
+            .header .container .toggle-btn {
+                display: none;
+            }
+            .nav-side-menu ul,
+            .nav-side-menu li {
+                background-color: #e3968a;
+                list-style: none;
+                padding: 0px;
+                margin: 0px;
+                line-height: 42px;
+                cursor: pointer;
+            }
+            .nav-side-menu li a:before {
+                font-family: FontAwesome;
+                content: "\f0c9";
+                display: inline-block;
+                padding-left: 10px;
+                padding-right: 10px;
+                vertical-align: middle;
+            }
+            .nav-side-menu ul .active,
+            .nav-side-menu li .sub-menu .active {
+                border-left: 3px solid #e3968a;
+            }
+            .nav-side-menu ul .sub-menu li,
+            .nav-side-menu li .sub-menu li,
+            .nav-side-menu ul .sub-menu li a,
+            .nav-side-menu li .sub-menu li a {
+                padding: 6px 10px 6px 0px;
+                display: block;
+                color: #777;
+                font-weight: normal;
+            }
+            .nav-side-menu ul .sub-menu li.active,
+            .nav-side-menu li .sub-menu li.active,
+            .nav-side-menu ul .sub-menu li.active a,
+            .nav-side-menu li .sub-menu li.active a {
+                color: #333;
+            }
+            .nav-side-menu ul .sub-menu li,
+            .nav-side-menu li .sub-menu li {
+                background-color: #f3f3f3;
+                border: none;
+                line-height: 1em;
+                border-bottom: 1px #e5e5e5 solid;
+                margin-left: 0px;
+            }
+            .nav-side-menu ul .sub-menu li a:before,
+            .nav-side-menu li .sub-menu li a:before {
+                font-family: FontAwesome;
+                content: "\f105";
+                display: inline-block;
+                padding-left: 10px;
+                padding-right: 10px;
+                vertical-align: middle;
+            }
+            .nav-side-menu li,
+            .nav-side-menu li a {
+                text-decoration: none;
+                color: #fff;
+            }
+            .nav-side-menu li a i {
+                padding-left: 10px;
+                width: 20px;
+                padding-right: 20px;
+            }
+            .nav-side-menu .sub-menu li:hover {
+                border-left: 3px solid #e3968a;
+                -webkit-transition: all 0.1s ease;
+                -moz-transition: all 0.1s ease;
+                -o-transition: all 0.1s ease;
+                -ms-transition: all 0.1s ease;
+                transition: all 0.1s ease;
+            }
+            .nav-side-menu .sub-menu li:hover a {
+                color: #333;
+            }
+            @media (max-width: 768px) {
+                .nav-side-menu {
+                    position: relative;
+                    width: 100%;
+                    margin-bottom: 10px;
+                    margin-top: 0px;
+                }
+                .header .container .toggle-btn {
+                    display: block;
+                    cursor: pointer;
+                    position: absolute;
+                    right: 10px;
+                    top: 19px;
+                    z-index: 10 !important;
+                    padding: 3px;
+                    background-color: #ffffff;
+                    color: #000;
+                    width: 40px;
+                    text-align: center;
+                }
+
+                .header .container p {
+                    display: none;
+                }
+            }
+            @media (min-width: 767px) {
+                .nav-side-menu .menu-list .menu-content {
+                    display: block;
+                }
+            }
+
+            .doc h1, .doc h3 {
+                font-family: "Roboto Slab", Verdana;
+                margin-left: -10px;
+            }    
+
+            .doc h1 {
+                border-bottom: 2px solid #e3968a;
+                padding-bottom: 10px;
+                margin-top: 30px;
+                margin-bottom: -50px;
+            }
+
+            .doc{
+                font-size: 16px;
+                line-height: 1.6em;
+            }
+
+            .doc table {
+                font-size: 14px;
+            }
+
+            .doc table tr th {
+                text-align: center;
+            }
+
+            .doc table tr td:nth-child(1){
+                width:10%;
+            }
+
+            .doc-content {
+                margin-bottom: -50px;
+            }
+
+            .doc-content:last-child {
+                margin-bottom: 50px;
+            }
+
+            .doc-content a {
+                color: #e3968a;
+            }
+
+            .prettyprint {
+                margin-right: 20px;
+            }
+
+            li.L0, li.L1, li.L2, li.L3, li.L5, li.L6, li.L7, li.L8, li.L9
+            { 
+                list-style-type: decimal !important;
+                background-color: #fefbec !important;
+            }
+
+            .highlighter {
+                background-color: #f2dede;
+                font-family: Menlo,Bitstream Vera Sans Mono,DejaVu Sans Mono,Monaco,Consolas,monospace;
+                color: #000;
+            }
+
+            .targetOffset {
+                display: block;
+                height: 72px;
+            }
+
+            .required {
+                color: red;
+                background-color: transparent;
+            }
+
+            .scrollToTop{
+                width:100px; 
+                height:130px;
+                padding:10px; 
+                text-align:center; 
+                background: whiteSmoke;
+                font-weight: bold;
+                color: #444;
+                text-decoration: none;
+                position:fixed;
+                top:75px;
+                right:40px;
+                display:none;
+            }
+            .scrollToTop:hover{
+                text-decoration:none;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="container">
+                <h1>EI-DashBoard</h1>
+                <p>Creating your customized dashboard widget</p>
+                <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="nav-side-menu">
+                        <div class="menu-list">
+                            <ul id="menu-content" class="menu-content collapse out">
+                                <li>
+                                    <a href="#">Overview</a>
+                                </li>
+                                <li>
+                                    <ul class="sub-menu">
+                                        <li><a href="#Overview">Overview</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">Create Widgets</a>
+                                </li>
+                                <li>
+                                    <ul class="sub-menu">
+                                        <li><a href="#Customized-Widget">Customized Widget</a></li>
+                                        <li><a href="#JavaScript-File">JavaScript File</a></li>
+                                        <li><a href="#Widget-Settings-Properties">Widget Settings Properties</a></li>
+                                        <li><a href="#New-Widget-Instance">New Widget Instance</a></li>
+                                        <li><a href="#Widget-Instance-Properties">Widget Instance Properties</a></li>
+                                        <li><a href="#Include-Widget">Include Widget</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12">
+                    <div class="doc">
+                        <h1 class="docs-title">Creat Customized Widget</h1>
+                        <h3 id="Overview"><span class='targetOffset'></span>Overview</h3>
+                        <div class="doc-content">
+                            <p>EI-DashBoard widget is extensible for flexible used.</p>
+                            <p>This guide will help you customize a widget and exactly implement in I-Dashboard.</p>
+                            <ul>
+                                <li><a href="#Customized-Widget">Customized Widget</a></li>
+                                <li><a href="#JavaScript-File">JavaScript File</a></li>
+                                <li><a href="#Widget-Settings-Properties">Widget Settings Properties</a></li>
+                                <li><a href="#New-Widget-Instance">New Widget Instance</a></li>
+                                <li><a href="#Widget-Instance-Properties">Widget Instance Properties</a></li>
+                                <li><a href="#Include-Widget">Include Widget</a></li>
+                            </ul>
+                        </div>
+                        <h3 id="Customized-Widget"><span class='targetOffset'></span>Customized Widget</h3>
+                        <div class="doc-content">
+                            <p>Widgets get created when a dashboard is initialized, each widget instance is created by settings. They reveive data when value changed.   </p>
+                            <p>A <a href="#JavaScript-File">JavaScript file</a> defines <a href="#Widget-Instance-Properties">what the widget does</a> and <a href="#Widget-Settings-Properties"> what the setting’s properties</a>.</p>
+                            <p>After <a href="#Include-Widget">included into main program</a>, you can see the customized widget which just be created on widget type dropdown list.</p>
+                            <p>All widget function and feature is developed and defined in <code class="highlighter">JavaScript</code>.</p>
+                        </div>
+                        <h3 id="JavaScript-File"><span class='targetOffset'></span>JavaScript File</h3>
+                        <div class="doc-content">
+                            <p>The file is also located in the widget directory of your user directory: under <code class="highlighter">~/js/FreeBoard/plugins/freeboard/wg/</code> folder.</p>
+                            <p>Clone a widget file then customized a new widget.</P>
+                            <p>The following template is a simple widget instance.</p>
+                            <pre class="prettyprint linenums">
+(function () {
+    /*i18n*/
+    if (typeof (i18n) != 'undefined') {
+        i18n.addResource('en', 'translation', '<i18n_KEY>', '<i18n_VALUE>');
+    }
+
+    freeboard.loadWidgetPlugin({
+        type_name: 'templateWidget',
+        display_name: 'Template Widget',
+        fill_size: true,
+        settings: [
+            {
+                name: 'title',
+                validate: 'optional,maxSize[100]',
+                display_name: 'title',
+                type: 'text'
+            },
+            {
+                name: 'Value',
+                display_name: 'Value',
+                description: 'Value Of Data Source ',
+                type: 'calculated'
+            },
+            {
+                name: "height",
+                display_name: "height",
+                validate: "required,custom[integer],min[1],max[20]",
+                type: "number",
+                default_value: 1,
+                description: "",
+                addClass: 'advancedSetting'
+            }
+        ],
+        newInstance: function (settings, newInstanceCallback)
+        {
+            newInstanceCallback(new templateWidget(settings));
+        }
+    });
+
+    var templateWidget = function (settings)
+    {
+        var self = this;
+        var currentSettings = settings;
+        var titleElement = $('<h2 class="section-title"></h2>');
+        var currentID = _.uniqueId('wgd_');
+        var widgetElement = $('<div id="' + currentID + '" style="text-align: center;"></div>');
+
+        self.getHeight = function ()
+        {
+            return currentSettings.height;;
+        };
+        
+        self.render = function (containerElement)
+        {
+            $(containerElement).append(titleElement).append(widgetElement);
+            widgetElement.append('<a></a>');
+        };
+
+        self.onSettingsChanged = function (newSettings)
+        {
+            currentSettings = newSettings;
+            titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
+        };
+
+        self.onCalculatedValueChanged = function (settingName, newValue)
+        {
+            widgetElement.find("a").html(newValue);
+        };
+
+        self.onDispose = function ()
+        {
+        };
+    };
+}());
+                            </pre>
+                            <p>The widget object is defined by a function. The function calls the <code class="highlighter">freeboard.loadWidgetPlugin</code> function to initialize each widget setting option. After <code class="highlighter">newInstanceCallback(new templateWidget(settings))</code>, the widget object is created.</p>
+                            <p>A widget .js file defines following things:</p>
+                            <ul>
+                                <li>the setting option for each widget</li>
+                                <li>what widget instance do after initialized</li>
+                            </ul>
+                        </div>
+                        <h3 id="Widget-Settings-Properties"><span class='targetOffset'></span>Widget Settings Properties</h3>
+                        <div class="doc-content">
+                            <p>A widget must be defined with <code class="highlighter">freeboard.loadWidgetPlugin</code>.</p>
+                            <p>It's a definition that tells dashboard that we are giving it a widget plugin. It expects an object with the following: </p>
+                            <pre class="prettyprint linenums">
+        type_name: 'templateWidget',
+        display_name: 'Template Widget',
+        fill_size: true,
+        settings: [
+            {
+                name: 'title',
+                validate: 'optional,maxSize[100]',
+                display_name: 'title',
+                type: 'text'
+            },
+            {
+                name: 'Value',
+                display_name: 'Value',
+                description: 'Value Of Data Source ',
+                type: 'calculated'
+            },
+            {
+                name: "height",
+                display_name: "height",
+                validate: "required,custom[integer],min[1],max[20]",
+                type: "number",
+                default_value: 1,
+                description: "",
+                addClass: 'advancedSetting'
+            }
+        ],
+                            </pre>
+                            <ul>
+                                <li><code class="highlighter">type_name</code><code class="required">*</code>: An unique name for this widget. This name should be as unique as possible to avoid collisions with other widget, and should follow naming conventions for javascript variable and function declarations.</li>
+                                <li><code class="highlighter">display_name</code>: The pretty name that will be used for display purposes for this widget. If the name is not defined, type_name will be used instead.</li>
+                                <li><code class="highlighter">fill_size</code>: If this is set to true, the widget will fill be allowed to fill the entire space given it, otherwise it will contain an automatic padding of around 10 pixels around it.</li>
+                                <li><code class="highlighter">settings</code>: An array of settings that will be displayed for this widget when the user adds it.</li>
+                                <li style="list-style-type:none;">
+                                    <ul>
+                                        <li><code class="highlighter">name</code>: The name of the setting. This value will be used in your code to retrieve the value specified by the user. This should follow naming conventions for javascript variable and function declarations.</li>
+                                        <li><code class="highlighter">display_name</code>: The pretty name that will be shown to the user when they adjust this setting.</li>
+                                        <li><code class="highlighter">description</code>: Text that will be displayed below the setting to give the user any extra information.</li>
+                                        <li><code class="highlighter">default_value</code>: A default value for this setting.</li>
+                                        <li><code class="highlighter">required</code>: If set to true, the field will be required to be filled in by the user. Defaults to false if not specified.</li>
+                                        <li><code class="highlighter">type</code><code class="required">*</code>: The type of input expected for this setting. 
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Type</td>
+                                                        <td>Display a single text box input. Examples of other types will follow in this documentation.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>number</td>
+                                                        <td>Display a data of a numerical type which requires the user to enter a numerical value.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>calculated</td>
+                                                        <td>This is a special text input box that may contain javascript formulas and references to datasources in the dashboard. We'll use a calculated setting because we want what's displayed in this widget to be dynamic based on something changing (like a datasource).</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>boolean</td>
+                                                        <td>Display a checkbox indicating a true/false setting.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>option</td>
+                                                        <td>Display a dropdown box with a list of choices.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </li>
+                                        <li><code class="highlighter">options</code>: An array of options to be populated in the dropdown.
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>name<code class="required">*</code></td>
+                                                        <td>The text to be displayed in the dropdown.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>value</td>
+                                                        <td>The value of the option. If not specified, the name parameter will be used.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <h3 id="New-Widget-Instance"><span class='targetOffset'></span>New Widget Instance</h3>
+                        <div class="doc-content">
+                            <p>Once a widget setting is saved, a new widget instance will be created with the setting.</p>
+                            <pre class="prettyprint linenums">
+freeboard.loadWidgetPlugin({
+    // widget option definition
+    ...
+    newInstance: function(settings, newInstanceCallback)
+    {
+        newInstanceCallback(new myWidgetPlugin(settings));
+    }
+});
+
+var myWidgetPlugin = function(settings)
+{
+    // widget instance
+    ...
+}
+                        </pre>
+                        </div>
+                        <h3 id="Widget-Instance-Properties"><span class='targetOffset'></span>Widget Instance Properties</h3>
+                        <div class="doc-content">
+                            <p>The widget instance object is also defined in the widget directory of your user directory, typically <code class="highlighter">~/js/FreeBoard/plugins/freeboard/wg</code>.</p>
+                            <pre class="prettyprint linenums">
+        self.getHeight = function ()
+        {
+            return currentSettings.height;;
+        };
+        
+        self.render = function (containerElement)
+        {
+            $(containerElement).append(titleElement).append(widgetElement);
+            widgetElement.append('<a></a>');
+        };
+
+        self.onSettingsChanged = function (newSettings)
+        {
+            currentSettings = newSettings;
+            titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
+        };
+
+        self.onCalculatedValueChanged = function (settingName, newValue)
+        {
+            widgetElement.find("a").html(newValue);
+        };
+
+        self.onDispose = function ()
+        {
+        };
+
+                            </pre>     
+                            <ul>
+                                <li><code class="highlighter">self.render</code><code class="required">*</code>: A public function we must implement that will be called when freeboard wants us to render the contents of our widget. The container element is the DIV that will surround the widget.</li>
+                                <li><code class="highlighter">self.getHeight</code><code class="required">*</code>: A public function we must implement that will be called when freeboard wants to know how big we expect to be when we render, and returns a height. This function will be called any time a user updates their settings (including the first time they create the widget). Note here that the height is not in pixels, but in blocks. A block in freeboard is currently defined as a rectangle that is fixed at 300 pixels wide and around 45 pixels multiplied by the value you return here.</li>
+                                <li><code class="highlighter">self.onSettingsChanged</code><code class="required">*</code>: A public function we must implement that will be called when a user makes a change to the settings.</li>
+                                <li><code class="highlighter">self.onCalculatedValueChanged</code><code class="required">*</code>: A public function we must implement that will be called when a calculated value changes. Since calculated values can change at any time (like when a datasource is updated) we handle them in a special callback function here.</li>
+                                <li><code class="highlighter">self.onDispose</code><code class="required">*</code>: A public function we must implement that will be called when this instance of this plugin is no longer needed. Do anything you need to cleanup after yourself here.</li>
+                            </ul>
+                        </div>
+                        <h3 id="Include-Widget"><span class='targetOffset'></span>Include Widget</h3>
+                        <div class="doc-content">
+                            <p>After both customized widget plugin and insiance are finshed, the widget <code class="highlighter">.js</code> file need to be included in EI-DashBoard main page. </p>
+                            <p>The file is also in the js page module folder of your user directory: <code class="highlighter">~Freeboard.html</code>.</p>
+                            <pre class="prettyprint linenums">
+&lt;html>
+    &lt;head>
+    &lt;/head>
+    &lt;body>
+    ...
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.text.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.picture.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.html.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.pointer.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.indicator.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.gauge.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.fans.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.progressbar.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.ragIndicator.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.OnOff.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.nodeRedTreshold.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.table.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/plugin.wg.c3js.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/SA.wg.multigooglemap.js"></script>
+        &lt;script type="text/javascript" defer="defer" src="plugins/freeboard/wg/Customization/plugin.wg.[template].js"></script>
+    ...
+    &lt;/body>
+&lt;/html>
+
+                            </pre>     
+                            <p>Add below function to include new widgets: <code class="highlighter">&lt;widget file path&gt;</code>. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
