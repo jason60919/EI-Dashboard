@@ -222,17 +222,21 @@ $(function () {
         });
     });
 
-    $('#frmLogin_btnoAzureADLogin').click(function () {
+    $('#frmLogin_btnAzureADLogin').click(function () {
         m_AzureAuthContext.login();
     });
 
-    $('#frmLogin_btnoAzureIIILogin').click(function () {
-        debugger;
-        var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=' + GLOBAL_CONFIG.hostUrl + '/index.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
+    $('#frmLogin_btnAzureIIILogin').click(function () {
+        var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=https://sso.advantech.pcf-on-azure.net/web/redirectPage.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
         window.location.href = redirectUrl;
     });
 
-    $('#frmLogin_btnoSignOut').click(function () {
+    $('#frmLogin_btnAzureIIISignUp').click(function () {
+        var redirectUrl = 'https://sso.advantech.pcf-on-azure.net/web/signUp.html';
+        window.location.href = redirectUrl;
+    });
+
+    $('#frmLogin_btnSignOut').click(function () {
         $.ajax({
             url: GLOBAL_CONFIG.hostUrl + '/sso/auth',
             method: 'DELETE'
