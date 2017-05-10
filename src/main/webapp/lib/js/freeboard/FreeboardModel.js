@@ -1197,10 +1197,10 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 break;
             case "AzureIII" :
                 $.ajax({
-                    url: GLOBAL_CONFIG.hostUrl + '/sso/auth',
+                    url: "https://sso.advantech.pcf-on-azure.net" + '/sso/auth',
                     method: 'DELETE'
                 }).done(function() {
-                    var redirectUrl = 'https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=' + GLOBAL_CONFIG.hostUrl + '/web/index.html';
+                    var redirectUrl = 'https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=' + GLOBAL_CONFIG.hostUrl + '/index.html';
                     window.location.href = redirectUrl;
                 });
                 break;
