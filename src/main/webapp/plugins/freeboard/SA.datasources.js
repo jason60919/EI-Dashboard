@@ -808,4 +808,333 @@
             newInstanceCallback(new getHistData("application/json", settings, updateCallback));
         }
     });
+
+    //Type getEcrAmount
+    var getEcrAmount = function (accept, settings, updateCallback) {
+        var self = this;
+        var updateTimer = null;
+        var currentSettings = settings;
+        var errorStage = 0; // 0 = try standard request
+        // 1 = try JSONP
+        // 2 = try thingproxy.freeboard.io
+        var lockErrorStage = false;
+
+        self.name = '';
+        currentSettings.requestFlag = false;
+
+        function updateRefresh(refreshTime) {
+            if (updateTimer) {
+                clearInterval(updateTimer);
+            }
+            updateTimer = setInterval(function () {
+                var currentdate = new Date();
+                var datetime = currentdate.getUTCFullYear() + "-"
+                    + (currentdate.getUTCMonth() + 1) + "-"
+                    + currentdate.getUTCDate() + " "
+                    + currentdate.getUTCHours() + ":"
+                    + currentdate.getUTCMinutes() + ":"
+                    + currentdate.getUTCSeconds() + ":000";
+//                var body = '{"request": {"endTs": "' + datetime + '","amount": "' + currentSettings.amount + '","item": {"agentId": "' + agentId + '","handler": "' + currentSettings.handler + '","sensorId": ["' + currentSettings.source + '"]}}}';
+                self.updateNow();
+            }, refreshTime);
+        }
+
+        updateRefresh(currentSettings.refresh * 1000);
+        this.updateNow = function (datasourceName) {
+            var strURL = currentSettings.serverUrl + "webresources/SQLMgmt/qryData";
+            var ajaxOpts = {
+                cache: false,
+                url: strURL,
+                type: "post",
+                data: JSON.stringify(
+                    {
+                        "request": {
+                            "conditions": {
+                                "item": {
+                                    "@operator": ">",
+                                    "@tableField": "foodcourt_master.txn_time",
+                                    "@value": "2017-05-15 0:0:0"
+                                }
+                            },
+                            "conditions_op": {
+                                "@value": "AND"
+                            },
+                            "limit": {
+                                "@value": "10000"
+                            },
+                            "offset": {
+                                "@value": "0"
+                            },
+                            "orderBy": {
+                                "item": {
+                                    "@tableField": "foodcourt_master.txn_time",
+                                    "@value": "DESC"
+                                }
+                            },
+                            "selectFields": {
+                                "item": [
+                                    {
+                                        "@tableField": "foodcourt_master.ecr_no"
+                                    },
+                                    {
+                                        "@tableField": "foodcourt_master.txn_no"
+                                    },
+                                    {
+                                        "@tableField": "foodcourt_master.TXN_TotSaleAmt"
+                                    },
+                                    {
+                                        "@tableField": "foodcourt_master.TXN_TotPayAmt"
+                                    },
+                                    {
+                                        "@tableField": "foodcourt_master.txn_time"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ),
+                contentType: 'application/json',
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                },
+                error: function (xhr, exception) {
+                },
+                success: function (xhr) {
+                    //Modify Format
+
+                    var oData = {};
+                    oData.itemList = [];
+                    for (var i=0; i<xhr.result.item.length; i++)
+                    {
+                        if ((currentSettings.ecr_no == "") || (currentSettings.ecr_no == xhr.result.item[i].ecr_no)) {
+                            var oItem = {};
+                            oItem.sensorId = xhr.result.item[i].ecr_no;
+                            oItem.v = xhr.result.item[i].txn_totpayamt;
+                            oItem.ts = xhr.result.item[i].txn_time;
+                            oData.itemList.push(oItem);
+                        }
+                    }
+                    updateCallback(oData);
+                }
+            };
+            ConnectionPool.add(currentSettings.aid, ajaxOpts);
+        };
+
+        this.onDispose = function () {
+            clearInterval(updateTimer);
+            updateTimer = null;
+        };
+
+        this.onSettingsChanged = function (newSettings) {
+            lockErrorStage = false;
+            errorStage = 0;
+            currentSettings = newSettings;
+            updateRefresh(currentSettings.refresh * 1000);
+            self.updateNow();
+        };
+    };
+    freeboard.loadDatasourcePlugin({
+        type_name: "getEcrAmount",
+        display_name: "WISE-PAAS : Get ECR Amount",
+        description: "Get Amount of Ecr",
+        settings: [
+            {
+                name: "refresh",
+                display_name: $.i18n.t('plugins_ds.realtimedata.refresh'),
+                validate: 'required,custom[integer],min[1],max[3600]',
+                type: "number",
+                suffix: $.i18n.t('plugins_ds.realtimedata.refresh_suffix'),
+                default_value: 5
+            },
+            {
+                name: "serverUrl",
+                display_name: "Server URL",
+                type: "text",
+                required: true,
+                validate: 'required',
+                default_value: "http://foodcourt.advantech.pcf-on-azure.net/",
+                //default_value: "http://localhost:8081/",
+                description: ""
+            },
+            {
+                name: "ecr_no",
+                display_name: "ecr_no",
+                type: "text",
+                required: false,
+                validate: 'required',
+                default_value: "",
+                //default_value: "http://localhost:8081/",
+                description: ""
+            }
+        ],
+        newInstance: function (settings, newInstanceCallback, updateCallback) {
+            newInstanceCallback(new getEcrAmount("application/json", settings, updateCallback));
+        }
+    });
+
+    //Type getEcrTotal
+    var getEcrTotal = function (accept, settings, updateCallback) {
+        var self = this;
+        var updateTimer = null;
+        var currentSettings = settings;
+        var errorStage = 0; // 0 = try standard request
+        // 1 = try JSONP
+        // 2 = try thingproxy.freeboard.io
+        var lockErrorStage = false;
+
+        self.name = '';
+        currentSettings.requestFlag = false;
+
+        function updateRefresh(refreshTime) {
+            if (updateTimer) {
+                clearInterval(updateTimer);
+            }
+            updateTimer = setInterval(function () {
+                var currentdate = new Date();
+                var datetime = currentdate.getUTCFullYear() + "-"
+                    + (currentdate.getUTCMonth() + 1) + "-"
+                    + currentdate.getUTCDate() + " "
+                    + currentdate.getUTCHours() + ":"
+                    + currentdate.getUTCMinutes() + ":"
+                    + currentdate.getUTCSeconds() + ":000";
+//                var body = '{"request": {"endTs": "' + datetime + '","amount": "' + currentSettings.amount + '","item": {"agentId": "' + agentId + '","handler": "' + currentSettings.handler + '","sensorId": ["' + currentSettings.source + '"]}}}';
+                self.updateNow();
+            }, refreshTime);
+        }
+
+        updateRefresh(currentSettings.refresh * 1000);
+        this.updateNow = function (datasourceName) {
+            var oDate = new Date();
+            var strDate = oDate.getUTCFullYear() + "-" + (oDate.getUTCMonth() + 1) + "-" + oDate.getUTCDate() + " 0:0:0";
+            var strURL = currentSettings.serverUrl + "webresources/SQLMgmt/qryData";
+            var ajaxOpts = {
+                cache: false,
+                url: strURL,
+                type: "post",
+                data: JSON.stringify(
+                    {
+                        "request": {
+                            "conditions": {
+                                "item": {
+                                    "@operator": ">",
+                                    "@tableField": "foodcourt_master.txn_time",
+                                    "@value": strDate
+                                }
+                            },
+                            "conditions_op": {
+                                "@value": "AND"
+                            },
+                            "limit": {
+                                "@value": "10000"
+                            },
+                            "offset": {
+                                "@value": "0"
+                            },
+                            "orderBy": {
+                                "item": {
+                                    "@tableField": "foodcourt_master.ecr_no",
+                                    "@value": "ASC"
+                                }
+                            },
+                            "selectFields": {
+                                "item": [
+                                    {
+                                        "@tableField": "foodcourt_master.ecr_no"
+                                    },
+                                    {
+                                        "@tableField": "foodcourt_master.txn_no"
+                                    },
+                                    {
+                                        "@tableField": "foodcourt_master.TXN_TotSaleAmt"
+                                    },
+                                    {
+                                        "@tableField": "foodcourt_master.TXN_TotPayAmt"
+                                    },
+                                    {
+                                        "@tableField": "foodcourt_master.txn_time"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ),
+                contentType: 'application/json',
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                },
+                error: function (xhr, exception) {
+                },
+                success: function (xhr) {
+                    //Modify Format
+
+                    var oData = {};
+                    oData.itemList = [];
+                    for (var i=0; i<xhr.result.item.length; i++)
+                    {
+                        var bFound = false;
+                        for (var j=0 ; j<oData.itemList.length; j++) {
+                            if (xhr.result.item[i].ecr_no == oData.itemList[j].sensorId)
+                            {
+                                bFound = true;
+                                oData.itemList[j].v = oData.itemList[j].v + xhr.result.item[i].txn_totpayamt;
+                                break;
+                            }
+                        }
+                        if (!bFound)
+                        {
+                            var oItem = {};
+                            oItem.sensorId = xhr.result.item[i].ecr_no;
+                            oItem.v = xhr.result.item[i].txn_totpayamt;
+                            oItem.ts = "ECR " + xhr.result.item[i].ecr_no;
+                            oData.itemList.push(oItem);
+                            i = i + 1;
+                        }
+                    }
+                    updateCallback(oData);
+                }
+            };
+            ConnectionPool.add(currentSettings.aid, ajaxOpts);
+        };
+
+        this.onDispose = function () {
+            clearInterval(updateTimer);
+            updateTimer = null;
+        };
+
+        this.onSettingsChanged = function (newSettings) {
+            lockErrorStage = false;
+            errorStage = 0;
+            currentSettings = newSettings;
+            updateRefresh(currentSettings.refresh * 1000);
+            self.updateNow();
+        };
+    };
+    freeboard.loadDatasourcePlugin({
+        type_name: "getEcrTotal",
+        display_name: "WISE-PAAS : Get ECR Total",
+        description: "Get Amount of Total",
+        settings: [
+            {
+                name: "refresh",
+                display_name: $.i18n.t('plugins_ds.realtimedata.refresh'),
+                validate: 'required,custom[integer],min[1],max[3600]',
+                type: "number",
+                suffix: $.i18n.t('plugins_ds.realtimedata.refresh_suffix'),
+                default_value: 5
+            },
+            {
+                name: "serverUrl",
+                display_name: "Server URL",
+                type: "text",
+                required: true,
+                validate: 'required',
+                default_value: "http://foodcourt.advantech.pcf-on-azure.net/",
+                //default_value: "http://localhost:8081/",
+                description: ""
+            }
+        ],
+        newInstance: function (settings, newInstanceCallback, updateCallback) {
+            newInstanceCallback(new getEcrTotal("application/json", settings, updateCallback));
+        }
+    });
 }());
