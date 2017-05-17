@@ -840,8 +840,11 @@
         }
 
         updateRefresh(currentSettings.refresh * 1000);
-        this.updateNow = function (datasourceName) {
+        this.updateNow = function (nOffset) {
+            if (typeof nOffset == "undefined") nOffset = 0;
             var strURL = currentSettings.serverUrl + "webresources/SQLMgmt/qryData";
+            var oDate = new Date();
+            var strDate = oDate.getFullYear() + "-" + (oDate.getMonth() + 1) + "-" + (oDate.getDate() - nOffset) + " 0:0:0";
             var ajaxOpts = {
                 cache: false,
                 url: strURL,
@@ -853,7 +856,7 @@
                                 "item": {
                                     "@operator": ">",
                                     "@tableField": "foodcourt_master.txn_time",
-                                    "@value": "2017-05-15 0:0:0"
+                                    "@value": strDate
                                 }
                             },
                             "conditions_op": {
@@ -901,20 +904,24 @@
                 },
                 success: function (xhr) {
                     //Modify Format
-
-                    var oData = {};
-                    oData.itemList = [];
-                    for (var i=0; i<xhr.result.item.length; i++)
-                    {
-                        if ((currentSettings.ecr_no == "") || (currentSettings.ecr_no == xhr.result.item[i].ecr_no)) {
-                            var oItem = {};
-                            oItem.sensorId = xhr.result.item[i].ecr_no;
-                            oItem.v = xhr.result.item[i].txn_totpayamt;
-                            oItem.ts = xhr.result.item[i].txn_time;
-                            oData.itemList.push(oItem);
+                    try {
+                        var oData = {};
+                        oData.itemList = [];
+                        for (var i=0; i<xhr.result.item.length; i++)
+                        {
+                            if ((currentSettings.ecr_no == "") || (currentSettings.ecr_no == xhr.result.item[i].ecr_no)) {
+                                var oItem = {};
+                                oItem.sensorId = xhr.result.item[i].ecr_no;
+                                oItem.v = xhr.result.item[i].txn_totpayamt;
+                                oItem.ts = xhr.result.item[i].txn_time;
+                                oData.itemList.push(oItem);
+                            }
                         }
+                        updateCallback(oData);
                     }
-                    updateCallback(oData);
+                    catch(e){
+                        self.updateNow(1);
+                    }
                 }
             };
             ConnectionPool.add(currentSettings.aid, ajaxOpts);
@@ -1003,9 +1010,10 @@
         }
 
         updateRefresh(currentSettings.refresh * 1000);
-        this.updateNow = function (datasourceName) {
+        this.updateNow = function (nOffset) {
+            if (typeof nOffset == "undefined") nOffset = 0;
             var oDate = new Date();
-            var strDate = oDate.getUTCFullYear() + "-" + (oDate.getUTCMonth() + 1) + "-" + oDate.getUTCDate() + " 0:0:0";
+            var strDate = oDate.getFullYear() + "-" + (oDate.getMonth() + 1) + "-" + (oDate.getDate() - nOffset) + " 0:0:0";
             var strURL = currentSettings.serverUrl + "webresources/SQLMgmt/qryData";
             var ajaxOpts = {
                 cache: false,
@@ -1066,31 +1074,32 @@
                 },
                 success: function (xhr) {
                     //Modify Format
-
-                    var oData = {};
-                    oData.itemList = [];
-                    for (var i=0; i<xhr.result.item.length; i++)
-                    {
-                        var bFound = false;
-                        for (var j=0 ; j<oData.itemList.length; j++) {
-                            if (xhr.result.item[i].ecr_no == oData.itemList[j].sensorId)
-                            {
-                                bFound = true;
-                                oData.itemList[j].v = oData.itemList[j].v + xhr.result.item[i].txn_totpayamt;
-                                break;
+                    try {
+                        var oData = {};
+                        oData.itemList = [];
+                        for (var i=0; i<xhr.result.item.length; i++) {
+                            var bFound = false;
+                            for (var j = 0; j < oData.itemList.length; j++) {
+                                if (xhr.result.item[i].ecr_no == oData.itemList[j].sensorId) {
+                                    bFound = true;
+                                    oData.itemList[j].v = oData.itemList[j].v + xhr.result.item[i].txn_totpayamt;
+                                    break;
+                                }
+                            }
+                            if (!bFound) {
+                                var oItem = {};
+                                oItem.sensorId = xhr.result.item[i].ecr_no;
+                                oItem.v = xhr.result.item[i].txn_totpayamt;
+                                oItem.ts = "ECR " + xhr.result.item[i].ecr_no;
+                                oData.itemList.push(oItem);
+                                i = i + 1;
                             }
                         }
-                        if (!bFound)
-                        {
-                            var oItem = {};
-                            oItem.sensorId = xhr.result.item[i].ecr_no;
-                            oItem.v = xhr.result.item[i].txn_totpayamt;
-                            oItem.ts = "ECR " + xhr.result.item[i].ecr_no;
-                            oData.itemList.push(oItem);
-                            i = i + 1;
-                        }
+                        updateCallback(oData);
                     }
-                    updateCallback(oData);
+                    catch(e){
+                        self.updateNow(1);
+                    }
                 }
             };
             ConnectionPool.add(currentSettings.aid, ajaxOpts);
