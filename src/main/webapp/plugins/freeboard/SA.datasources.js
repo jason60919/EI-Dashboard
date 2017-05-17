@@ -1092,7 +1092,6 @@
                                 oItem.v = xhr.result.item[i].txn_totpayamt;
                                 oItem.ts = "ECR " + xhr.result.item[i].ecr_no;
                                 oData.itemList.push(oItem);
-                                i = i + 1;
                             }
                         }
                         updateCallback(oData);
