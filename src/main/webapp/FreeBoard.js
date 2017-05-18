@@ -11,6 +11,7 @@ var m_AzureUser;
 var g_agentID = "";
 var g_arySheet = [];
 var _oRMM = _RMMGlobal.Get();
+var g_ReadOnly = false;
 
 function clone(obj) {
     if (null == obj || "object" != typeof obj) return obj;
@@ -58,6 +59,7 @@ function clone(obj) {
         // ctrl + F12
         if (evt.ctrlKey && (evt.keyCode == 123))
         {
+            g_ReadOnly = !g_ReadOnly;
             if ($('#board-configs').is(':visible'))
             {
                 $('.isEditable').hide();

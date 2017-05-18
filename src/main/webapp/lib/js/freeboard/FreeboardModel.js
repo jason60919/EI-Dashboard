@@ -1206,6 +1206,8 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 break;
             case "Self" :
             default:
+                _oRMM = {};
+                _RMMGlobal.Set(_oRMM);
                 window.location.href = "/";
                 break;
         }
@@ -1650,6 +1652,16 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
         }
 
         freeboardUI.showPaneEditIcons(editing, true);
+        if (g_ReadOnly)
+        {
+            $('.isEditable').hide();
+            $('.editLink').hide();
+            $('#board-configs').hide();
+        }
+        else
+        {
+            $('#board-configs').show();
+        }
     };
     this.setVisibilityDatasources = function (visibility, animate) {
         // Don't allow editing if it's not allowed

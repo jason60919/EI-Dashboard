@@ -682,7 +682,7 @@ var freeboard = (function () {
                     if (newSheet != oringinalSheet) {
                         var prevData = JSON.parse($('body').data('Content'));
                         var content = freeboard.serialize();
-                        if (Object.equals(prevData, content) == false) {
+                        if ((Object.equals(prevData, content) == false) && (!g_ReadOnly)) {
                             var overlay = $('<div id="modal_overlay"></div>');
                             $('body').append(overlay);
                             freeboardUI.showLoadingIndicator(true);
@@ -1024,27 +1024,25 @@ var freeboard = (function () {
             //Login for check
             if ((typeof _oRMM.Login) == "undefined")
             {
-                window.location.href = "index.html";
-                return;
+                //window.location.href = "index.html";
+                //return;
+                _oRMM.Login = {};
+                _oRMM.Login.aid = -1;
+                _oRMM.Login.username = "demo";
+                _oRMM.Login.password = "demo";
+                _oRMM.Login.type = "Auto";
             }
             if (_oRMM.Login.username == "demo")
             {
-                setTimeout(function () {
-                    $('.isEditable').hide();
-                    $('.editLink').hide();
-                    $('#board-configs').hide();
-                }, 1000)
+                g_ReadOnly = true;
             }
             if (location.protocol == "file:")
             {
-                $('.isEditable').hide();
-                $('.editLink').hide();
+                g_ReadOnly = true;
+                //$('.isEditable').hide();
+                //$('.editLink').hide();
                 var content = '{"version":1,"allow_edit":true,"plugins":[],"panes":[],"datasources":[],"columns":3}';
                 theFreeboardModel.loadDashboard(content);
-                setTimeout(function () {
-                    $('.isEditable').hide();
-                    $('.editLink').hide();
-                }, 1000)
             }
             else {
                 $.ajax({
