@@ -142,24 +142,27 @@ task pushToPCF(type: Exec) {
 
 
 // Custom task to generate build/libs/manifest.yml for QA.
-task makeManifest(type: Copy) {
+task makeManifest {
     group 'advantech'
     description 'Make an official manifest.yml for PCF'
 
     doLast {
-        from "scripts/build/manifest.template.yml"
-        into "build/libs"
+        copy {
+            from "scripts/build/manifest.template.yml"
+            into "build/libs"
 
-        rename { filename ->
-            filename.replace '.template', ''
+            rename { filename ->
+                filename.replace '.template', ''
+            }
+
+            // Substitute property tokens infile
+            expand(
+                    pcfAppName: rules.getPCFappName(),
+                    pcfAppLibPath: rules.getReasonableAppLibPath(false),
+                    pcfAppHostname: rules.getPCFappHostname(),
+                    pcfAppDomain: rules.appDomain
+            )
         }
-
-        // Substitute property tokens infile
-        expand(
-                pcfAppName: rules.getPCFappName(),
-                pcfAppLibPath: rules.getReasonableAppLibPath(false),
-                pcfAppHostname: rules.getPCFappHostname(),
-                pcfAppDomain: rules.appDomain
-        )
     }
 }
+
