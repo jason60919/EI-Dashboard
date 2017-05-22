@@ -58,6 +58,9 @@ dist/
 nbdist/
 .nb-gradle/
 
+# Avoid our own scripts for building
+!scripts/build
+
 #
 # Gradle related.
 #
