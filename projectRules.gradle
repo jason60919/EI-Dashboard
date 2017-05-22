@@ -1,0 +1,140 @@
+class ProjectRules {
+    final Project project
+    final String domain = 'wise-paas.com'
+
+    ProjectRules(Project project) {
+        this.project = project
+    }
+
+    /**
+     * A function to extract version information from PCF's manifest.yml file.
+     * By rule, each project has to add a line of version information inside
+     * that file. An example is as follows:
+     *
+     *     applications:
+     *     - name: ei-dashboard
+     *       version: 0.1.0
+     *       path: build/libs/ei-dashboard.war
+     *       services:
+     *         - PSQL-Dashboard
+     *
+     * @return The version information with string format.
+     */
+    String determineVersion() {
+        File manifest = new File(project.projectDir, 'manifest.yml')
+        if (!manifest.exists()) {
+            throw new StopExecutionException(
+                    "file doesn't exists: $manifest.absolutePath"
+            )
+        } else {
+            List<String> lines = manifest.readLines()
+            for (int i = 0; i < lines.size(); i++) {
+                String[] items = lines[i].split(':')
+                if (items.size() == 2) {
+                    String key = items[0].trim()
+                    String value = items[1].trim()
+                    if (key.equalsIgnoreCase('version')) {
+                        return value
+                    }
+                }
+            }
+            throw new StopExecutionException(
+                    "no version definition in manifest: $manifest.absolutePath"
+            )
+        }
+    }
+
+    /**
+     * Calculate reasonable application path to be pushed to PCF by rules.
+     * It currently only support either war or jar type for java system.
+     *
+     * @return The application path to be pushed to PCF.
+     */
+    String getReasonableAppPath() {
+        // For applications to be pushed, we assume that they are
+        // generated in build/libs directory
+        String prefix = String.join(File.separator,
+                [project.buildDir.absolutePath, 'libs', this.getPCFappName()]
+        )
+
+        List<File> candidates = [
+            new File(prefix + '.war'),
+            new File(prefix + '.jar')
+        ]
+
+        File pcfAppPath = null
+        for (int i = 0; i < candidates.size(); i++) {
+            if (candidates[i].exists()) {
+                pcfAppPath = candidates[i]
+                break
+            }
+        }
+
+        if (null == pcfAppPath) {
+            String candidatesInOrder = ''
+            for (int i = 0; i < candidates.size(); i++) {
+                candidatesInOrder += '* ' + candidates[i].absolutePath + '\n'
+            }
+            throw new StopExecutionException(
+                "Cannot find any resonable application to push in order:\n" +
+                candidatesInOrder
+            )
+        }
+
+        return pcfAppPath.absolutePath
+    }
+
+    /**
+     * Make application name on PCF.
+     * By rule, the name should look like 'projectName-1.3.0'
+     *
+     * @return The PCF application name.
+     */
+    String getPCFappName() {
+        return String.join('-', [project.name, project.version.toString()])
+    }
+
+    /**
+     * Make application hostname to be used in PCF.
+     * By rule, the hostname should look like 'projectName-1-3-0-app'
+     *
+     * @return The PCF application hostname.
+     */
+    String getPCFhostname() {
+        String hostname = getPCFappName().replace('.', '-')
+        return hostname + '-app'
+    }
+}
+
+
+ext {
+    rules = new ProjectRules(project)
+}
+
+
+// Determine and assign version to this project.
+version = rules.determineVersion()
+
+
+// Define custom tasks.
+task pushToPCF(type: Exec) {
+    group 'advantech'
+    description 'Push the project to PCF environment.'
+
+    String pcfAppName = rules.getPCFappName()
+    String pcfAppPath = rules.getReasonableAppPath()
+    String pcfHostname = rules.getPCFhostname()
+    String pcfDomain = rules.domain
+
+    if (tasks.findByName('war')) {
+        commandLine 'cf', 'push', pcfAppName,\
+                    '-p', pcfAppPath,\
+                    '-n', pcfHostname,\
+                    '-d', pcfDomain
+    }
+    else {
+        commandLine 'cf', 'push', pcfAppPath, '-p', pcfAppPath
+    }
+}
+
+

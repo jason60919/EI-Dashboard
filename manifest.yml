@@ -1,5 +1,4 @@
-applications:
-- name: ei-dashboard
-  path: build/libs/ei-dashboard.war
-  services:
-    - PSQL-Dashboard
+version: 0.1.1
+services:
+  - PSQL-Dashboard
+
