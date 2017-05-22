@@ -51,7 +51,7 @@ class ProjectRules {
      *
      * @return The application path to be pushed to PCF.
      */
-    String getReasonableAppLibPath(absolutly = true) {
+    String getReasonableAppLibPath(absolutely = true) {
         // For applications to be pushed, we assume that they are
         // generated in build/libs directory
         String prefix = String.join(File.separator,
@@ -82,7 +82,7 @@ class ProjectRules {
             )
         }
 
-        return absolutly ? pcfAppPath.absolutePath : pcfAppPath.getName()
+        return absolutely ? pcfAppPath.absolutePath : pcfAppPath.name
     }
 
     /**
@@ -146,18 +146,20 @@ task makeManifest(type: Copy) {
     group 'advantech'
     description 'Make an official manifest.yml for PCF'
 
-    from "scripts/build/manifest.template.yml"
-    into "build/libs"
+    doLast {
+        from "scripts/build/manifest.template.yml"
+        into "build/libs"
 
-    rename { filename ->
-        filename.replace '.template', ''
+        rename { filename ->
+            filename.replace '.template', ''
+        }
+
+        // Substitute property tokens infile
+        expand(
+                pcfAppName: rules.getPCFappName(),
+                pcfAppLibPath: rules.getReasonableAppLibPath(false),
+                pcfAppHostname: rules.getPCFappHostname(),
+                pcfAppDomain: rules.appDomain
+        )
     }
-
-    // Substitute property tokens infile
-    expand(
-            pcfAppName: rules.getPCFappName(),
-            pcfAppLibPath: rules.getReasonableAppLibPath(false),
-            pcfAppHostname: rules.getPCFappHostname(),
-            pcfAppDomain: rules.appDomain
-    )
 }
