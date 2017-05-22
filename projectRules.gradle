@@ -70,16 +70,16 @@ class ProjectRules {
             }
         }
 
-        if (null == pcfAppPath) {
-            String candidatesInOrder = ''
-            for (int i = 0; i < candidates.size(); i++) {
-                candidatesInOrder += '* ' + candidates[i].absolutePath + '\n'
-            }
-            throw new StopExecutionException(
-                "Cannot find any resonable application to push in order:\n" +
-                candidatesInOrder
-            )
-        }
+        //if (null == pcfAppPath) {
+        //    String candidatesInOrder = ''
+        //    for (int i = 0; i < candidates.size(); i++) {
+        //        candidatesInOrder += '* ' + candidates[i].absolutePath + '\n'
+        //    }
+        //    throw new StopExecutionException(
+        //        "Cannot find any resonable application to push in order:\n" +
+        //        candidatesInOrder
+        //    )
+        //}
 
         return pcfAppPath.absolutePath
     }
@@ -121,19 +121,21 @@ task pushToPCF(type: Exec) {
     group 'advantech'
     description 'Push the project to PCF environment.'
 
-    String pcfAppName = rules.getPCFappName()
-    String pcfAppPath = rules.getReasonableAppPath()
-    String pcfHostname = rules.getPCFhostname()
-    String pcfDomain = rules.domain
+    doLast {
+        String pcfAppName = rules.getPCFappName()
+        String pcfAppPath = rules.getReasonableAppPath()
+        String pcfHostname = rules.getPCFhostname()
+        String pcfDomain = rules.domain
 
-    if (tasks.findByName('war')) {
-        commandLine 'cf', 'push', pcfAppName,\
-                    '-p', pcfAppPath,\
-                    '-n', pcfHostname,\
-                    '-d', pcfDomain
-    }
-    else {
-        commandLine 'cf', 'push', pcfAppPath, '-p', pcfAppPath
+        if (tasks.findByName('war')) {
+            commandLine 'cf', 'push', pcfAppName,\
+                        '-p', pcfAppPath,\
+                        '-n', pcfHostname,\
+                        '-d', pcfDomain
+        }
+        else {
+            commandLine 'cf', 'push', pcfAppPath, '-p', pcfAppPath
+        }
     }
 }
 
