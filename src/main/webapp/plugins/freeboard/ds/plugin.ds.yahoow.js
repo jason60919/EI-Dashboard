@@ -87,7 +87,10 @@
                     encodeURIComponent('store://datatables.org/alltableswithkeys');
             $.ajax({
                 url: uri,
-                dataType: 'JSONP'
+                dataType: 'JSONP',
+                xhrFields: {
+                    withCredentials: true
+                },
             })
             .done(function (data) {
                 if (!_.isObject(data))

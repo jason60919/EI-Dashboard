@@ -62,6 +62,9 @@
                 dataType: (errorStage === 1) ? 'JSONP' : 'JSON',
                 type: currentSettings.method || 'GET',
                 data: body,
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                     try {
                         _.each(currentSettings.headers, function (header) {

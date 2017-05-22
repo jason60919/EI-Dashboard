@@ -57,6 +57,9 @@
                 dataType: (errorStage == 1) ? "JSONP" : "JSON",
                 type: currentSettings.method || "GET",
                 data: body,
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                     try {
                         _.each(currentSettings.headers, function (header) {
@@ -201,6 +204,9 @@
             $.ajax({
                 url: "http://api.openweathermap.org/data/2.5/weather?q=" + encodeURIComponent(currentSettings.location) + "&units=" + currentSettings.units,
                 dataType: "JSONP",
+                xhrFields: {
+                    withCredentials: true
+                },
                 success: function (data) {
                     // Rejigger our data into something easier to understand
                     var newData = {
@@ -373,6 +379,9 @@
             $.ajax({
                 url: currentSettings.datafile,
                 dataType: (currentSettings.is_jsonp) ? "JSONP" : "JSON",
+                xhrFields: {
+                    withCredentials: true
+                },
                 success: function (data) {
                     if (_.isArray(data)) {
                         currentDataset = data;

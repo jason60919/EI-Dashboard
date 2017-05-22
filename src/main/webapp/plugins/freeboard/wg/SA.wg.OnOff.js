@@ -179,6 +179,9 @@
                 contentType: 'application/json',
                 async: true,
                 timeout: 30000,
+                xhrFields: {
+                    withCredentials: true
+                },
                 error: function (xhr, exception)
                 {
                     self.rollBackCheckBox(bVal, oCheckBox);

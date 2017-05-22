@@ -33,7 +33,7 @@
                 display_name: $.i18n.t('global.title'),
 //                        $.i18n.t('plugins_wd.progressbar.title'),
                 type: 'text'
-            }, 
+            },
             {
                 name: 'locations',
                 display_name: $.i18n.t('plugins_wd.multi_gmap.locations'),
@@ -153,19 +153,19 @@
 
                 logger.debug('init map');
                 map = new google.maps.Map($mapElement[0], mapOptions);
-                
+
                 google.maps.event.addListener(map, 'zoom_changed', function () {
                     var zoomLevel = map.getZoom();
                     logger.debug('zoom_changed to level: ' + zoomLevel);
-                    
+
                     var fakeNewSetting = currentSettings;
-                     fakeNewSetting.zoom = zoomLevel;
+                    fakeNewSetting.zoom = zoomLevel;
                     self.onSettingsChanged(fakeNewSetting);
-                //    if (zoomLevel >= minFTZoomLevel) {
-                //        FTlayer.setMap(map);
-                //    } else {
-                //        FTlayer.setMap(null);
-                //    }
+                    //    if (zoomLevel >= minFTZoomLevel) {
+                    //        FTlayer.setMap(map);
+                    //    } else {
+                    //        FTlayer.setMap(null);
+                    //    }
                 });
 //                google.maps.event.addDomListener($mapElement[0], 'mouseenter', function (e) {
 //                    logger.debug('mouseenter: ');
@@ -219,7 +219,7 @@
         function updateMarkers() {
             logger.info('updateMarkers: ');
             $mapElement.parent().find(".section-title").html(currentSettings.title);
-            var bounds ; 
+            var bounds ;
             if (map != null) {
                 clearOverlays();
 
@@ -231,22 +231,22 @@
                 var countOfLocations = locations.length;
                 if (countOfLocations == 0) {
                     logger.warn('countOfLocations: ' + countOfLocations);
-                    
+
                     if (navigator.geolocation) {
-                    // Get current position
-                    navigator.geolocation.getCurrentPosition(
-                        function (position) {
-                            // Success!
-                            var newLatLon = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                            map.panTo(newLatLon);
-                        },
-                        function () {
-                            // Failed!
-                        }
-                    );
-                }
-                    
-                    
+                        // Get current position
+                        navigator.geolocation.getCurrentPosition(
+                            function (position) {
+                                // Success!
+                                var newLatLon = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                                map.panTo(newLatLon);
+                            },
+                            function () {
+                                // Failed!
+                            }
+                        );
+                    }
+
+
                 } else {
                     logger.debug('add markers');
                     for (i = 0; i < countOfLocations; i++) {
@@ -279,7 +279,7 @@
                                 map.setCenter(markerPos);
 
                                 //open infowinow
-                                
+
 //                                logger.debug(marker);
                                 var nameOfMarker = locations[i][0];
                                 logger.debug('click marker as below: ' + nameOfMarker);
@@ -288,7 +288,7 @@
                             };
                         })(marker, i));
                     }
-                    
+
                     if (countOfLocations > 0)
                     {
                         if (!bFitBounds)
@@ -335,6 +335,7 @@
         };
         self.onSettingsChanged = function (newSettings)
         {
+            bFitBounds = false;
             logger.info('onSettingsChanged');
 
             if (_.isNull(map)) {
@@ -358,7 +359,7 @@
         self.onCalculatedValueChanged = function (settingName, newValue, agentConnection)
         {
             logger.info('onCalculatedValueChanged: ' + settingName);
-            
+
             //Add icon to specify agent connect or not
             if ((agentConnection === false && !$mapElement.parent().find(".section-title").hasClass('agentDisconnect')) || (agentConnection === true && $mapElement.parent().find(".section-title").hasClass('agentDisconnect'))) {
                 $mapElement.parent().find(".section-title").toggleClass('agentDisconnect');

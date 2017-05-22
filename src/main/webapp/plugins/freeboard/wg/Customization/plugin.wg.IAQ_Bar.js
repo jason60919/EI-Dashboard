@@ -98,9 +98,11 @@
 
         self.onDispose = function ()
         {
-            if (!_.isNull(oChart)) {
-                oChart.destroy();
-                oChart = null;
+            if (typeof oChart!= "undefined"){
+                if (!_.isNull(oChart)) {
+                    oChart.destroy();
+                    oChart = null;
+                }
             }
         };
     };

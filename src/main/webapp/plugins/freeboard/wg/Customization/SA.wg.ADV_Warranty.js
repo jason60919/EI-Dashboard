@@ -83,6 +83,9 @@
                 url: '/WebService_Warranty/index.jsp?SN=' + currentSettings.value,
                 async: true,
                 timeout: 30000,
+                xhrFields: {
+                    withCredentials: true
+                },
                 error: function (xhr, exception)
                 {
                     var _title = $.i18n.t('global.warning'),

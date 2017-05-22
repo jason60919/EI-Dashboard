@@ -54,6 +54,9 @@
             $.ajax({
                 url: currentSettings.datafile,
                 dataType: (currentSettings.is_jsonp) ? 'JSONP' : 'JSON',
+                xhrFields: {
+                    withCredentials: true
+                },
                 success: function (data) {
                     if (_.isArray(data))
                         currentDataset = data;

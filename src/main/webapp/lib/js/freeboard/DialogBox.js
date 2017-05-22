@@ -117,6 +117,9 @@ function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback, i
                                 type: 'POST',
                                 contentType: "application/json",
                                 data: body,
+                                xhrFields: {
+                                    withCredentials: true
+                                },
                                 beforeSend: function (xhr) {
                                     try {
                                         var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);

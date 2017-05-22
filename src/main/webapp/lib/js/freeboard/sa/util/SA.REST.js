@@ -70,6 +70,9 @@ var REST = (function (log4jq) {
             dataType: 'json',
             async: async,
             contentType: 'application/json',
+            xhrFields: {
+                withCredentials: true
+            },
             beforeSend: function (xhr) {
                 try {
                     var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);

@@ -271,6 +271,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             cache: false,
             data: '',
             contentType: "application/json",
+            xhrFields: {
+                withCredentials: true
+            },
             beforeSend: function (xhr) {
                 switch (_oRMM.Login.type) {
                     case "Azure" :
@@ -359,6 +362,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             cache: false,
             data: '',
             contentType: "application/json",
+            xhrFields: {
+                withCredentials: true
+            },
             beforeSend: function (xhr) {
                 switch (_oRMM.Login.type) {
                     case "Azure" :
@@ -602,6 +608,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             cache: false,
             data: body,
             contentType: "application/json",
+            xhrFields: {
+                withCredentials: true
+            },
             beforeSend: function (xhr) {
                 switch (_oRMM.Login.type) {
                     case "Azure" :
@@ -763,6 +772,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                         cache: false,
                                         data: body,
                                         contentType: "application/json",
+                                        xhrFields: {
+                                            withCredentials: true
+                                        },
                                         beforeSend: function (xhr) {
                                             switch (_oRMM.Login.type) {
                                                 case "Azure" :
@@ -879,6 +891,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                 cache: false,
                                 data: body,
                                 contentType: "application/json",
+                                xhrFields: {
+                                    withCredentials: true
+                                },
                                 beforeSend: function (xhr) {
                                     switch (_oRMM.Login.type) {
                                         case "Azure" :
@@ -979,6 +994,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             cache: false,
             data: '',
             contentType: "application/json",
+            xhrFields: {
+                withCredentials: true
+            },
             beforeSend: function (xhr) {
                 var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);
                 xhr.setRequestHeader("Authorization", authorization);
@@ -1050,6 +1068,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 cache: false,
                 data: '',
                 contentType: "application/json",
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                     var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);
                     xhr.setRequestHeader("Authorization", authorization);
@@ -1198,7 +1219,10 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             case "AzureIII" :
                 $.ajax({
                     url: "https://sso.advantech.pcf-on-azure.net" + '/sso/auth',
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    xhrFields: {
+                        withCredentials: true
+                    },
                 }).done(function() {
                     var redirectUrl = 'https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=' + GLOBAL_CONFIG.hostUrl + '/index.html';
                     window.location.href = redirectUrl;
@@ -1496,6 +1520,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                     async: true,
                     dataType: 'text',
                     contentType: 'application/xml',
+                    xhrFields: {
+                        withCredentials: true
+                    },
                     beforeSend: function (xhr) {
                         var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);
                         xhr.setRequestHeader("Authorization", authorization);

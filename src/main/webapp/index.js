@@ -47,6 +47,9 @@ $(function () {
                 type: "get",
                 contentType: 'application/json',
                 dataType: 'json',
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                     switch (_oRMM.Login.type) {
                         case "Azure" :
@@ -109,6 +112,9 @@ $(function () {
             type: "get",
             contentType: 'application/json',
             dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+            },
             beforeSend: function (xhr) {
                 switch (_oRMM.Login.type) {
                     case "Azure" :
@@ -176,6 +182,9 @@ $(function () {
             type: "get",
             contentType: 'application/json',
             dataType: 'json',
+            xhrFields: {
+                withCredentials: true
+            },
             beforeSend: function (xhr) {
                 var authorization = 'Basic ' + $.base64.encode($('#frmMainLogin_UserName').val() + ':' + $('#frmMainLogin_Password').val());
                 xhr.setRequestHeader("Authorization", authorization);
@@ -239,7 +248,10 @@ $(function () {
     $('#frmLogin_btnSignOut').click(function () {
         $.ajax({
             url: GLOBAL_CONFIG.hostUrl + '/sso/auth',
-            method: 'DELETE'
+            method: 'DELETE',
+            xhrFields: {
+                withCredentials: true
+            },
         }).done(function() {
             var redirectUrl = 'https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=' + GLOBAL_CONFIG.hostUrl + '/web/index.html';
             window.location.href = redirectUrl;

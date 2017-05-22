@@ -30,6 +30,9 @@ PluginEditor = function (jsEditor, valueEditor) {
             type: getlistfn.method,
             data: data,
             contentType: accept,
+            xhrFields: {
+                withCredentials: true
+            },
             beforeSend: function (xhr) {
                 try {
                     var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);

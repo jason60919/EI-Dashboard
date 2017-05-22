@@ -38,6 +38,9 @@
             $.ajax({
                 url: "http://api.openweathermap.org/data/2.5/weather?q=" + encodeURIComponent(currentSettings.location) + "&units=" + currentSettings.units,
                 dataType: "JSONP",
+                xhrFields: {
+                    withCredentials: true
+                }
             })
             .done(function (data) {
                 // Rejigger our data into something easier to understand

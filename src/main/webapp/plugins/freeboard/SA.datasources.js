@@ -155,6 +155,9 @@
                 dataType: (errorStage == 1) ? "JSONP" : "JSON",
                 type: currentSettings.method || "GET",
                 data: body,
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                     try {
                         _.each(currentSettings.headers, function (header) {
@@ -351,7 +354,10 @@
 
             $.ajax({
                 url: uri,
-                dataType: 'JSONP'
+                dataType: 'JSONP',
+                xhrFields: {
+                    withCredentials: true
+                }
             })
                     .done(function (data) {
                         if (!_.isObject(data))
@@ -588,6 +594,9 @@
                 type: "get",
                 contentType: 'application/json',
                 dataType: 'json',
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
@@ -722,6 +731,9 @@
                 type: "get",
                 contentType: 'application/json',
                 dataType: 'json',
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
@@ -849,6 +861,9 @@
                 cache: false,
                 url: strURL,
                 type: "post",
+                xhrFields: {
+                    withCredentials: true
+                },
                 data: JSON.stringify(
                     {
                         "request": {
@@ -1019,6 +1034,9 @@
                 cache: false,
                 url: strURL,
                 type: "post",
+                xhrFields: {
+                    withCredentials: true
+                },
                 data: JSON.stringify(
                     {
                         "request": {

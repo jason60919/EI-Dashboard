@@ -704,6 +704,9 @@ var freeboard = (function () {
                                     type: method,
                                     data: body,
                                     contentType: "application/json",
+                                    xhrFields: {
+                                        withCredentials: true
+                                    },
                                     beforeSend: function (xhr) {
                                         switch (_oRMM.Login.type) {
                                             case "Azure" :
@@ -1005,6 +1008,9 @@ var freeboard = (function () {
             if (freeboardLocation !== '') {
                 $.ajax({
                     url: freeboardLocation,
+                    xhrFields: {
+                        withCredentials: true
+                    },
                     success: function (data) {
                         theFreeboardModel.loadDashboard(data);
                         if (_.isFunction(finishedCallback))
@@ -1050,6 +1056,9 @@ var freeboard = (function () {
                     type: "get",
                     data: "",
                     contentType: "application/json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
                     beforeSend: function (xhr) {
                         switch (_oRMM.Login.type) {
                             case "Azure" :
