@@ -415,8 +415,9 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                         }
 
                         $("div#tabs").tabs("refresh");
-                        var currenthash = window.location.hash.substr(1);
-                        var inintialSheet = decodeURI(currenthash.split('sheet=')[1]);
+                        //var currenthash = window.location.hash.substr(1);
+                        //var inintialSheet = decodeURI(currenthash.split('sheet=')[1]);
+                        var inintialSheet = window.location.search.split('sheet=')[1];
                         var inintialSheetCount = 0;
                         $('#tabs ul').find('.ui-state-default').each(function () {
                             var $this = $(this).children('a');
