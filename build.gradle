@@ -2,7 +2,7 @@ plugins {
     id 'war'
     id 'org.akhikhl.gretty' version '1.4.2'
 }
-apply from: 'projectRules.gradle'
+apply from: 'scripts/build/projectRules.gradle'
 
 sourceCompatibility = 1.8
 

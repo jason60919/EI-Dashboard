@@ -1,6 +1,6 @@
 class ProjectRules {
     final Project project
-    final String domain = 'wise-paas.com'
+    final String appDomain = 'wise-paas.com'
 
     ProjectRules(Project project) {
         this.project = project
@@ -45,12 +45,13 @@ class ProjectRules {
     }
 
     /**
-     * Calculate reasonable application path to be pushed to PCF by rules.
-     * It currently only support either war or jar type for java system.
+     * Calculate reasonable application library path to be pushed
+     * to PCF by rules. It currently only support either war or jar type
+     * for java system.
      *
      * @return The application path to be pushed to PCF.
      */
-    String getReasonableAppPath() {
+    String getReasonableAppLibPath(absolutely = true) {
         // For applications to be pushed, we assume that they are
         // generated in build/libs directory
         String prefix = String.join(File.separator,
@@ -58,8 +59,8 @@ class ProjectRules {
         )
 
         List<File> candidates = [
-            new File(prefix + '.war'),
-            new File(prefix + '.jar')
+                new File(prefix + '.war'),
+                new File(prefix + '.jar')
         ]
 
         File pcfAppPath = null
@@ -70,18 +71,18 @@ class ProjectRules {
             }
         }
 
-        //if (null == pcfAppPath) {
-        //    String candidatesInOrder = ''
-        //    for (int i = 0; i < candidates.size(); i++) {
-        //        candidatesInOrder += '* ' + candidates[i].absolutePath + '\n'
-        //    }
-        //    throw new StopExecutionException(
-        //        "Cannot find any resonable application to push in order:\n" +
-        //        candidatesInOrder
-        //    )
-        //}
+        if (null == pcfAppPath) {
+            String candidatesInOrder = ''
+            for (int i = 0; i < candidates.size(); i++) {
+                candidatesInOrder += '* ' + candidates[i].absolutePath + '\n'
+            }
+            throw new StopExecutionException(
+                    "Cannot find resonable application to push in order:\n" +\
+                    candidatesInOrder
+            )
+        }
 
-        return pcfAppPath.absolutePath
+        return absolutely ? pcfAppPath.absolutePath : pcfAppPath.name
     }
 
     /**
@@ -100,7 +101,7 @@ class ProjectRules {
      *
      * @return The PCF application hostname.
      */
-    String getPCFhostname() {
+    String getPCFappHostname() {
         String hostname = getPCFappName().replace('.', '-')
         return hostname + '-app'
     }
@@ -116,27 +117,52 @@ ext {
 version = rules.determineVersion()
 
 
-// Define custom tasks.
+// Custom task to push application to PCF per our rules.
 task pushToPCF(type: Exec) {
     group 'advantech'
     description 'Push the project to PCF environment.'
 
     doLast {
         String pcfAppName = rules.getPCFappName()
-        String pcfAppPath = rules.getReasonableAppPath()
-        String pcfHostname = rules.getPCFhostname()
-        String pcfDomain = rules.domain
+        String pcfAppLibPath = rules.getReasonableAppLibPath()
+        String pcfAppHostname = rules.getPCFappHostname()
+        String pcfAppDomain = rules.appDomain
 
         if (tasks.findByName('war')) {
             commandLine 'cf', 'push', pcfAppName,\
-                        '-p', pcfAppPath,\
-                        '-n', pcfHostname,\
-                        '-d', pcfDomain
+                        '-p', pcfAppLibPath,\
+                        '-n', pcfAppHostname,\
+                        '-d', pcfAppDomain
         }
         else {
-            commandLine 'cf', 'push', pcfAppPath, '-p', pcfAppPath
+            commandLine 'cf', 'push', pcfAppName, '-p', pcfAppLibPath
         }
     }
 }
 
+
+// Custom task to generate build/libs/manifest.yml for QA.
+task makeManifest {
+    group 'advantech'
+    description 'Make an official manifest.yml for PCF'
+
+    doLast {
+        copy {
+            from "scripts/build/manifest.template.yml"
+            into "build/libs"
+
+            rename { filename ->
+                filename.replace '.template', ''
+            }
+
+            // Substitute property tokens infile
+            expand(
+                    pcfAppName: rules.getPCFappName(),
+                    pcfAppLibPath: rules.getReasonableAppLibPath(false),
+                    pcfAppHostname: rules.getPCFappHostname(),
+                    pcfAppDomain: rules.appDomain
+            )
+        }
+    }
+}
 
