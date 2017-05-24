@@ -1213,34 +1213,12 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                     if (typeof m_AzureUser.profile != "undefined")
                     {
                         m_AzureAuthContext.logOut();
-                        //clear cookies
-                        var cookies = document.cookie.split(";");
-                        for(var i=0; i < cookies.length; i++) {
-                            var equals = cookies[i].indexOf("=");
-                            var name = equals > -1 ? cookies[i].substr(0, equals) : cookies[i];
-                            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                        }
                     }
                 }
                 break;
             case "AzureIII" :
-                $.ajax({
-                    url: "https://sso.advantech.pcf-on-azure.net" + '/sso/auth',
-                    method: 'DELETE',
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                }).done(function() {
-                    //clear cookies
-                    var cookies = document.cookie.split(";");
-                    for(var i=0; i < cookies.length; i++) {
-                        var equals = cookies[i].indexOf("=");
-                        var name = equals > -1 ? cookies[i].substr(0, equals) : cookies[i];
-                        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                    }
-                    var redirectUrl = 'https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=' + GLOBAL_CONFIG.hostUrl + '/index.html';
-                    window.location.href = redirectUrl;
-                });
+                var redirectUrl = 'https://sso.advantech.pcf-on-azure.net/web/signOut.html';
+                window.location.href = redirectUrl;
                 break;
             case "Self" :
             default:
