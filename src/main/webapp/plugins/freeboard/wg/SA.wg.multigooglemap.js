@@ -194,7 +194,10 @@
             } else {
                 //load google map api
                 window.gmap_initialize = initializeMap;
-                head.js('https://maps.googleapis.com/maps/api/js?v=3&callback=gmap_initialize');
+                //head.js('https://maps.googleapis.com/maps/api/js?v=3&callback=gmap_initialize');
+                $.getScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyB_Ci0QO3N9TqWoR6ZfE46U90XGu-yH_g0&v=3.exp&sensor=false&callback=gmap_initialize", function () {
+                    //initializeMap();
+                });
             }
         }
 
