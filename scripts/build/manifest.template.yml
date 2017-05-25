@@ -2,5 +2,5 @@ applications:
 - name: ${pcfAppName}
   path: ${pcfAppLibPath}
   host: ${pcfAppHostname}
-  Service:
+  services:
   - PSQL-Dashboard
