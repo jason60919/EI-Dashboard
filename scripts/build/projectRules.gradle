@@ -117,22 +117,24 @@ version = rules.determineVersion()
 
 
 // Custom task to push application to PCF per our rules.
-task pushToPCF(type: Exec) {
+task pushToPCF {
     group 'advantech'
     description 'Push the project to PCF environment.'
 
     doLast {
-        String pcfAppName = rules.getPCFappName()
-        String pcfAppLibPath = rules.getReasonableAppLibPath()
-        String pcfAppHostname = rules.getPCFappHostname()
+        exec {
+            String pcfAppName = rules.getPCFappName()
+            String pcfAppLibPath = rules.getReasonableAppLibPath()
+            String pcfAppHostname = rules.getPCFappHostname()
 
-        if (tasks.findByName('war')) {
-            commandLine 'cf', 'push', pcfAppName,\
-                        '-p', pcfAppLibPath,\
-                        '-n', pcfAppHostname
-        }
-        else {
-            commandLine 'cf', 'push', pcfAppName, '-p', pcfAppLibPath
+            if (tasks.findByName('war')) {
+                commandLine 'cf', 'push', pcfAppName,\
+                            '-p', pcfAppLibPath,\
+                            '-n', pcfAppHostname
+            }
+            else {
+                commandLine 'cf', 'push', pcfAppName, '-p', pcfAppLibPath
+            }
         }
     }
 }
