@@ -1,6 +1,5 @@
 class ProjectRules {
     final Project project
-    final String appDomain = 'wise-paas.com'
 
     ProjectRules(Project project) {
         this.project = project
@@ -126,13 +125,11 @@ task pushToPCF(type: Exec) {
         String pcfAppName = rules.getPCFappName()
         String pcfAppLibPath = rules.getReasonableAppLibPath()
         String pcfAppHostname = rules.getPCFappHostname()
-        String pcfAppDomain = rules.appDomain
 
         if (tasks.findByName('war')) {
             commandLine 'cf', 'push', pcfAppName,\
                         '-p', pcfAppLibPath,\
-                        '-n', pcfAppHostname,\
-                        '-d', pcfAppDomain
+                        '-n', pcfAppHostname
         }
         else {
             commandLine 'cf', 'push', pcfAppName, '-p', pcfAppLibPath
@@ -160,7 +157,6 @@ task makeManifest {
                     pcfAppName: rules.getPCFappName(),
                     pcfAppLibPath: rules.getReasonableAppLibPath(false),
                     pcfAppHostname: rules.getPCFappHostname(),
-                    pcfAppDomain: rules.appDomain
             )
         }
     }
