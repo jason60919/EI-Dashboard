@@ -201,9 +201,6 @@
                 cache: false,
                 url: strServer + "/enumeration?enterpriseid=" + strEnterpriseID,
                 type: "get",
-                xhrFields: {
-                    withCredentials: true
-                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
@@ -226,9 +223,6 @@
                 cache: false,
                 url: strServer + "/chanenumeration?vid=" + strVid,
                 type: "get",
-                xhrFields: {
-                    withCredentials: true
-                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
@@ -256,9 +250,6 @@
                 contentType: 'application/xml',
                 data: data,
                 dataType: 'text',
-                xhrFields: {
-                    withCredentials: true
-                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
@@ -285,9 +276,6 @@
                 contentType: 'application/xml',
                 data: data,
                 dataType: 'text',
-                xhrFields: {
-                    withCredentials: true
-                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
