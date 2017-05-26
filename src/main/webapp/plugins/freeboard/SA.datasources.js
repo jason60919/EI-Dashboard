@@ -598,6 +598,24 @@
                     withCredentials: true
                 },
                 beforeSend: function (xhr) {
+                    switch (_oRMM.Login.type) {
+                        case "Azure" :
+                            var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                            xhr.setRequestHeader("Authorization", authorization);
+                            xhr.setRequestHeader("Accept", "application/json");
+                            break;
+                        case "AzureIII" :
+                            var authorization = 'Bearer ' + _oRMM.Login.sso;
+                            xhr.setRequestHeader("Authorization", authorization);
+                            xhr.setRequestHeader("Accept", "application/json");
+                            break;
+                        case "Self" :
+                        default:
+                            var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                            xhr.setRequestHeader("Authorization", authorization);
+                            xhr.setRequestHeader("Accept", "application/json");
+                            break;
+                    }
                 },
                 error: function (xhr, exception) {
                 },
@@ -627,7 +645,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "http://zwebapp-zsafe-attemperator.advantech.pcf-on-azure.net/",
+                default_value: "https://CommonService-WebApp-1-0-0.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             },
@@ -735,6 +753,24 @@
                     withCredentials: true
                 },
                 beforeSend: function (xhr) {
+                    switch (_oRMM.Login.type) {
+                        case "Azure" :
+                            var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                            xhr.setRequestHeader("Authorization", authorization);
+                            xhr.setRequestHeader("Accept", "application/json");
+                            break;
+                        case "AzureIII" :
+                            var authorization = 'Bearer ' + _oRMM.Login.sso;
+                            xhr.setRequestHeader("Authorization", authorization);
+                            xhr.setRequestHeader("Accept", "application/json");
+                            break;
+                        case "Self" :
+                        default:
+                            var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                            xhr.setRequestHeader("Authorization", authorization);
+                            xhr.setRequestHeader("Accept", "application/json");
+                            break;
+                    }
                 },
                 error: function (xhr, exception) {
                 },
@@ -777,7 +813,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "http://zwebapp-zsafe-attemperator.advantech.pcf-on-azure.net/",
+                default_value: "https://CommonService-WebApp-1-0-0.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             },
