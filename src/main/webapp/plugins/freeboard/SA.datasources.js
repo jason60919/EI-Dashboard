@@ -16,7 +16,7 @@
             method: "GET"
         },
         Plugins: {
-            url: "common/v1/devices/{did}/plugins",
+            url: "common/v1/devices/{did}/plugins_within_timerange",
             method: "GET"
         },
         Sensors: {
@@ -645,7 +645,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "https://CommonService-WebApp-1-0-0.wise-paas.com/",
+                default_value: "https://CommonService.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             },
@@ -813,7 +813,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "https://CommonService-WebApp-1-0-0.wise-paas.com/",
+                default_value: "https://CommonService.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             },

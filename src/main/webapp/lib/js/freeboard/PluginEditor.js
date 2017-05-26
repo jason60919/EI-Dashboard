@@ -67,8 +67,8 @@ PluginEditor = function (jsEditor, valueEditor) {
                             }, 500);
                             break;
                         case "plugin":
-                            while (i < data.Plugins.length) {
-                                $("<option></option>").text(data.Plugins[i].plugin).attr("value", data.Plugins[i].plugin).appendTo(appendpath);
+                            while (i < data.plugins.length) {
+                                $("<option></option>").text(data.plugins[i].plugin).attr("value", data.plugins[i].plugin).appendTo(appendpath);
                                 i++;
                             }
                             appendpath.parents().eq(2).show();
