@@ -645,7 +645,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "https://CommonService.wise-paas.com/",
+                default_value: "https://portal-common.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             },
@@ -813,7 +813,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "https://CommonService.wise-paas.com/",
+                default_value: "https://portal-common.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             },
@@ -1010,7 +1010,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "http://foodcourt.advantech.pcf-on-azure.net/",
+                default_value: "https://FoodCourt.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             },
@@ -1190,7 +1190,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "http://foodcourt.advantech.pcf-on-azure.net/",
+                default_value: "https://FoodCourt.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             }
