@@ -1217,7 +1217,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 }
                 break;
             case "AzureIII" :
-                var redirectUrl = 'https://sso.advantech.pcf-on-azure.net/web/signOut.html';
+                var redirectUrl = 'https://sso.wise-paas.com/web/signOut.html';
                 window.location.href = redirectUrl;
                 break;
             case "Self" :
