@@ -236,12 +236,13 @@ $(function () {
     });
 
     $('#frmLogin_btnAzureIIILogin').click(function () {
-        var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=https://sso.advantech.pcf-on-azure.net/web/redirectPage.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
+        //var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=https://sso.advantech.pcf-on-azure.net/web/redirectPage.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
+        var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=https://sso.wise-paas.com/web/redirectPage.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
         window.location.href = redirectUrl;
     });
 
     $('#frmLogin_btnAzureIIISignUp').click(function () {
-        var redirectUrl = 'https://sso.advantech.pcf-on-azure.net/web/signUp.html';
+        var redirectUrl = 'https://sso.wise-paas.com/web/signUp.html';
         window.location.href = redirectUrl;
     });
 
