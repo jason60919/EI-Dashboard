@@ -148,7 +148,8 @@
         var strIP = "";
         var strVid = "";
         var strIVSID = "";
-        var strPort = "";
+        var strAPIPort = "";
+        var strDataPort = "";
 
         var nChannel = 1;
         var strSessionId = "";
@@ -212,7 +213,8 @@
                     strVid = oData.vcminfo[0].vid;
                     strIP = oData.vcminfo[0].domain;
                     strIVSID = oData.vcminfo[0].ivsid;
-                    strPort = oData.vcminfo[0].dataport;
+                    strAPIPort = oData.vcminfo[0].apiport;
+                    strDataPort = oData.vcminfo[0].dataport;
                     self.channelInfo();
                 }
             });
@@ -245,7 +247,7 @@
                             </request>\n";
             $.ajax({
                 cache: false,
-                url: "https://" + strIP + ":" + strPort + "/AdvStreamingService/Authority/Online",
+                url: "https://" + strIP + ":" + strAPIPort + "/AdvStreamingService/Authority/Online",
                 type: "put",
                 contentType: 'application/xml',
                 data: data,
@@ -271,7 +273,7 @@
                                 </request>\n";
             $.ajax({
                 cache: false,
-                url: "https://" + strIP + ":" + strPort + "/AdvStreamingService/LiveStream",
+                url: "https://" + strIP + ":" + strAPIPort + "/AdvStreamingService/LiveStream",
                 type: "put",
                 contentType: 'application/xml',
                 data: data,
@@ -299,6 +301,5 @@
             var source1 = new shaka.player.DashVideoSource(url, null, estimator1);
             player.load(source1);
         }
-
     };
 }());
