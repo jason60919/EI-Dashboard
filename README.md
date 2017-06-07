@@ -80,10 +80,11 @@ it assumes that the working directory is EI-Dashboard installation directory.
   * Gererate a manifest.yml for PC
 
     ```sh
-    $ ./gradlew makeManifest [-Dpcf_space=<spaceName>]
+    $ ./gradlew makeManifest
     ```
     
-    This task generates an official manifest.yml for PCF pushing. Normally,
-    only QA need to issue this task. The *-Dpcf_space=&lt;spaceName&gt;*
-    argument is like `pushToPCF`.
+    This task generates 3 official manifest.yml files for PCF pushing.
+    They are manifest-production.yml, manifest-stage.yml, and
+    manifest-develop.yml, and pupulated under build/libs directory.
+    Normally, only QA need to issue this task.
     
