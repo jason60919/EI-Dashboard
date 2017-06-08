@@ -156,21 +156,15 @@ function WidgetModel(theFreeboardModel, widgetPlugins) {
             var agentConnection = true;
 
             try {
-
                 returnValue =
                         self.callValueFunction(
                                 self.calculatedSettingScripts[settingName],
                                 self.scriptGlobalVariables[settingName]);
-                //data adapter process
-                /*
-                 {
-                 'ds': '<data source>',
-                 'wg': '<widget name>',
-                 'data': '<response from data source>'
-                 }*/
-                //added by ken 2015/10/17
 
-//                    logger.debug('self.settings() as below');
+                if (returnValue == "undefined") {
+                    var currentSettings = self.settings();
+                    returnValue = currentSettings[settingName];
+                }
 
                 if (self.datasourceTypeName != '') {
 
