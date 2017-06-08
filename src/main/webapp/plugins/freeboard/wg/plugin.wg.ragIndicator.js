@@ -64,7 +64,6 @@
         var stateArray = ["green", "amber", "red"];
 
         function updateState() {
-
             var ragValue = _.isUndefined(stateObject.value) ? -1 : stateObject.value;
             //If we have a valid value set, continue
             indicatorElement
@@ -146,6 +145,7 @@
                 $(mainContainer).find(".single").show();
                 $(mainContainer).find(".all").hide();
             }
+            stateObject.indicator_type = newSettings.indicator_type;
             updateState();
         };
 
@@ -164,7 +164,8 @@
                 strValue = newValue.toString().split(" ")[1];
                 strValue = strValue.replace("(","").replace(")","");
             }
-            stateObject[settingName] = strValue;
+            if ((typeof newValue != "undefined") && (newValue != "undefined"))
+                stateObject[settingName] = strValue;
             updateState();
         };
 
