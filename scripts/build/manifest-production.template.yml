@@ -1,0 +1,6 @@
+applications:
+- name: ${pcfAppName}
+  path: ${pcfAppLibPath}
+  host: ${pcfAppHostname}-${pcfAppVersion}
+  services:
+  - PSQL-Dashboard

@@ -1,6 +1,8 @@
 applications:
 - name: ${pcfAppName}
   path: ${pcfAppLibPath}
-  host: ${pcfAppHostname}
+  hosts:
+  - ${pcfAppHostname}-develop
+  - ${pcfAppHostname}-${pcfAppVersion}-develop
   services:
   - PSQL-Dashboard
