@@ -266,9 +266,9 @@ $(function () {
             $("#frmMainLogin_txtSSO").parent().show();
     });
 
-    $('#frmMainLogin_txtAgentID').change(function () {
+    $('#frmMainLogin_txtSSO').change(function () {
         var oRMM = _RMMGlobal.Get();
-        oRMM.ssoURL = strSSOURL;
+        oRMM.ssoURL = $('#frmMainLogin_txtSSO').val();
         _RMMGlobal.Set(oRMM);
     });
 
