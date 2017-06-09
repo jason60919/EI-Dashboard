@@ -1,8 +1,5 @@
 var m_AzureAuthContext;
 var m_AzureUser;
-var m_Did = "1";
-//var m_AgentID = "00000001-0000-0000-0000-654A3A700000";
-var m_AgentID = "00000001-0000-0000-0000-305A3A700000";
 $(function () {
     if (location.protocol == "file:")
         window.location.href = "FreeBoard.html";
@@ -236,13 +233,14 @@ $(function () {
     });
 
     $('#frmLogin_btnAzureIIILogin').click(function () {
-        //var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=https://sso.advantech.pcf-on-azure.net/web/redirectPage.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
-        var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=https://sso.wise-paas.com/web/redirectPage.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
+        var oRMM = _RMMGlobal.Get();
+        var redirectUrl = 'https://login.windows.net/c53d73cb-64c4-4c1d-b972-7f92d1330c39/oauth2/authorize?response_type=code&redirect_uri=' + oRMM.ssoURL + 'web/redirectPage.html&client_id=09ea49b3-09fc-4b9a-b452-52563e9d4add&state=' + GLOBAL_CONFIG.hostUrl + '/index.html';
         window.location.href = redirectUrl;
     });
 
     $('#frmLogin_btnAzureIIISignUp').click(function () {
-        var redirectUrl = 'https://sso.wise-paas.com/web/signUp.html';
+        var oRMM = _RMMGlobal.Get();
+        var redirectUrl = oRMM.ssoURL + 'web/signUp.html';
         window.location.href = redirectUrl;
     });
 
@@ -259,22 +257,31 @@ $(function () {
         });
     });
 
-    $('#frmMainLogin_txtDid').change(function () {
-        m_Did = $(this).val();
+    //SSO URL : portal-sso.wise-paas.com/
+    $('#frmMainLogin_rmmLoginBody').dblclick(function () {
+        debugger;
+        if ($("#frmMainLogin_txtSSO").parent().is(":visible"))
+            $("#frmMainLogin_txtSSO").parent().hide();
+        else
+            $("#frmMainLogin_txtSSO").parent().show();
     });
 
     $('#frmMainLogin_txtAgentID').change(function () {
-        m_AgentID = $(this).val();
+        var oRMM = _RMMGlobal.Get();
+        oRMM.ssoURL = strSSOURL;
+        _RMMGlobal.Set(oRMM);
     });
 
-    $('#frmMainLogin_rmmLoginBody').dblclick(function () {
-        $(".agentInfo").show();
-    });
+    var strSSOURL = "https://portal-sso.wise-paas.com/";
+    if (/-stage/g.test(window.location.hostname))
+        strSSOURL = "https://portal-sso-stage.wise-paas.com/";
+    if (/-develop/g.test(window.location.hostname))
+        strSSOURL = "https://portal-sso-develop.wise-paas.com/";
+    $("#frmMainLogin_txtSSO").val(strSSOURL);
+    var oRMM = _RMMGlobal.Get();
+    oRMM.ssoURL = strSSOURL;
+    _RMMGlobal.Set(oRMM);
 
-    $('#frmMainLogin_txtDid').val(m_Did);
-    $('#frmMainLogin_txtAgentID').val(m_AgentID);
-
-    $(".agentInfo").hide();
     $('#frmMainLogin_UserName').focus();
 });
 

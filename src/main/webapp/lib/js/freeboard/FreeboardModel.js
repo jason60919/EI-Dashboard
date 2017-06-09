@@ -1217,7 +1217,8 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 }
                 break;
             case "AzureIII" :
-                var redirectUrl = 'https://sso.wise-paas.com/web/signOut.html';
+                var oRMM = _RMMGlobal.Get();
+                var redirectUrl = oRMM.ssoURL + 'web/signOut.html';
                 window.location.href = redirectUrl;
                 break;
             case "Self" :
