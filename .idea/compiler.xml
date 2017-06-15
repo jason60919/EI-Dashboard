@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="ei-dashboard_main" target="1.8" />
       <module name="ei-dashboard_test" target="1.8" />
+      <module name="portal-dashboard_main" target="1.8" />
+      <module name="portal-dashboard_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
