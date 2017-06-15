@@ -106,7 +106,7 @@
         }
     });
 
-    //Type JSON   
+    //Type JSON
     var jsonDatasource = function (settings, updateCallback) {
         var self = this;
         var updateTimer = null;

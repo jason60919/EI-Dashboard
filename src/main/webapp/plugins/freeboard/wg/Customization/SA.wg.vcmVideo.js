@@ -16,7 +16,7 @@
                 name: 'serverUrl',
                 display_name: "Server URL",
                 type: 'text',
-                default_value: "http://vcm.advantech.pcf-on-azure.net"
+                default_value: "https://portal-vcm.wise-paas.com"
             },
             {
                 name: 'enterpriseID',
