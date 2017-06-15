@@ -1010,7 +1010,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "https://FoodCourt.wise-paas.com/",
+                default_value: "https://api-foodcourt.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             },
@@ -1190,7 +1190,7 @@
                 type: "text",
                 required: true,
                 validate: 'required',
-                default_value: "https://FoodCourt.wise-paas.com/",
+                default_value: "https://api-foodcourt.wise-paas.com/",
                 //default_value: "http://localhost:8081/",
                 description: ""
             }
