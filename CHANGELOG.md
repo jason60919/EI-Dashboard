@@ -7,5 +7,5 @@
  * [#]
     * Change food court API default
 
-#### 1.0.0: Milestone Release
+# 1.0.0: Milestone Release
  - The very first official release.

@@ -88,3 +88,6 @@ it assumes that the working directory is EI-Dashboard installation directory.
     manifest-develop.yml, and pupulated under build/libs directory.
     Normally, only QA need to issue this task.
     
+
+# Changes
+Please refer to [change logs](CHANGELOG.md).
