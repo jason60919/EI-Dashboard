@@ -3,4 +3,8 @@ applications:
   path: ${pcfAppLibPath}
   host: ${pcfAppHostname}-${pcfAppVersion}
   services:
-  - PSQL-Dashboard
+    - PSQL-Dashboard
+  env:
+    SSO_TOKEN_REFRESH_URL: portal-sso.wise-paas.com/sso/token
+    SSO_TOKEN_VALIDATION_URL: portal-sso.wise-paas.com/sso/tokenvalidation
+

@@ -2,7 +2,11 @@ applications:
 - name: ${pcfAppName}
   path: ${pcfAppLibPath}
   hosts:
-  - ${pcfAppHostname}-stage
-  - ${pcfAppHostname}-${pcfAppVersion}-stage
+    - ${pcfAppHostname}-stage
+    - ${pcfAppHostname}-${pcfAppVersion}-stage
   services:
-  - PSQL-Dashboard
+    - PSQL-Dashboard
+  env:
+    SSO_TOKEN_REFRESH_URL: portal-sso-stage.wise-paas.com/sso/token
+    SSO_TOKEN_VALIDATION_URL: portal-sso-stage.wise-paas.com/sso/tokenvalidation
+
