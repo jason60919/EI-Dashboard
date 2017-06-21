@@ -1,15 +1,32 @@
 package com.advantech.eipaas.dashboard.utils;
 
 
-import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Base64;
+import java.sql.Timestamp;
 import java.io.UnsupportedEncodingException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.json.JSONObject;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import com.advantech.eipaas.dashboard.api.APIError;
 import com.advantech.eipaas.dashboard.api.APIException;
@@ -17,327 +34,728 @@ import com.advantech.eipaas.dashboard.api.APIResponse;
 import com.advantech.eipaas.dashboard.entities.AccountEntity;
 
 
+class TokenValidationRequest {
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    TokenValidationRequest(final String token) {
+        this.token = token;
+    }
+}
+
+
+class TokenRefreshRequest {
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    TokenRefreshRequest(final String token) {
+        this.token = token;
+    }
+}
+
+
+class TokenRefreshResponse {
+    private String tokenType;
+    private String accessToken;
+    private long expiresIn;
+    private String refreshToken;
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public long getExpiresIn() {
+        return expiresIn;
+    }
+
+    public void setExpiresIn(long expiresIn) {
+        this.expiresIn = expiresIn;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+}
+
+
 public class AuthUtil {
-    final private static String PREFIX_BASIC = "Basic ";
-    final private static String PREFIX_BEARER = "Bearer ";
+    // HTTP "Authorization" header relevant
+    private static final String HDR_BASIC = "Basic ";
+    private static final String HDR_BEARER = "Bearer ";
+    private static final String HDR_AUTH = "Authorization";
 
-    final private APIResponse response = new APIResponse();
+    // Cookie names
+    private static final String CN_BUILTIN = "EIToken";
+    private static final String CN_SSO = "WISEAccessToken";
 
-    public AccountEntity decodeAccount(String authData, String jwtToken) throws APIException {
-        AccountEntity account;
-        if (null != jwtToken) {
-            account = getAccountFromJWTbyIII(jwtToken);
+    // Don't change the following values relevant JWT as possible.
+    private static final String JWT_TYPE = "EI-Dashboard";
+    private static final String JWT_SECRET = "JWT@EI-Dashboard@WISE-PaaS";
+
+    public class Auth {
+        private String token;
+        private String cookieName;
+        private boolean tokenRefreshed;
+        private AccountEntity account;
+
+        public String getToken() {
+            return token;
         }
-        else if (null != authData && !authData.isEmpty()) {
-            // HTTP Basic authorization
-            if (authData.startsWith(PREFIX_BASIC)) {
-                String b64Text = authData.substring(
-                    PREFIX_BASIC.length()
-                ).trim();
+
+        public String getCookieName() {
+            return this.cookieName;
+        }
+
+        public boolean isTokenRefreshed() {
+            return tokenRefreshed;
+        }
+
+        public AccountEntity getAccount() {
+            return account;
+        }
+
+        Auth(final AccountEntity account,
+             final String token,
+             final String cookieName,
+             final boolean tokenRefreshed) {
+            this.account = account;
+            this.token = token;
+            this.cookieName = cookieName;
+            this.tokenRefreshed = tokenRefreshed;
+        }
+    }
+
+    private Auth auth;
+    private final boolean isSecure;
+    private final boolean refreshLogin;
+    private final Algorithm jwtAlgorithm;
+    private final JWTVerifier jwtVerifier;
+    private final APIResponse response = new APIResponse();
+
+    public Auth getAuth() {
+        return auth;
+    }
+
+    private String getProtocol() {
+        return isSecure ? "https" : "http";
+    }
+
+    /**
+     * There are 3 means supported for authorization in our system currently:
+     *
+     * 1) Uses HTTP header authorization with "Basic" data type.
+     * This way is only used for our own system account in login process.
+     * If this step goes well, the client will acquire type 3 data.
+     *
+     * 2) Uses HTTP header authorization with "Bearer" data type.
+     * This way is only used for native applications JWT token
+     * from SSO by III.
+     *
+     * 3) Uses HTTP only cookie with JWT type.
+     * This way is used for our own system account, and web applications
+     * JWT token from SSO by III.
+     */
+    public AuthUtil(final HttpHeaders headers,
+                    final boolean refreshLogin,
+                    final boolean isSecure)
+            throws APIException {
+        this.isSecure = isSecure;
+        this.refreshLogin = refreshLogin;
+
+        try {
+            this.jwtAlgorithm = Algorithm.HMAC512(JWT_SECRET);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.ServerError.getCode(),
+                    "server is running into a JWT problem"
+            ));
+        }
+
+        this.jwtVerifier = JWT.require(this.jwtAlgorithm).build();
+        Map<String, Cookie> cookies = headers.getCookies();
+
+        // 1st priority: ei-dashboard builtin
+        // HTTP only cookie with JWT type
+        if (cookies.get(CN_BUILTIN).getValue() != null) {
+            decodeAuthFromBuiltin(cookies.get(CN_BUILTIN).getValue());
+        }
+
+        // 2nd priority: web sso by iii
+        // HTTP only cookie with JWT type
+        else if (cookies.get(CN_SSO).getValue() != null) {
+            String wiseAccessToken = cookies.get(CN_SSO).getValue();
+            decodeAuthFromSSOToken(wiseAccessToken, CN_SSO, true);
+        }
+
+        // 3rd priority:
+        // either native sso by iii, or ei-dashboard log in
+        else if (headers.getHeaderString(HDR_AUTH) != null) {
+            String authorization = headers.getHeaderString(HDR_AUTH);
+
+            // 1st priority: HTTP Basic authorization
+            // It's the login action to our own system
+            if (authorization.startsWith(HDR_BASIC)) {
+                String b64Text = authorization
+                        .substring(HDR_BASIC.length())
+                        .trim();
                 if (b64Text.isEmpty()) {
                     throw new APIException(response.fail(
-                        Response.Status.UNAUTHORIZED,
-                        APIError.AuthNotProvidedError.getCode(),
-                        "no Basic data in Authorization header"
+                            Response.Status.FORBIDDEN,
+                            APIError.AuthNotProvidedError.getCode(),
+                            "no Basic data in Authorization header"
                     ));
                 }
-                account = getAccountFromBasicAuth(b64Text);
+                processLogin(b64Text);
             }
-
-            // HTTP Bearer authorization
-            else if (authData.startsWith(PREFIX_BEARER)) {
-                String b64Text = authData.substring(
-                    PREFIX_BEARER.length()
-                ).trim();
-                if (b64Text.isEmpty()) {
+            // 2nd priority: HTTP Bearer authorization
+            // It's native SSO by III
+            else if (authorization.startsWith(HDR_BEARER)) {
+                String wiseAppToken = authorization
+                        .substring(HDR_BEARER.length())
+                        .trim();
+                if (wiseAppToken.isEmpty()) {
                     throw new APIException(response.fail(
-                        Response.Status.UNAUTHORIZED,
-                        APIError.AuthNotProvidedError.getCode(),
-                        "no Bearer data in Authorization header"
+                            Response.Status.FORBIDDEN,
+                            APIError.AuthNotProvidedError.getCode(),
+                            "no Bearer data in Authorization header"
                     ));
                 }
-                account = getAccountFromBearerAuth(b64Text);
+                decodeAuthFromSSOToken(wiseAppToken, null, false);
             }
-
             // Unsupported authorization
             else {
                 throw new APIException(response.fail(
-                    Response.Status.UNAUTHORIZED,
-                    APIError.AuthNotSupportedError.getCode(),
-                    "either Basic or Bearer supported for Authorization header"
+                        Response.Status.FORBIDDEN,
+                        APIError.AuthNotSupportedError.getCode(),
+                        "no valid data in Authorization header"
                 ));
             }
         }
+
+        // unknown!!!
         else {
             throw new APIException(response.fail(
-                Response.Status.UNAUTHORIZED,
-                APIError.AuthNotProvidedError.getCode(),
-                "no Authorization header"
+                    Response.Status.FORBIDDEN,
+                    APIError.AuthNotProvidedError.getCode(),
+                    "cannot extract valid authorization data"
             ));
         }
 
-        if (!account.isEnabled()) {
+        // check account enabled
+        if (!this.getAuth().getAccount().isEnabled()) {
             throw new APIException(response.fail(
-                Response.Status.FORBIDDEN,
-                APIError.AccountNotEnabledError.getCode(),
-                "account was disabled by system"
+                    Response.Status.FORBIDDEN,
+                    APIError.AccountNotEnabledError.getCode(),
+                    "the given account is disabled by system"
             ));
         }
-
-        return account;
     }
 
-    private AccountEntity getAccountFromBasicAuth(String data) throws APIException {
-        final Base64.Decoder decoder = Base64.getDecoder();
+    /**
+     * Decode our own system built-in JWT token. The content of JWT token
+     * can be found in {@link AuthUtil#makeBuiltinToken(AccountEntity)} method.
+     *
+     * @param eiToken JWT token from system built-in
+     * @throws APIException Related exception
+     */
+    private void decodeAuthFromBuiltin(final String eiToken)
+            throws APIException {
+        DecodedJWT jwt = verifyBuiltinToken(eiToken);
+        Claim email = getJWTClaim(jwt, "email", true);
 
-        String token;
+        AccountEntity account;
         try {
-            token = new String(decoder.decode(data), "UTF-8");
-        }
-        catch (UnsupportedEncodingException e) {
+            account = getAccountByMail(email.asString());
+        } catch (Exception e) {
             e.printStackTrace();
             throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "Basic value of Authorization header is not UTF-8"
+                    Response.Status.FORBIDDEN, APIError.AuthError.getCode(),
+                    "no such user for this token"
+            ));
+        }
+        this.auth = new Auth(account, eiToken, CN_BUILTIN, false);
+    }
+
+    /**
+     * WISEAccessToken
+     *   header
+     *   {
+     *     "alg": "HS512",
+     *     "typ": "WISEAccessToken"
+     *   }
+     *   payload
+     *   {
+     *     "uid": "72754f95-1988-4ec9-b8a5-9433c89cf198",
+     *     "firstName": "Sign On",
+     *     "lastName": "Single",
+     *     "country": "TW",
+     *     "upn": "sso-azure@wisesso.onmicrosoft.com",
+     *     "displayName": "SSO%20on%20Azure",
+     *     "scopes": [],
+     *     "exp": 1497597390,
+     *     "userRole": "developer",
+     *     "iat": 1497593790,
+     *     "email": "teddy15b@gmail.com",
+     *     "refreshToken": "1c87ee60-f040-4db8-a006-b3450ee8ea16"
+     *   }
+     *
+     * WISEAppToken
+     *   header
+     *   {
+     *     "alg": "HS512",
+     *     "typ": "WISEAppToken"
+     *   }
+     *   payload
+     *   {
+     *     "owner": "1e6b41b9-5932-4ad9-9859-06a7b49f9373",
+     *     "lastName": "liu",
+     *     "country": "TW",
+     *     "displayName": "tungyi",
+     *     "appName": "Node-Red",
+     *     "roles": [],
+     *     "groups": [
+     *       "tungyi"
+     *     ],
+     *     "type": "native",
+     *     "uid": "1e6b41b9-5932-4ad9-9859-06a7b49f9373",
+     *     "firstName": "tung yi",
+     *     "upn": "tungyi@wisesso.onmicrosoft.com",
+     *     "appId": "7df9da53-bc12-4bfb-a5fc-d4efb8f72b9d",
+     *     "exp": 1497946639,
+     *     "iat": 1497943039,
+     *     "email": "tung.yi@advantech.com.tw",
+     *     "refreshToken": "1b002ded-e4bb-4d60-b776-31528a5ea74c"
+     *   }
+     *
+     * @param ssoToken JWT token from SSO server by III,
+     *                 either WISEAccessToken or WISEAppToken
+     * @param refreshIfExpired A boolean value indicates whether token refresh
+     *                         is necessary if it's expired
+     * @throws APIException Related exception
+     */
+    private void decodeAuthFromSSOToken(String ssoToken,
+                                        final String cookieName,
+                                        final boolean refreshIfExpired)
+            throws APIException {
+        DecodedJWT jwt = decodeJWTToken(ssoToken);
+        Claim email = getJWTClaim(jwt, "email", true);
+        boolean expired = validateSSOToken(ssoToken);
+
+        if (expired) {
+            if (refreshIfExpired) {
+                Claim refreshToken = getJWTClaim(jwt, "refreshToken", true);
+                ssoToken = refreshSSOToken(refreshToken.asString());
+            } else {
+                throw new APIException(response.fail(
+                        Response.Status.FORBIDDEN,
+                        APIError.AuthTokenExpiredError.getCode()
+                ));
+            }
+        }
+
+        AccountEntity account;
+        try {
+            account = getAccountByMail(email.asString());
+        } catch (NoResultException e) {
+            // create this SSO account in our database
+            Claim firstName = getJWTClaim(jwt, "firstName", false);
+            Claim lastName = getJWTClaim(jwt, "lastName", false);
+            account = createAccount(firstName.asString(),
+                    lastName.asString(), email.asString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.DatabaseOperationError.getCode()
             ));
         }
 
-        String[] credentials = token.split(":", 2);
+        // construct our Auth instance
+        this.auth = new Auth(account, ssoToken, cookieName, expired);
+    }
+
+    /**
+     * Process native system log in process.
+     *
+     * @param authorization HTTP Basic authorization data
+     */
+    private void processLogin(final String authorization)
+            throws APIException {
+        String basicData;
+        final Base64.Decoder decoder = Base64.getDecoder();
+
+        try {
+            basicData = new String(decoder.decode(authorization), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.AuthDataError.getCode(),
+                    "Basic value of Authorization header is not UTF-8"
+            ));
+        }
+
+        String[] credentials = basicData.split(":", 2);
         if (2 != credentials.length) {
             throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "invalid format in Basic value of Authorization header"
+                    Response.Status.FORBIDDEN,
+                    APIError.AuthDataError.getCode(),
+                    "invalid format in Basic value of Authorization header"
             ));
         }
 
+        String username = credentials[0];
+        String password = credentials[1];
+        AccountEntity account = getAccountByName(username);
+
+        // TODO: use PasswordUtil for password encode and verification
+        if (!account.getPassword().equals(password)) {
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.AuthDataError.getCode(),
+                    "username or password incorrect"
+            ));
+        }
+
+        // Okay!!!
+        // This user can log in our system, make a JWT token for he/she.
+        // Remember that the 3rd parameter of Auth(), tokenRefreshed,
+        // must be true so that the caller can be assign this value into
+        // client's cookie
+        String jwtToken = makeBuiltinToken(account);
+        this.auth = new Auth(account, jwtToken, CN_BUILTIN, true);
+    }
+
+    /**
+     * This method check the given SSO token validation, and returns a boolean
+     * value indicate whether this token is expired.
+     *
+     * The response JSON content looks like:
+     * {
+     * "tokenType": "Bearer",
+     * "accessToken": "ACCESS-TOKEN",
+     * "expiresIn": 1497840103,
+     * "refreshToken": "50a01650-cb86-446b-a192-fd763c14f3b6"
+     * }
+     *
+     * @param token The token to be validated
+     * @return A boolean value indicates whether the token is expired
+     * @throws APIException Related exception
+     */
+    private boolean validateSSOToken(final String token)
+            throws APIException {
+        String urlValidation = System.getenv("SSO_TOKEN_VALIDATION_URL");
+        if (null == urlValidation) {
+            throw new APIException(response.fail(
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.AuthSSOValidationError.getCode(),
+                    "no token validation url specified in server"
+            ));
+        }
+
+        String uri = String.format("%s://%s", getProtocol(), urlValidation);
+        TokenValidationRequest body = new TokenValidationRequest(token);
+        Client client = ClientBuilder.newClient();
+
+        final int status = client
+                .target(uri)
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(body, MediaType.APPLICATION_JSON))
+                .getStatus();
+
+        if (200 == status) {
+            return false;
+        } else if (400 == status) {
+            throw new APIException(response.fail(
+                    Response.Status.BAD_REQUEST,
+                    APIError.AuthSSOValidationError.getCode(),
+                    "token is invalid"
+            ));
+        } else if (401 == status) {
+            // per III spec, 401 indicates the token has expired
+            return true;
+        } else {
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.ServerError.getCode(),
+                    "unknown response code from SSO token validation"
+            ));
+        }
+    }
+
+    /**
+     * This method renew a SSO token.
+     *
+     * The response JSON content looks like:
+     * {
+     * "tokenType": "Bearer",
+     * "accessToken": "NEW-ACCESS-TOKEN",
+     * "expiresIn": 1497840103,
+     * "refreshToken": "50a01650-cb86-446b-a192-fd763c14f3b6"
+     * }
+     *
+     * @param refreshToken The SSO refresh token
+     * @return New SSO token
+     * @throws APIException Related exception
+     */
+    private String refreshSSOToken(final String refreshToken)
+            throws APIException {
+        String urlRefresh = System.getenv("SSO_TOKEN_REFRESH_URL");
+        if (null == urlRefresh) {
+            throw new APIException(response.fail(
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.AuthSSORefreshError.getCode(),
+                    "no token refresh url specified in server"
+            ));
+        }
+
+        String uri = String.format("%s://%s", getProtocol(), urlRefresh);
+        TokenRefreshRequest body = new TokenRefreshRequest(refreshToken);
+        Client client = ClientBuilder.newClient();
+
+        final Response response = client
+                .target(uri)
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.entity(body, MediaType.APPLICATION_JSON));
+
+        final int status = response.getStatus();
+        if (200 == status) {
+            try {
+                return response
+                        .readEntity(TokenRefreshResponse.class)
+                        .getAccessToken();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new APIException(this.response.fail(
+                        Response.Status.FORBIDDEN,
+                        APIError.AuthSSORefreshError.getCode(),
+                        "cannot extract accessToken in token refreshing"
+                ));
+            }
+        } else if (400 == status) {
+            throw new APIException(this.response.fail(
+                    Response.Status.BAD_REQUEST,
+                    APIError.AuthSSORefreshError.getCode(),
+                    "token has expired or not valid"
+            ));
+        } else {
+            throw new APIException(this.response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.ServerError.getCode(),
+                    "unknown response code from SSO token refresh"
+            ));
+        }
+    }
+
+    private AccountEntity getAccountByMail(final String mail)
+            throws APIException {
         AccountEntity account;
         EntityManager em = JPAUtil.createEntityManager();
+
+        if (refreshLogin) {
+            em.getTransaction().begin();
+        }
+
+        String sql = "SELECT e FROM AccountEntity e WHERE e.mail=:mail";
         try {
-            account = em
-                .createQuery("SELECT e FROM AccountEntity e" +
-                             " WHERE e.name=:username" +
-                             "   AND e.password=:password",
-                             AccountEntity.class)
-                .setParameter("username", credentials[0])
-                .setParameter("password", credentials[1])
-                .getSingleResult();
-            em.detach(account);
+            account = em.createQuery(sql, AccountEntity.class)
+                    .setParameter("mail", mail)
+                    .getSingleResult();
+            if (refreshLogin) {
+                account.setLogints(new Timestamp(System.currentTimeMillis()));
+                em.getTransaction().commit();
+            }
             return account;
-        }
-        catch (NoResultException e) {
-            throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthError.getCode(),
-                "no such user exists in system database"
-            ));
-        }
-        catch (Exception e) {
-            throw new APIException(response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            ));
-        }
-        finally {
+        } finally {
             em.close();
         }
     }
 
-    private AccountEntity getAccountFromBearerAuth(String data) throws APIException {
-        final Base64.Decoder decoder = Base64.getDecoder();
-
-        String token;
-        try {
-            token = new String(decoder.decode(data), "UTF-8");
-        }
-        catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "Bearer value of Authorization header is not UTF-8 decode-able"
-            ));
-        }
-
-        JSONObject json = new JSONObject(token);
-        if (!json.has("userName")) {
-            throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "no userName attribute exists inside Bearer JSON data"
-            ));
-        }
-
+    private AccountEntity getAccountByName(final String name)
+            throws APIException {
         AccountEntity account;
-        String username = json.getString("userName");
         EntityManager em = JPAUtil.createEntityManager();
+
+        if (refreshLogin) {
+            em.getTransaction().begin();
+        }
+
+        String sql = "SELECT e FROM AccountEntity e WHERE e.name=:name";
         try {
-            account = em
-                .createQuery("SELECT e FROM AccountEntity e" +
-                             " WHERE e.name=:username",
-                             AccountEntity.class)
-                .setParameter("username", username)
-                .getSingleResult();
-            em.detach(account);
-            em.close();
+            account = em.createQuery(sql, AccountEntity.class)
+                    .setParameter("name", name)
+                    .getSingleResult();
+            if (refreshLogin) {
+                account.setLogints(new Timestamp(System.currentTimeMillis()));
+                em.getTransaction().commit();
+            }
             return account;
-        }
-        catch (NoResultException e) {
-            // create this SSO account in our database below
-        }
-        catch (Exception e) {
+        } finally {
             em.close();
-            throw new APIException(response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            ));
+        }
+    }
+
+    private AccountEntity createAccount(final String firstName,
+                                        final String lastName,
+                                        final String mail)
+            throws APIException {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        AccountEntity account = new AccountEntity();
+        account.setMail(mail);
+        account.setName(mail);
+
+        if (null != firstName) {
+            account.setFirstname(firstName);
+        }
+        if (null != lastName) {
+            account.setLastname(lastName);
+        }
+        if (null != firstName && null != lastName) {
+            account.setFullname(String.format("%s %s", firstName, lastName));
         }
 
-        // if it goes here, it means that a new account for SSO
-        // need to be created!
-        if (!json.has("profile")) {
-            em.close();
-            throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "no profile attribute exists inside Bearer JSON data"
-            ));
-        }
-
-        JSONObject profile = json.getJSONObject("profile");
-        if (!profile.has("email")) {
-            em.close();
-            throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "no email attribute exists inside Bearer JSON data"
-            ));
-        }
-
-        account = new AccountEntity();
-        account.setName(username);
         account.setEnabled(true);
         account.setPassword("eipaas1234");
-        account.setMail(profile.getString("email"));
-        account.setCreatets(new Timestamp(System.currentTimeMillis()));
-
-        int num_name = 0;
-        if (profile.has("given_name")) {
-            num_name += 1;
-            account.setFirstname(profile.getString("given_name"));
-        }
-        if (profile.has("family_name")) {
-            num_name += 1;
-            account.setLastname(profile.getString("family_name"));
-        }
-        if (2 == num_name) {
-            account.setFullname(
-                account.getFirstname() + " " + account.getLastname()
-            );
-        }
-
-        persistAccount(em, account, true, true);
+        account.setCreatets(now);
+        account.setLogints(now);
+        saveAccount(account);
         return account;
     }
 
-    private AccountEntity getAccountFromJWTbyIII(String jwtData) throws APIException {
-        // Currently, we don't introduce JWT library since java-jwt can't
-        // acquire information other than official claims. sigh!!!
-
-        String[] parts = jwtData.split("\\.");
-        if (2 != parts.length && 3 != parts.length) {
-            throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "invalid JWT token format provided"
-            ));
-        }
-
-        final Base64.Decoder decoder = Base64.getDecoder();
-        String b64Text = parts[1];
-        String payload;
-
-        try {
-            payload = new String(decoder.decode(b64Text), "UTF-8");
-        }
-        catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "payload of JWT token is not UTF-8 decode-able"
-            ));
-        }
-
-        JSONObject json = new JSONObject(payload);
-        if (!json.has("email") || !json.has("exp")) {
-            throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "no email or exp attribute inside JWT payload"
-            ));
-        }
-
-        long exp = json.getLong("exp");
-        if (System.currentTimeMillis() > exp * 1000) {
-            throw new APIException(response.fail(
-                Response.Status.FORBIDDEN, APIError.AuthDataError.getCode(),
-                "provided token expired"
-            ));
-        }
-
-        AccountEntity account;
-        String email = json.getString("email");
+    private void saveAccount(AccountEntity account)
+            throws APIException {
         EntityManager em = JPAUtil.createEntityManager();
-        try {
-            account = em
-                .createQuery("SELECT e FROM AccountEntity e" +
-                             " WHERE e.mail=:email",
-                             AccountEntity.class)
-                .setParameter("email", email)
-                .getSingleResult();
-            em.detach(account);
-            em.close();
-            return account;
-        }
-        catch (NoResultException e) {
-            // create this SSO account in our database below
-        }
-        catch (Exception e) {
-            em.close();
-            throw new APIException(response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            ));
-        }
-
-        // if it goes here, it means that a new account for SSO
-        // need to be created!!
-        String name = email.split("@")[0];  // SSO should validate this for us
-        account = new AccountEntity();
-        account.setName(name);
-        account.setEnabled(true);
-        account.setPassword("eipaas1234");
-        account.setMail(email);
-        account.setCreatets(new Timestamp(System.currentTimeMillis()));
-
-        persistAccount(em, account, true, true);
-        return account;
-    }
-
-    private void persistAccount(EntityManager em, AccountEntity account,
-                                boolean detachAfter, boolean closeManager)
-    throws APIException{
         em.getTransaction().begin();
         try {
             em.persist(account);
             em.getTransaction().commit();
-            if (detachAfter) {
-                em.detach(account);
-            }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new APIException(response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.DatabaseOperationError.getCode()
+            ));
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Method to make system built-in (our own) JWT token.
+     *
+     * The system built-in JWT token header looks like
+     * {
+     * "alg": "HS512",
+     * "typ": "EI-Dashboard"
+     * }
+     *
+     * The payload looks like the following
+     * {
+     * "iat": 1497593790,
+     * "name": "alex",
+     * "email": "alex.shao@advantech.com.tw",
+     * "login": 1497597390
+     * }
+     */
+    private String makeBuiltinToken(final AccountEntity account)
+            throws APIException {
+        try {
+            Map<String, Object> header = new HashMap<>();
+            header.put("alg", jwtAlgorithm.getName());
+            header.put("typ", JWT_TYPE);
+
+            long now = System.currentTimeMillis();
+            return JWT.create()
+                    .withHeader(header)
+                    .withIssuedAt(new Date(now))
+                    .withClaim("name", account.getName())
+                    .withClaim("email", account.getMail())
+                    .withClaim("login", account.getLogints())
+                    .sign(jwtAlgorithm);
+        } catch (JWTCreationException e) {
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.ServerError.getCode(),
+                    "server is running into problems of making JWT token"
             ));
         }
-        finally {
-            if (closeManager) {
-                em.close();
-            }
+    }
+
+    // Method to verify, and returns if successful, system built-in JWT token
+    private DecodedJWT verifyBuiltinToken(final String token)
+            throws APIException {
+        try {
+            return jwtVerifier.verify(token);
+        } catch (JWTVerificationException e) {
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.AuthTokenVerificationError.getCode()
+            ));
         }
+    }
+
+    // Method for convenient
+    private DecodedJWT decodeJWTToken(final String token)
+            throws APIException {
+        DecodedJWT jwt;
+        try {
+            jwt = JWT.decode(token);
+            return jwt;
+        } catch (JWTDecodeException e) {
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.AuthDataError.getCode(),
+                    "cannot decode provided JWT token"
+            ));
+        }
+    }
+
+    // Method for convenient
+    private Claim getJWTClaim(DecodedJWT jwt, String name, boolean throwIfNull)
+            throws APIException {
+        Claim claim = jwt.getClaim(name);
+        if (throwIfNull && null == claim) {
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.AuthDataError.getCode(),
+                    String.format("no '%s' claim inside token payload", name)
+            ));
+        }
+        return claim;
     }
 }

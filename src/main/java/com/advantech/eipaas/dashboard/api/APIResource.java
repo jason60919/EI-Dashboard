@@ -15,15 +15,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.CookieParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.SecurityContext;
 import javax.persistence.EntityManager;
 
 import org.json.JSONObject;
 
-import com.advantech.eipaas.dashboard.entities.AccountEntity;
 import com.advantech.eipaas.dashboard.entities.DashboardEntity;
 import com.advantech.eipaas.dashboard.utils.JPAUtil;
 import com.advantech.eipaas.dashboard.utils.AuthUtil;
@@ -31,7 +32,6 @@ import com.advantech.eipaas.dashboard.utils.AuthUtil;
 
 @Path("/api")
 public class APIResource {
-    private final AuthUtil authUtil = new AuthUtil();
     private final APIResponse response = new APIResponse();
 
     private Map<String, Object> makeSheetJSON(DashboardEntity e) {
@@ -46,130 +46,107 @@ public class APIResource {
     @GET
     @Path("/account/login")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(@HeaderParam("Authorization") String authorization,
-                          @CookieParam("WISEAccessToken") String jwt) {
-        AccountEntity account;
+    public Response login(@Context HttpHeaders headers,
+                          @Context SecurityContext sc) {
+        AuthUtil util;
         try {
-            account = authUtil.decodeAccount(authorization, jwt);
-        }
-        catch (APIException e) {
-            return e.getErrorResponse();
+            util = new AuthUtil(headers, true, sc.isSecure());
+        } catch (APIException e) {
+            return e.getErrorResponse().build();
         }
 
-        EntityManager em = JPAUtil.createEntityManager();
-        account.setLogints(new Timestamp(System.currentTimeMillis()));
-        em.getTransaction().begin();
-        try {
-            em.merge(account);
-            em.getTransaction().commit();
-            em.detach(account);
-        }
-        catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-        finally {
-            em.close();
-        }
-
-        return response.success("user logged in");
+        AuthUtil.Auth auth = util.getAuth();
+        Response.ResponseBuilder builder = response.success("user logged in");
+        checkAuthToken(builder, auth);
+        return builder.build();
     }
 
     @GET
     @Path("/sheet")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getSheets(@HeaderParam("Authorization") String authorization,
-                              @CookieParam("WISEAccessToken") String jwt) {
-        AccountEntity account;
+    public Response getSheets(@Context HttpHeaders headers,
+                              @Context SecurityContext sc) {
+        AuthUtil util;
         try {
-            account = authUtil.decodeAccount(authorization, jwt);
-        }
-        catch (APIException e) {
-            return e.getErrorResponse();
+            util = new AuthUtil(headers, false, sc.isSecure());
+        } catch (APIException e) {
+            return e.getErrorResponse().build();
         }
 
+        AuthUtil.Auth auth = util.getAuth();
         EntityManager em = JPAUtil.createEntityManager();
-        try {
-            List<DashboardEntity> sheets = em
-                .createQuery("SELECT e FROM DashboardEntity e" +
-                             " WHERE e.aid=:aid" +
-                             " ORDER BY e.sequence ASC",
-                             DashboardEntity.class)
-                .setParameter("aid", account.getAid())
-                .getResultList();
+        String sql = "SELECT e FROM DashboardEntity e" +
+                " WHERE e.aid=:aid ORDER BY e.sequence ASC";
 
-            List<Map<String, Object>> content = new ArrayList<>();
-            for (DashboardEntity e : sheets) {
-                content.add(makeSheetJSON(e));
-            }
-            return response.success(content);
-        }
-        catch (Exception e) {
+        List<DashboardEntity> sheets;
+        try {
+            sheets = em.createQuery(sql, DashboardEntity.class)
+                    .setParameter("aid", auth.getAccount().getAid())
+                    .getResultList();
+        } catch (Exception e) {
             e.printStackTrace();
             return response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            );
-        }
-        finally {
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.DatabaseOperationError.getCode()
+            ).build();
+        } finally {
             em.close();
         }
+
+        List<Map<String, Object>> content = new ArrayList<>();
+        for (DashboardEntity e : sheets) {
+            content.add(makeSheetJSON(e));
+        }
+
+        Response.ResponseBuilder builder = response.success(content);
+        checkAuthToken(builder, auth);
+        return builder.build();
     }
 
     @POST
     @Path("/sheet")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createSheet(@HeaderParam("Authorization") String authorization,
-                                @CookieParam("WISEAccessToken") String jwt,
+    public Response createSheet(@Context HttpHeaders headers,
+                                @Context SecurityContext sc,
                                 String sheetData) {
-        AccountEntity account;
+        AuthUtil util;
         try {
-            account = authUtil.decodeAccount(authorization, jwt);
-        }
-        catch (APIException e) {
-            return e.getErrorResponse();
+            util = new AuthUtil(headers, false, sc.isSecure());
+        } catch (APIException e) {
+            return e.getErrorResponse().build();
         }
 
         JSONObject json = new JSONObject(sheetData);
         if (!json.has("sheet")) {
             return response.fail(
-                Response.Status.BAD_REQUEST,
-                APIError.DataNotCompleteError.getCode(),
-                "provided JSON data has no key: sheet"
-            );
+                    Response.Status.BAD_REQUEST,
+                    APIError.DataNotCompleteError.getCode(),
+                    "provided JSON data has no key: sheet"
+            ).build();
         }
         if (!json.has("content")) {
             return response.fail(
-                Response.Status.BAD_REQUEST,
-                APIError.DataNotCompleteError.getCode(),
-                "provided JSON data has no key: content"
-            );
+                    Response.Status.BAD_REQUEST,
+                    APIError.DataNotCompleteError.getCode(),
+                    "provided JSON data has no key: content"
+            ).build();
         }
+
+        AuthUtil.Auth auth = util.getAuth();
+        EntityManager em = JPAUtil.createEntityManager();
 
         // how many sheet exists in database currently?
         int seqAll;
-
-        EntityManager em = JPAUtil.createEntityManager();
         try {
-            seqAll = Integer.parseInt(
-                em.createQuery(
-                    "SELECT COUNT(e)  FROM DashboardEntity e WHERE aid=:aid"
-                ).setParameter("aid", account.getAid()
-                ).getSingleResult().toString()
-            );
-        }
-        catch (Exception e) {
+            seqAll = getTotalSheetsCount(em, auth.getAccount().getAid());
+        } catch (APIException e) {
             em.close();
-            e.printStackTrace();
-            return response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            );
+            return e.getErrorResponse().build();
         }
 
         DashboardEntity sheet = new DashboardEntity();
-        sheet.setAid(account.getAid());
+        sheet.setAid(auth.getAccount().getAid());
         sheet.setSheet(json.getString("sheet"));
         sheet.setContent(json.get("content").toString());
         sheet.setSequence(seqAll + 1);
@@ -179,74 +156,66 @@ public class APIResource {
         try {
             em.persist(sheet);
             em.getTransaction().commit();
-            return response.success(
-                Response.Status.CREATED, makeSheetJSON(sheet)
-            );
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             em.getTransaction().rollback();
             return response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            );
-        }
-        finally {
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.DatabaseOperationError.getCode()
+            ).build();
+        } finally {
             em.close();
         }
+
+        Response.ResponseBuilder builder = response
+                .success(Response.Status.CREATED, makeSheetJSON(sheet));
+        checkAuthToken(builder, auth);
+        return builder.build();
     }
 
     @PUT
     @Path("/sheet/{did}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateSheet(@HeaderParam("Authorization") String authorization,
-                                @CookieParam("WISEAccessToken") String jwt,
+    public Response updateSheet(@Context HttpHeaders headers,
+                                @Context SecurityContext sc,
                                 @PathParam("did") long did,
                                 String sheetData) {
-        AccountEntity account;
+        AuthUtil util;
         try {
-            account = authUtil.decodeAccount(authorization, jwt);
-        }
-        catch (APIException e) {
-            return e.getErrorResponse();
+            util = new AuthUtil(headers, false, sc.isSecure());
+        } catch (APIException e) {
+            return e.getErrorResponse().build();
         }
 
         JSONObject json = new JSONObject(sheetData);
         if (!json.has("sequence")) {
             return response.fail(
-                Response.Status.BAD_REQUEST,
-                APIError.DataNotCompleteError.getCode(),
-                "provided JSON data has no key: sequence"
-            );
+                    Response.Status.BAD_REQUEST,
+                    APIError.DataNotCompleteError.getCode(),
+                    "provided JSON data has no key: sequence"
+            ).build();
         }
 
-        int seqAll, seqNew = json.getInt("sequence");
+        AuthUtil.Auth auth = util.getAuth();
+        int seqNew = json.getInt("sequence");
         EntityManager em = JPAUtil.createEntityManager();
+
+        int seqAll;
         try {
-            seqAll = Integer.parseInt(
-                em.createQuery(
-                    "SELECT COUNT(e) FROM DashboardEntity e WHERE aid=:aid"
-                ).setParameter("aid", account.getAid()
-                ).getSingleResult().toString()
-            );
-        }
-        catch (Exception e) {
+            seqAll = getTotalSheetsCount(em, auth.getAccount().getAid());
+        } catch (APIException e) {
             em.close();
-            e.printStackTrace();
-            return response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            );
+            return e.getErrorResponse().build();
         }
 
         if (seqNew <= 0 || seqNew > seqAll) {
             em.close();
             return response.fail(
-                Response.Status.BAD_REQUEST,
-                APIError.SequenceOutOfBoundError.getCode(),
-                "given sequence value out of bound: " + seqNew
-            );
+                    Response.Status.BAD_REQUEST,
+                    APIError.SequenceOutOfBoundError.getCode(),
+                    "given sequence value out of bound: " + seqNew
+            ).build();
         }
 
         int seqMin = seqNew;
@@ -255,30 +224,28 @@ public class APIResource {
 
         try {
             sheet = em.find(DashboardEntity.class, did);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             em.close();
             e.printStackTrace();
             return response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            );
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.DatabaseOperationError.getCode()
+            ).build();
         }
 
         if (null == sheet) {
             em.close();
             return response.fail(
-                Response.Status.NOT_FOUND,
-                APIError.SheetNotFoundError.getCode(),
-                "no such sheet exists based on PREFIX: " + did
-            );
+                    Response.Status.NOT_FOUND,
+                    APIError.SheetNotFoundError.getCode(),
+                    "no such sheet exists based on PREFIX: " + did
+            ).build();
         }
 
         int seqOld = sheet.getSequence();
         if (seqOld > seqMax) {
             seqMax = seqOld;
-        }
-        else if (seqOld < seqMin) {
+        } else if (seqOld < seqMin) {
             seqMax = seqOld;
         }
 
@@ -298,65 +265,65 @@ public class APIResource {
             if (seqOld != seqNew) {
                 String delta = (seqOld > seqNew) ? "+1" : "-1";
                 String query = "UPDATE DashboardEntity" +
-                               "   SET sequence=sequence%s" +
-                               " WHERE aid=:aid AND did!=:did" +
-                               "   AND sequence>=:seqMin" +
-                               "   AND sequence<=:seqMax";
+                        "   SET sequence=sequence%s" +
+                        " WHERE aid=:aid AND did!=:did" +
+                        "   AND sequence>=:seqMin" +
+                        "   AND sequence<=:seqMax";
                 em.createQuery(String.format(query, delta))
-                    .setParameter("aid", account.getAid())
-                    .setParameter("did", did)
-                    .setParameter("seqMin", seqMin)
-                    .setParameter("seqMax", seqMax)
-                    .executeUpdate();
+                        .setParameter("aid", auth.getAccount().getAid())
+                        .setParameter("did", did)
+                        .setParameter("seqMin", seqMin)
+                        .setParameter("seqMax", seqMax)
+                        .executeUpdate();
             }
             em.getTransaction().commit();
-            return response.success("sheet updated");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             em.getTransaction().rollback();
             return response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            );
-        }
-        finally {
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.DatabaseOperationError.getCode()
+            ).build();
+        } finally {
             em.close();
         }
+
+        Response.ResponseBuilder builder = response.success("sheet updated");
+        checkAuthToken(builder, auth);
+        return builder.build();
     }
 
     @DELETE
     @Path("/sheet/{did}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteSheet(@HeaderParam("Authorization") String authorization,
-                                @CookieParam("WISEAccessToken") String jwt,
+    public Response deleteSheet(@Context HttpHeaders headers,
+                                @Context SecurityContext sc,
                                 @PathParam("did") long did) {
-        AccountEntity account;
+        AuthUtil util;
         try {
-            account = authUtil.decodeAccount(authorization, jwt);
-        }
-        catch (APIException e) {
-            return e.getErrorResponse();
+            util = new AuthUtil(headers, false, sc.isSecure());
+        } catch (APIException e) {
+            return e.getErrorResponse().build();
         }
 
-        List<DashboardEntity> sheets;
+        AuthUtil.Auth auth = util.getAuth();
         EntityManager em = JPAUtil.createEntityManager();
+        String sql = "SELECT e FROM DashboardEntity e" +
+                " WHERE e.aid=:aid ORDER BY e.sequence ASC";
+
+        List<DashboardEntity> sheets;
         try {
             sheets = em
-                .createQuery("SELECT e FROM DashboardEntity e" +
-                             " WHERE e.aid=:aid" +
-                             " ORDER BY e.sequence ASC",
-                             DashboardEntity.class)
-                .setParameter("aid", account.getAid())
-                .getResultList();
-        }
-        catch (Exception e) {
+                    .createQuery(sql, DashboardEntity.class)
+                    .setParameter("aid", auth.getAccount().getAid())
+                    .getResultList();
+        } catch (Exception e) {
             em.close();
             e.printStackTrace();
             return response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            );
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.DatabaseOperationError.getCode()
+            ).build();
         }
 
         em.getTransaction().begin();
@@ -375,18 +342,46 @@ public class APIResource {
                 }
             }
             em.getTransaction().commit();
-            return response.success("sheet deleted");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             em.getTransaction().rollback();
             return response.fail(
-                Response.Status.INTERNAL_SERVER_ERROR,
-                APIError.DatabaseOperationError.getCode()
-            );
-        }
-        finally {
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.DatabaseOperationError.getCode()
+            ).build();
+        } finally {
             em.close();
+        }
+
+        Response.ResponseBuilder builder = response.success("sheet deleted");
+        checkAuthToken(builder, auth);
+        return builder.build();
+    }
+
+    private void checkAuthToken(Response.ResponseBuilder builder,
+                                final AuthUtil.Auth auth) {
+        if (auth.isTokenRefreshed() && null != auth.getCookieName()) {
+            builder.cookie(new NewCookie(
+                    auth.getCookieName(), auth.getToken()
+            ));
+        }
+    }
+
+    private int getTotalSheetsCount(final EntityManager em, final long aid)
+            throws APIException {
+        String sql = "SELECT COUNT(e) FROM DashboardEntity e WHERE aid=:aid";
+        try {
+            String count = em.createQuery(sql)
+                    .setParameter("aid", aid)
+                    .getSingleResult()
+                    .toString();
+            return Integer.parseInt(count);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.DatabaseOperationError.getCode()
+            ));
         }
     }
 }
