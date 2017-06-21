@@ -35,27 +35,28 @@ public final class PasswordUtil {
 
         try {
             checked = getHash(password.toCharArray(), salt);
-        }
-        catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
             return false;
         }
 
         int diff = hash.length ^ checked.length;
-        for(int i = 0; i < hash.length && i < checked.length; i++) {
+        for (int i = 0; i < hash.length && i < checked.length; i++) {
             diff |= hash[i] ^ checked[i];
         }
         return diff == 0;
     }
 
-    public String hashedPassword(String password) throws NoSuchAlgorithmException, InvalidKeySpecException{
+    public String hashedPassword(String password)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] salt = getSalt();
         Base64.Encoder b64 = Base64.getUrlEncoder().withoutPadding();
         return b64.encodeToString(salt) + DELIMETER +
-               b64.encodeToString(getHash(password.toCharArray(), salt));
+                b64.encodeToString(getHash(password.toCharArray(), salt));
     }
 
-    private byte[] getHash(char[] text, byte[] salt) throws NoSuchAlgorithmException, InvalidKeySpecException{
+    private byte[] getHash(char[] text, byte[] salt)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeySpec spec = new PBEKeySpec(text, salt, ITERATIONS, LEN_KEY);
         SecretKeyFactory key = SecretKeyFactory.getInstance(ALGORITHM);
         return key.generateSecret(spec).getEncoded();
