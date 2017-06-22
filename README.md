@@ -59,7 +59,7 @@ it assumes that the working directory is EI-Dashboard installation directory.
     This task runs a test server for you. A Tomcat server for testing will be
     running by Gradle automatically. If the connection to PostgreSQL can't be
     established, providing your own connection url in
-    `src/main/resources/META-INF/persistence.xml`
+    `src/main/resources/META-INF/persistence.xml`.
     
   * Deploying onto PCF
 
@@ -79,7 +79,7 @@ it assumes that the working directory is EI-Dashboard installation directory.
     and follow the instrcution to download and install it.
     
 
-  * Gererate a manifest.yml for PC
+  * Gererate manifest.yml for PCF
 
     ```sh
     $ ./gradlew makeManifest
