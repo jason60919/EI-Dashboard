@@ -57,7 +57,9 @@ it assumes that the working directory is EI-Dashboard installation directory.
     ```
     
     This task runs a test server for you. A Tomcat server for testing will be
-    running by Gradle automatically.
+    running by Gradle automatically. If the connection to PostgreSQL can't be
+    established, providing your own connection url in
+    `src/main/resources/META-INF/persistence.xml`
     
   * Deploying onto PCF
 
@@ -84,8 +86,8 @@ it assumes that the working directory is EI-Dashboard installation directory.
     ```
     
     This task generates 3 official manifest.yml files for PCF pushing.
-    They are manifest-production.yml, manifest-stage.yml, and
-    manifest-develop.yml, and pupulated under build/libs directory.
+    They are `manifest-production.yml`, `manifest-stage.yml`, and
+    `manifest-develop.yml`, and pupulated under build/libs directory.
     Normally, only QA need to issue this task.
     
 
