@@ -10,20 +10,21 @@ import org.json.JSONObject;
 
 
 public class APIResponse {
-    private ResponseBuilder makeResponse(Response.Status status,
-                                         Object result) {
+    private ResponseBuilder makeResponse(final Response.Status status,
+                                         final boolean success,
+                                         final Object result) {
         JSONObject json = new JSONObject();
-        json.put("success", javax.ws.rs.core.Response.Status.OK == status);
+        json.put("success", success);
         json.put("result", null == result ? "Unknown" : result);
         return Response.status(status).entity(json.toString());
     }
 
     public ResponseBuilder success(Object data) {
-        return makeResponse(Response.Status.OK, data);
+        return makeResponse(Response.Status.OK, true, data);
     }
 
     public ResponseBuilder success(Response.Status status, Object data) {
-        return makeResponse(status, data);
+        return makeResponse(status, true, data);
     }
 
     public ResponseBuilder fail(Response.Status status,
@@ -39,7 +40,7 @@ public class APIResponse {
             result.put("detail", detail);
         }
 
-        return makeResponse(status, result);
+        return makeResponse(status, false, result);
     }
 
     public ResponseBuilder fail(Response.Status status, int errorCode) {

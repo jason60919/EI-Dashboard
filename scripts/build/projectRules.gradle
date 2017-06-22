@@ -19,9 +19,9 @@ class ProjectRules {
     private final String STAGE = 'stage'
 
     private final List SPACE = [
-        DEVELOP,
-        STAGE,
-        PRODUCTION
+            DEVELOP,
+            STAGE,
+            PRODUCTION
     ]
 
     // Suffix for spaces
@@ -30,9 +30,9 @@ class ProjectRules {
     private final String SFX_DEVELOP = '-develop'
 
     private final Map SUFFIX = [
-        (DEVELOP): SFX_DEVELOP,
-        (STAGE): SFX_STAGE,
-        (PRODUCTION): SFX_PRODUCTION
+            (DEVELOP)   : SFX_DEVELOP,
+            (STAGE)     : SFX_STAGE,
+            (PRODUCTION): SFX_PRODUCTION
     ]
 
     private final Project project
@@ -45,6 +45,10 @@ class ProjectRules {
         if (!SPACE.contains(TO_SPACE)) {
             throw new GradleException("unsupported PCF space: $TO_SPACE")
         }
+    }
+
+    String getTargetSpace() {
+        return this.TO_SPACE
     }
 
     /**
@@ -115,14 +119,11 @@ class ProjectRules {
         }
 
         if (null == pcfAppPath) {
-            String candidatesInOrder = ''
+            String errMsg = 'Cannot find files to push in order:\n'
             for (int i = 0; i < candidates.size(); i++) {
-                candidatesInOrder += '* ' + candidates[i] + '\n'
+                errMsg += '* ' + candidates[i] + '\n'
             }
-            throw new GradleException(
-                    "Cannot find resonable application to push in order:\n" + \
-                    candidatesInOrder
-            )
+            throw new GradleException(errMsg)
         }
 
         return absolutely ? pcfAppPath.absolutePath : pcfAppPath.name
@@ -159,43 +160,17 @@ class ProjectRules {
     }
 }
 
-
 // Initiate a rules and attach to be a property of project
 ext {
     rules = new ProjectRules(project)
 }
 
-
 // Determine and assign version to this project.
 // 'version' is a native property inside project, ext not need here.
 version = rules.determineVersion()
 
-
-// Custom task to push application to PCF per our rules.
-task pushToPCF {
-    group 'advantech'
-    description 'Push the project to PCF environment.'
-
-    doLast {
-        exec {
-            String pcfAppName = rules.getPCFappName()
-            String pcfAppLibPath = rules.getReasonableAppLibPath()
-
-            List cmds = ['cf', 'push', pcfAppName, '-p', pcfAppLibPath]
-            if (tasks.findByName('war')) {
-                String pcfAppHostname = rules.getPCFappHostname()
-                cmds += ['-n', pcfAppHostname]
-            }
-
-            // Execute cf push!
-            commandLine cmds
-        }
-    }
-}
-
-
 // Custom task to generate build/libs/manifest.yml for QA.
-task makeManifest {
+task makeManifest(dependsOn: build) {
     group 'advantech'
     description 'Make an official manifest.yml for PCF'
 
@@ -218,6 +193,20 @@ task makeManifest {
                     pcfAppHostname: rules.getPCFappHostname(false, false),
                     pcfAppVersion: appVersion.replace('.', '-'),
             )
+        }
+    }
+}
+
+// Custom task to push application to PCF per our rules.
+task pushToPCF(dependsOn: makeManifest) {
+    group 'advantech'
+    description 'Push the project to PCF environment.'
+
+    doLast {
+        exec {
+            String manifest = String.format(
+                    "build/libs/manifest-%s.yml", rules.getTargetSpace())
+            commandLine 'cf', 'push', '-f', manifest
         }
     }
 }

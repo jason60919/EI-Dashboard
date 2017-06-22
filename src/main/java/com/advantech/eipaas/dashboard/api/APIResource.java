@@ -15,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Context;
@@ -33,6 +34,7 @@ import com.advantech.eipaas.dashboard.utils.AuthUtil;
 @Path("/api")
 public class APIResource {
     private final APIResponse response = new APIResponse();
+    private final static String DOMAIN = System.getenv("COOKIE_DOMAIN");
 
     private Map<String, Object> makeSheetJSON(DashboardEntity e) {
         Map<String, Object> json = new HashMap<>();
@@ -57,7 +59,20 @@ public class APIResource {
 
         AuthUtil.Auth auth = util.getAuth();
         Response.ResponseBuilder builder = response.success("user logged in");
-        checkAuthToken(builder, auth);
+        checkAuthToken(builder, auth, sc.isSecure());
+        return builder.build();
+    }
+
+    @GET
+    @Path("/account/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response logout(@Context HttpHeaders headers,
+                           @Context SecurityContext sc) {
+        Response.ResponseBuilder builder = response.success("user logged out");
+        Cookie cookie = headers.getCookies().get(AuthUtil.CN_BUILTIN);
+        if (null != cookie) {
+            builder.cookie(new NewCookie(cookie, null, 0, sc.isSecure()));
+        }
         return builder.build();
     }
 
@@ -99,7 +114,7 @@ public class APIResource {
         }
 
         Response.ResponseBuilder builder = response.success(content);
-        checkAuthToken(builder, auth);
+        checkAuthToken(builder, auth, sc.isSecure());
         return builder.build();
     }
 
@@ -169,7 +184,7 @@ public class APIResource {
 
         Response.ResponseBuilder builder = response
                 .success(Response.Status.CREATED, makeSheetJSON(sheet));
-        checkAuthToken(builder, auth);
+        checkAuthToken(builder, auth, sc.isSecure());
         return builder.build();
     }
 
@@ -289,7 +304,7 @@ public class APIResource {
         }
 
         Response.ResponseBuilder builder = response.success("sheet updated");
-        checkAuthToken(builder, auth);
+        checkAuthToken(builder, auth, sc.isSecure());
         return builder.build();
     }
 
@@ -354,15 +369,17 @@ public class APIResource {
         }
 
         Response.ResponseBuilder builder = response.success("sheet deleted");
-        checkAuthToken(builder, auth);
+        checkAuthToken(builder, auth, sc.isSecure());
         return builder.build();
     }
 
     private void checkAuthToken(Response.ResponseBuilder builder,
-                                final AuthUtil.Auth auth) {
+                                final AuthUtil.Auth auth,
+                                final boolean isSecure) {
         if (auth.isTokenRefreshed() && null != auth.getCookieName()) {
             builder.cookie(new NewCookie(
-                    auth.getCookieName(), auth.getToken()
+                    auth.getCookieName(), auth.getToken(),
+                    "/", DOMAIN, null, -1, isSecure, true
             ));
         }
     }

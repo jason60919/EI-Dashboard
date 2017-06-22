@@ -1,3 +1,10 @@
+# 1.0.2: Maintenance Release
+## Features
+ * [+]
+    * SSO validation for WISEAccessToken type.
+    * SSO validation for WISEAppToken type.
+    * Auto refresh SSO token (only for WISEAccessToken) on demand.
+
 # 1.0.1: Maintenance Release
 ## Bugs
  * [#]

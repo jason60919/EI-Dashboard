@@ -108,6 +108,12 @@ class TokenRefreshResponse {
 }
 
 
+//
+// FIXME:
+//   1) Use PasswordUtil for password encode and verification
+//   2) Introduce a logging framework instead of println()
+//      and printStackTrace()
+//
 public class AuthUtil {
     // HTTP "Authorization" header relevant
     private static final String HDR_BASIC = "Basic ";
@@ -115,7 +121,7 @@ public class AuthUtil {
     private static final String HDR_AUTH = "Authorization";
 
     // Cookie names
-    private static final String CN_BUILTIN = "EIToken";
+    public static final String CN_BUILTIN = "EIToken";
     private static final String CN_SSO = "WISEAccessToken";
 
     // Don't change the following values relevant JWT as possible.
@@ -208,13 +214,13 @@ public class AuthUtil {
 
         // 1st priority: ei-dashboard builtin
         // HTTP only cookie with JWT type
-        if (cookies.get(CN_BUILTIN).getValue() != null) {
+        if (cookies.get(CN_BUILTIN) != null) {
             decodeAuthFromBuiltin(cookies.get(CN_BUILTIN).getValue());
         }
 
         // 2nd priority: web sso by iii
         // HTTP only cookie with JWT type
-        else if (cookies.get(CN_SSO).getValue() != null) {
+        else if (cookies.get(CN_SSO) != null) {
             String wiseAccessToken = cookies.get(CN_SSO).getValue();
             decodeAuthFromSSOToken(wiseAccessToken, CN_SSO, true);
         }
@@ -370,13 +376,13 @@ public class AuthUtil {
                                         final boolean refreshIfExpired)
             throws APIException {
         DecodedJWT jwt = decodeJWTToken(ssoToken);
-        Claim email = getJWTClaim(jwt, "email", true);
         boolean expired = validateSSOToken(ssoToken);
 
         if (expired) {
             if (refreshIfExpired) {
                 Claim refreshToken = getJWTClaim(jwt, "refreshToken", true);
                 ssoToken = refreshSSOToken(refreshToken.asString());
+                jwt = decodeJWTToken(ssoToken);
             } else {
                 throw new APIException(response.fail(
                         Response.Status.FORBIDDEN,
@@ -386,6 +392,8 @@ public class AuthUtil {
         }
 
         AccountEntity account;
+        Claim email = getJWTClaim(jwt, "email", true);
+
         try {
             account = getAccountByMail(email.asString());
         } catch (NoResultException e) {
@@ -736,7 +744,9 @@ public class AuthUtil {
             jwt = JWT.decode(token);
             return jwt;
         } catch (JWTDecodeException e) {
+            System.err.println("Cannot decode JWT token: [" + token + "]");
             e.printStackTrace();
+
             throw new APIException(response.fail(
                     Response.Status.FORBIDDEN,
                     APIError.AuthDataError.getCode(),

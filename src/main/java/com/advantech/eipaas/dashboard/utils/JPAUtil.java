@@ -3,6 +3,7 @@ package com.advantech.eipaas.dashboard.utils;
 
 import java.util.Map;
 import java.util.List;
+import java.util.HashMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -25,9 +26,14 @@ public class JPAUtil implements ServletContextListener {
         if (0 == properties.size()) {
             emf = Persistence.createEntityManagerFactory("DashboardPU");
         } else {
-            emf = Persistence.createEntityManagerFactory(
-                    "DashboardPU", properties.get(0)
-            );
+            Map<String, Object> property = properties.get(0);
+            Map<String, Object> env = new HashMap<>();
+
+            env.put("hibernate.connection.url", property.get("url"));
+            env.put("hibernate.connection.username", property.get("username"));
+            env.put("hibernate.connection.password", property.get("password"));
+
+            emf = Persistence.createEntityManagerFactory("DashboardPU", env);
         }
     }
 
