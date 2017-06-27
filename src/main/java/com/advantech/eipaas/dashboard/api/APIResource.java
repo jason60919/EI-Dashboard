@@ -34,7 +34,6 @@ import com.advantech.eipaas.dashboard.utils.AuthUtil;
 @Path("/api")
 public class APIResource {
     private final APIResponse response = new APIResponse();
-    private final static String DOMAIN = System.getenv("COOKIE_DOMAIN");
 
     private Map<String, Object> makeSheetJSON(DashboardEntity e) {
         Map<String, Object> json = new HashMap<>();
@@ -59,7 +58,7 @@ public class APIResource {
 
         AuthUtil.Auth auth = util.getAuth();
         Response.ResponseBuilder builder = response.success("user logged in");
-        checkAuthToken(builder, auth, sc.isSecure());
+        util.checkTokenRefresh(builder, sc.isSecure());
         return builder.build();
     }
 
@@ -114,7 +113,7 @@ public class APIResource {
         }
 
         Response.ResponseBuilder builder = response.success(content);
-        checkAuthToken(builder, auth, sc.isSecure());
+        util.checkTokenRefresh(builder, sc.isSecure());
         return builder.build();
     }
 
@@ -184,7 +183,7 @@ public class APIResource {
 
         Response.ResponseBuilder builder = response
                 .success(Response.Status.CREATED, makeSheetJSON(sheet));
-        checkAuthToken(builder, auth, sc.isSecure());
+        util.checkTokenRefresh(builder, sc.isSecure());
         return builder.build();
     }
 
@@ -304,7 +303,7 @@ public class APIResource {
         }
 
         Response.ResponseBuilder builder = response.success("sheet updated");
-        checkAuthToken(builder, auth, sc.isSecure());
+        util.checkTokenRefresh(builder, sc.isSecure());
         return builder.build();
     }
 
@@ -369,19 +368,8 @@ public class APIResource {
         }
 
         Response.ResponseBuilder builder = response.success("sheet deleted");
-        checkAuthToken(builder, auth, sc.isSecure());
+        util.checkTokenRefresh(builder, sc.isSecure());
         return builder.build();
-    }
-
-    private void checkAuthToken(Response.ResponseBuilder builder,
-                                final AuthUtil.Auth auth,
-                                final boolean isSecure) {
-        if (auth.isTokenRefreshed() && null != auth.getCookieName()) {
-            builder.cookie(new NewCookie(
-                    auth.getCookieName(), auth.getToken(),
-                    "/", DOMAIN, null, -1, isSecure, true
-            ));
-        }
     }
 
     private int getTotalSheetsCount(final EntityManager em, final long aid)

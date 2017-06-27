@@ -15,6 +15,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -120,9 +121,10 @@ public class AuthUtil {
     private static final String HDR_BEARER = "Bearer ";
     private static final String HDR_AUTH = "Authorization";
 
-    // Cookie names
+    // Cookie names, domain
     public static final String CN_BUILTIN = "EIToken";
     private static final String CN_SSO = "WISEAccessToken";
+    private final static String COOKIE_DOMAIN = System.getenv("COOKIE_DOMAIN");
 
     // Don't change the following values relevant JWT as possible.
     private static final String JWT_TYPE = "EI-Dashboard";
@@ -285,6 +287,16 @@ public class AuthUtil {
                     Response.Status.FORBIDDEN,
                     APIError.AccountNotEnabledError.getCode(),
                     "the given account is disabled by system"
+            ));
+        }
+    }
+
+    public void checkTokenRefresh(Response.ResponseBuilder builder,
+                                  final boolean isSecure) {
+        if (auth.isTokenRefreshed() && null != auth.getCookieName()) {
+            builder.cookie(new NewCookie(
+                    auth.getCookieName(), auth.getToken(),
+                    "/", COOKIE_DOMAIN, null, -1, isSecure, true
             ));
         }
     }
