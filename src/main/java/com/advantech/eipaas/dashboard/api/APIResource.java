@@ -56,8 +56,7 @@ public class APIResource {
             return e.getErrorResponse().build();
         }
 
-        AuthUtil.Auth auth = util.getAuth();
-        Response.ResponseBuilder builder = response.success("user logged in");
+        Response.ResponseBuilder builder = response.success();
         util.checkTokenRefresh(builder, sc.isSecure());
         return builder.build();
     }
@@ -67,7 +66,7 @@ public class APIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout(@Context HttpHeaders headers,
                            @Context SecurityContext sc) {
-        Response.ResponseBuilder builder = response.success("user logged out");
+        Response.ResponseBuilder builder = response.success();
         Cookie cookie = headers.getCookies().get(AuthUtil.CN_BUILTIN);
         if (null != cookie) {
             builder.cookie(new NewCookie(cookie, null, 0, sc.isSecure()));
@@ -302,7 +301,7 @@ public class APIResource {
             em.close();
         }
 
-        Response.ResponseBuilder builder = response.success("sheet updated");
+        Response.ResponseBuilder builder = response.success();
         util.checkTokenRefresh(builder, sc.isSecure());
         return builder.build();
     }
@@ -367,7 +366,7 @@ public class APIResource {
             em.close();
         }
 
-        Response.ResponseBuilder builder = response.success("sheet deleted");
+        Response.ResponseBuilder builder = response.success();
         util.checkTokenRefresh(builder, sc.isSecure());
         return builder.build();
     }

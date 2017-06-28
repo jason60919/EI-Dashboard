@@ -1,3 +1,10 @@
+# 1.0.3: Maintenance Release
+## Features
+ * [+]
+   * Add Content-Security-Policy HTTP header.
+   * Add X-Content-Type-Options HTTP header.
+   * Add X-XSS-Protection HTTP header.
+
 # 1.0.2: Maintenance Release
 ## Features
  * [+]
@@ -10,7 +17,7 @@
  * [#]
     * Change vcm API default url
  * [#]
-    * Change sso reeirect url
+    * Change sso redirect url
  * [#]
     * Change food court API default
 

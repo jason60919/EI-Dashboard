@@ -3,4 +3,58 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+    <filter>
+        <filter-name>ExpiresFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.ExpiresFilter</filter-class>
+        <init-param>
+            <param-name>ExpiresDefault</param-name>
+            <param-value>access plus 2 seconds</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ExpiresByType image</param-name>
+            <param-value>access plus 2 seconds</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ExpiresByType text/css</param-name>
+            <param-value>access plus 2 seconds</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ExpiresByType application/javascript</param-name>
+            <param-value>access plus 2 seconds</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ExpiresFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>HeaderSecurityFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.HttpHeaderSecurityFilter</filter-class>
+        <init-param>
+            <param-name>antiClickJackingOption</param-name>
+            <param-value>SAMEORIGIN</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>HeaderSecurityFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>ContentSecurityPolicyFilter</filter-name>
+        <filter-class>com.advantech.eipaas.dashboard.filters.CSPFilter</filter-class>
+        <init-param>
+            <param-name>default-src</param-name>
+            <param-value>*</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>ContentSecurityPolicyFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>

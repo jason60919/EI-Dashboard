@@ -291,6 +291,13 @@ public class AuthUtil {
         }
     }
 
+    /**
+     * Check the token is refreshed for this auth. If yes, assign a new
+     * cookie for the response.
+     *
+     * @param builder A Jersey ResponseBuilder instance.
+     * @param isSecure Indicates whether this request runs on HTTPS or not
+     */
     public void checkTokenRefresh(Response.ResponseBuilder builder,
                                   final boolean isSecure) {
         if (auth.isTokenRefreshed() && null != auth.getCookieName()) {
