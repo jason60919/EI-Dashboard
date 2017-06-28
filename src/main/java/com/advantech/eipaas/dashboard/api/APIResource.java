@@ -56,7 +56,9 @@ public class APIResource {
             return e.getErrorResponse().build();
         }
 
-        Response.ResponseBuilder builder = response.success();
+        Map<String, Object> aid = new HashMap<>();
+        aid.put("aid", util.getAuth().getAccount().getAid());
+        Response.ResponseBuilder builder = response.success(aid);
         util.checkTokenRefresh(builder, sc.isSecure());
         return builder.build();
     }
