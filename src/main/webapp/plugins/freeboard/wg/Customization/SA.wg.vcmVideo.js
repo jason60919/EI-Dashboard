@@ -144,13 +144,13 @@
 
         var strServer = "http://vcm.advantech.pcf-on-azure.net";
         var strEnterpriseID = "1";
-        var strUserName = "";
-        var strPassword = "";
-        var strIP = "";
-        var strVid = "";
-        var strIVSID = "";
-        var strAPIPort = "";
-        var strDataPort = "";
+        var strUserName = "admin";
+        var strPassword = "1234";
+        var strIP = "vcm-xa.wise-paas.com";
+        var strVid = "19";
+        var strIVSID = "IVS-DC-FE-07-2C-0D-6D";
+        var strAPIPort = "8050";
+        var strDataPort = "8089";
 
         var nChannel = 1;
         var strSessionId = "";
@@ -172,6 +172,8 @@
             strEnterpriseID = currentSettings.enterpriseID;
             nChannel = currentSettings.channel;
             self.vcmInfo();
+            //self.onLine();
+
         };
 
         self.getHeight = function ()
@@ -261,9 +263,9 @@
                 contentType: 'application/xml',
                 data: data,
                 dataType: 'text',
-                xhrFields: {
-                    withCredentials: true
-                },
+                //xhrFields: {
+                //    withCredentials: true
+                //},
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
@@ -290,9 +292,9 @@
                 contentType: 'application/xml',
                 data: data,
                 dataType: 'text',
-                xhrFields: {
-                    withCredentials: true
-                },
+                //xhrFields: {
+                //    withCredentials: true
+                //},
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
