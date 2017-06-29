@@ -92,6 +92,7 @@ $(function () {
         }
     }
 
+    debugger;
     //Azure III
     if (typeof Cookies.get('WISEName') !== 'undefined')
     {
@@ -128,11 +129,11 @@ $(function () {
             },
             error: function (xhr, exception) {
                 var oError = $.parseJSON(xhr.responseText);
-                if (!oError.success)
+                if (oError.ErrorDescription != "")
                 {
                     swal({
                         title: "warning",
-                        text: "Authentication failed !!",
+                        text: oError.ErrorDescription,
                         type: "warning"
                     });
                 }
@@ -141,7 +142,7 @@ $(function () {
                 $('.RMMLoader').hide();
             },
             success: function (xhr) {
-                if (xhr.success)
+                if (typeof xhr.aid != "undefined")
                 {
                     window.location.href = "FreeBoard.html";
                 }

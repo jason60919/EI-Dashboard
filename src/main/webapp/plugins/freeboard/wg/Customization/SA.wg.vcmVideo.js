@@ -135,6 +135,7 @@
 
     var vcmVideoWidget = function (settings)
     {
+        debugger;
         var self = this;
         var currentSettings = settings;
         var titleElement = $('<h2 class="section-title"></h2>');
