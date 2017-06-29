@@ -323,11 +323,18 @@ public class AuthUtil {
         AccountEntity account;
         try {
             account = getAccountByMail(email.asString());
+        } catch (NoResultException e) {
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.AuthError.getCode(),
+                    "username or password incorrect"
+            ));
         } catch (Exception e) {
             e.printStackTrace();
             throw new APIException(response.fail(
-                    Response.Status.FORBIDDEN, APIError.AuthError.getCode(),
-                    "no such user for this token"
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.ServerError.getCode()
             ));
         }
         this.auth = new Auth(account, eiToken, CN_BUILTIN, false);
@@ -425,7 +432,7 @@ public class AuthUtil {
             e.printStackTrace();
             throw new APIException(response.fail(
                     Response.Status.INTERNAL_SERVER_ERROR,
-                    APIError.DatabaseOperationError.getCode()
+                    APIError.ServerError.getCode()
             ));
         }
 
@@ -649,6 +656,18 @@ public class AuthUtil {
                 em.getTransaction().commit();
             }
             return account;
+        } catch (NoResultException e) {
+            throw new APIException(response.fail(
+                    Response.Status.FORBIDDEN,
+                    APIError.AuthDataError.getCode(),
+                    "username or password incorrect"
+            ));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.ServerError.getCode()
+            ));
         } finally {
             em.close();
         }
