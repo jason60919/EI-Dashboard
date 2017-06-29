@@ -272,11 +272,14 @@ $(function () {
         _RMMGlobal.Set(oRMM);
     });
 
-    var strSSOURL = "https://portal-sso.wise-paas.com/";
+    var domain = window.location.hostname.split('.')[1];
+    if (domain === undefined)
+        domain = 'wise-paas';
+    var strSSOURL = "https://portal-sso." + domain + ".com/";
     if (/-stage/g.test(window.location.hostname))
-        strSSOURL = "https://portal-sso-stage.wise-paas.com/";
+        strSSOURL = "https://portal-sso-stage." + domain + ".com/";
     if (/-develop/g.test(window.location.hostname))
-        strSSOURL = "https://portal-sso-develop.wise-paas.com/";
+        strSSOURL = "https://portal-sso-develop." + domain + ".com/";
     $("#frmMainLogin_txtSSO").val(strSSOURL);
     var oRMM = _RMMGlobal.Get();
     oRMM.ssoURL = strSSOURL;
