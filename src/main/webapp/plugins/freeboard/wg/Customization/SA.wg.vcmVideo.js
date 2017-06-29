@@ -204,6 +204,9 @@
                 cache: false,
                 url: strServer + "/vcm/vcm?enterprise_id=" + strEnterpriseID,
                 type: "get",
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
@@ -228,6 +231,9 @@
                 url: strServer + '/vcm/channel?vcm_id=' + strVid + '&channel_id=' + nChannel,
 
                 type: "get",
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
@@ -255,6 +261,9 @@
                 contentType: 'application/xml',
                 data: data,
                 dataType: 'text',
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
@@ -281,6 +290,9 @@
                 contentType: 'application/xml',
                 data: data,
                 dataType: 'text',
+                xhrFields: {
+                    withCredentials: true
+                },
                 beforeSend: function (xhr) {
                 },
                 error: function (xhr, exception) {
