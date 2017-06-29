@@ -1,7 +1,6 @@
 /* 
  *  Next time 
  *  Ease to get next time
- * @auth ken.tsai@advantech.com.tw
  * @date 20141113
  * @required
  * js/sa/utils/easyday.js

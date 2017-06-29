@@ -1,6 +1,5 @@
 /*
  *  Dashboard  plugin
- * @author ken.tsai@advantech.com.tw
  * @date 20141107
  * @requires 
  * js/libs/log4javascript/log4javascript.min.js

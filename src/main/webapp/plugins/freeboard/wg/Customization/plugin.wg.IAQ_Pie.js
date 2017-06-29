@@ -1,7 +1,6 @@
 /*
  * Template widget 
  * Integration with SA Fans
- * @author: ken.tsai@advantech.com.tw
  * @date 2015/09/22
  * @requried 
  * js/libs/log4javascript/log4javascript.min.js

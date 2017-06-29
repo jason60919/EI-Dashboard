@@ -1,6 +1,5 @@
 /*
  *  Chart  plugin
- * @author ken.tsai@advantech.com.tw
  * @date 20141022
  * @requires
  *  js/libs/charts/jqplot/*

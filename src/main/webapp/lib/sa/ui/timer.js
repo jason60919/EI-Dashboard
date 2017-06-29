@@ -1,6 +1,5 @@
 /* 
  *  Count down plugin
- * @author ken.tsai@advantech.com.tw
  * @date 20141022
  */
 

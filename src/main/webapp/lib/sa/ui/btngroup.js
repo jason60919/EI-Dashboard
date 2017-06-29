@@ -1,6 +1,5 @@
 /* 
  *   Button group  plugin
- * @author ken.tsai@advantech.comt.w
  * @date 20141015
  * @requires
  *  js/libs/log4javascript/log4javascript.min.js

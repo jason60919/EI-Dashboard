@@ -1,6 +1,5 @@
 /* 
  * Convert device info spec for Web UI data-binding
- * @author ken.tsai@advantech.com.tw
  * parseGroup and parseElement reference DeviceInfoSpec.java by jelly
  * @date 2015/02/13
  * @required

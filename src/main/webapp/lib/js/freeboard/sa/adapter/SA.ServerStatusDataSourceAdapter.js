@@ -1,6 +1,5 @@
 /*
  *  Server status datasource adapter 
- *  @ken.tsai@advantech.com.tw
  *  @date 2015/10/28
  */
 if (typeof (DataSourceAdapter) !== 'undefined') {

@@ -5,7 +5,7 @@
         <class>com.advantech.eipaas.dashboard.entities.AccountEntity</class>
         <class>com.advantech.eipaas.dashboard.entities.DashboardEntity</class>
         <properties>
-            <property name="hibernate.connection.url" value="jdbc:postgresql://172.22.12.248:5432/wisepaas"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://wise-pgsql.eastasia.cloudapp.azure.com:5432/wisepaas_dev"/>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
             <property name="hibernate.connection.username" value="dashboard"/>
             <property name="hibernate.connection.password" value="dashboard"/>

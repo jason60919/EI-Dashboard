@@ -1,6 +1,5 @@
 /* 
  * SA REST
- * @author: ken.tsai@advantech.com.tw
  * @date 2015/11/5
  */
 

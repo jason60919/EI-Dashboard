@@ -1,6 +1,5 @@
 /* 
  * Device Editor
- * @author: ken.tsai@advantech.com.tw
  * @date 2015/11/03
  * @required
  * FreeBoard/lib/js/thirdparty/selectivity-full.js

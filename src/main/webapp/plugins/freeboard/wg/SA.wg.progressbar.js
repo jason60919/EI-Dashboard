@@ -1,5 +1,4 @@
 /* progressbar widget
- * @author: ken.tsai@advantech.com.tw
  * @date 2015/08/26
  * @requried
  * js/libs/log4javascript/log4javascript.min.js

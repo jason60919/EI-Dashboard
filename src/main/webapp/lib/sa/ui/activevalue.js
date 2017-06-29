@@ -1,6 +1,5 @@
 /* 
  *  avtive value  plugin
- * @author ken.tsai@advantech.com.tw
  * @date 2015/03/10
  *  @requires
  *  js/libs/log4javascript/log4javascript.min.js

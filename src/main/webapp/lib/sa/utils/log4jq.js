@@ -1,6 +1,5 @@
 /* 
  * The log4jq is based on log4javascript framework
- * @auth ken.tsai@advantech.com.tw
  * @date 2014/9/9
  * @required
  * js/libs/log4javascript/log4javascript.min.js

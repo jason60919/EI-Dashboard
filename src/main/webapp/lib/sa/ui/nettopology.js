@@ -1,6 +1,5 @@
 /* 
  * network topology plugin (VivaGraph)
- * @author ken.tsai@advantech.com.tw
  * @date 20150720
  * [
  *    {

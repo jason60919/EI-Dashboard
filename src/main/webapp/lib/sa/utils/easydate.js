@@ -1,6 +1,5 @@
 /* 
  *  Date function
- * @author ken.tsai@advantech.com.tw
  * @date 20141120
  * @required:
  * js/libs/utils/moment/moment.min.js

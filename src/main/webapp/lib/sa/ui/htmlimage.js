@@ -1,6 +1,5 @@
 /* 
  *  html image plugin
- * @author ken.tsai@advantech.com.tw
  * @date 2015/08/24
  *  @requires
  *  js/libs/log4javascript/log4javascript.min.js

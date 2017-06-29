@@ -299,7 +299,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 logger.debug(data);
                 if (!TokenValidation(data))
                     return;
-                if (!_.isUndefined(data.result.ErrorCode)) {
+                if (!_.isUndefined(data.ErrorCode)) {
 
                     var _title = $.i18n.t('global.warning'),
                             _yes = $.i18n.t('global.yes'),
@@ -316,10 +316,10 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 } else {
                     var sheetName = activeSheet.find('a').attr('title');
                     var bFound = false;
-                    for (var i = 0; i < data.result.length; i++)
+                    for (var i = 0; i < data.data.length; i++)
                     {
-                        var sheetList = data.result[i].sheet;
-                        var DSContent = data.result[i].content;
+                        var sheetList = data.data[i].sheet;
+                        var DSContent = data.data[i].content;
                         if (sheetList == sheetName) {
                             bFound = true;
                             //var jsonObject = JSON.parse(DSContent);
@@ -387,8 +387,8 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
             },
             success: function (data) {
                     $("div#tabs .ui-state-default").remove();
-                    if (data.result.length > 0) {
-                        var DSBoardArray = data.result;
+                    if (data.data.length > 0) {
+                        var DSBoardArray = data.data;
                         var sortResult = DSBoardArray.sort(function (a, b) {
                             return a.sequence - b.sequence;
                         });
@@ -632,49 +632,19 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 }
             },
             success: function (data) {
-                if (!_.isUndefined(data.result.ErrorCode)) {
-
-                    if (data.result.ErrorCode == 1303) {
-
+                if (data != "") {
                         var _title = $.i18n.t('global.warning'),
                                 _yes = $.i18n.t('global.yes'),
-                                _ask = $.i18n.t('global.dialogMsg.Error') + '! ' + $.i18n.t('global.dialogMsg.Info_sheetNameDuplicated');
-                        var phraseElement = $('<p>' + _ask + '</p>');
-                        var db = new DialogBox(phraseElement, _title, _yes, '', function (okcancel) {
-                            if (okcancel) {
-                                //Reload DashBoard
-                                //location.reload();
-                                self.refreshDashboard();
-                                freeboardUI.showLoadingIndicator(false);
-                            }
-                        });
-                    } else {
-
-                        var _title = $.i18n.t('global.warning'),
-                                _yes = $.i18n.t('global.yes'),
-                                _ask = $.i18n.t('global.dialogMsg.Error_Occurred') + $.i18n.t('global.dialogMsg.Errorcode') + data.result.ErrorCode;
+                                _ask = $.i18n.t('global.dialogMsg.Error_Occurred') + data;
                         var phraseElement = $('<p>' + _ask + '</p>');
                         var db = new DialogBox(phraseElement, _title, _yes);
-                    }
-
-                } else if (data.result == 'false') {
-
-                    var _title = $.i18n.t('global.warning'),
-                            _yes = $.i18n.t('global.yes'),
-                            _ask = $.i18n.t('global.dialogMsg.Error_SavedFail', sheetName);
-                    var phraseElement = $('<p>' + _ask + '</p>');
-                    var db = new DialogBox(phraseElement, _title, _yes);
                 } else {
-
                     if (!_.isUndefined(targetItem) && targetItem[0]) {
-
                         if (targetItem.hasClass('newTab')) {
-
-                            targetItem.data('did', data.result.did);
+                            targetItem.data('did', data.did);
                             targetItem.removeClass('newTab');
                             self.loadDashboardFromDataBase();
                         }
-
                         if (targetItem.hasClass('SQChange')) {
 
                             targetItem.removeClass('SQChange');
@@ -798,7 +768,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                         success: function (data) {
                                             if (!TokenValidation(data))
                                                 return;
-                                            if (!_.isUndefined(data.result.ErrorCode)) {
+                                            if (data != "") {
                                                 var _title = $.i18n.t('global.warning'),
                                                         _yes = $.i18n.t('global.yes'),
                                                         _ask = $.i18n.t('global.dialogMsg.Error_DeleteFail', sheetName);
@@ -811,7 +781,6 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                                     }
                                                 });
                                             } else {
-
                                                 activeSheet.remove();
                                                 $("div#tabs").tabs("refresh");
                                                 $('#tabs li').removeClass('ui-corner-top');
@@ -851,7 +820,6 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                             }
                         });
                     } else {
-
                         var _title = $.i18n.t('global.warning'),
                                 _yes = $.i18n.t('global.yes'),
                                 _ask = $.i18n.t('global.dialogMsg.Info_sheetAmount');
@@ -917,18 +885,11 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                                 success: function (data) {
                                     if (!TokenValidation(data))
                                         return;
-                                    if (!_.isUndefined(data.result.ErrorCode)) {
+                                    if (data != "") {
 
                                         var _title = $.i18n.t('global.warning'),
                                                 _yes = $.i18n.t('global.yes'),
-                                                _ask = $.i18n.t('global.dialogMsg.Error_Occurred') + $.i18n.t('global.dialogMsg.Errorcode') + data.result.ErrorCode;
-                                        var phraseElement = $('<p>' + _ask + '</p>');
-                                        var db = new DialogBox(phraseElement, _title, _yes);
-                                    } else if (data.result == 'false') {
-
-                                        var _title = $.i18n.t('global.warning'),
-                                                _yes = $.i18n.t('global.yes'),
-                                                _ask = $.i18n.t('global.dialogMsg.Error_DeleteFail', sheetName);
+                                                _ask = $.i18n.t('global.dialogMsg.Error_Occurred') + data;
                                         var phraseElement = $('<p>' + _ask + '</p>');
                                         var db = new DialogBox(phraseElement, _title, _yes);
                                     } else {
@@ -983,78 +944,6 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
         }
     };
     this.getThemeType = function () {
-        var currentUrl = document.URL.split('dashboard.jsp')[0];
-        currentUrl = "/";
-        var accountId = $.cookie('mobileacountId');
-        var requestURL = encodeURI(currentUrl + 'webresources/AccountMgmt/');
-        var method = "GET";
-        $.ajax({
-            url: requestURL,
-            type: method,
-            cache: false,
-            data: '',
-            contentType: "application/json",
-            xhrFields: {
-                withCredentials: true
-            },
-            beforeSend: function (xhr) {
-                var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);
-                xhr.setRequestHeader("Authorization", authorization);
-                xhr.setRequestHeader("Accept", "application/json");
-            },
-            success: function (data) {
-                if (!TokenValidation(data))
-                    return;
-                var eachAcc = '';
-                var themeType = 1;
-                for (var i = 0; i < data.result.totalsize; i++) {
-                    if (data.result.item[i]) {
-                        eachAcc = data.result.item[i].aid.toString();
-                        if (eachAcc === accountId) {
-                            themeType = data.result.item[i].theme;
-                            self.longPollingLastevtID = data.result.item[i].lasteventid;
-                            $.cookie('themeType', themeType, {
-                                path: '/'
-                            });
-                            switch (themeType) {
-
-                                case 0:
-                                    $('body').addClass('theme_white');
-                                    $('#themeWhite').hide();
-                                    $('#themeBlack').show();
-                                    break;
-                                case 1:
-                                    break;
-                            }
-                            continue;
-                        }
-                    } else {
-                        eachAcc = data.result.item.aid.toString();
-                        if (eachAcc === accountId) {
-                            themeType = data.result.item.theme;
-                            self.longPollingLastevtID = data.result.item.lasteventid;
-                            $.cookie('themeType', themeType, {
-                                path: '/'
-                            });
-                            switch (themeType) {
-
-                                case 0:
-                                    $('body').addClass('theme_white');
-                                    $('#themeWhite').hide();
-                                    $('#themeBlack').show();
-                                    break;
-                                case 1:
-                                    break;
-                            }
-                            break;
-                        }
-                    }
-                }
-            },
-            error: function (xhr, status, error) {
-
-            }
-        });
     };
     this.queryShareAccount = function () {
         if ($('.dropdownMenu').length === 0) {
@@ -1223,16 +1112,45 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 break;
             case "Self" :
             default:
-                //clear cookies
-                var cookies = document.cookie.split(";");
-                for(var i=0; i < cookies.length; i++) {
-                    var equals = cookies[i].indexOf("=");
-                    var name = equals > -1 ? cookies[i].substr(0, equals) : cookies[i];
-                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-                }
-                _oRMM = {};
-                _RMMGlobal.Set(_oRMM);
-                window.location.href = "/";
+                $('.RMMLoader').show();
+                $.ajax({
+                    cache: false,
+                    url: "dashboard/api/account/logout",
+                    type: "get",
+                    contentType: 'application/json',
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    beforeSend: function (xhr) {
+                        var authorization = 'Basic ' + $.base64.encode($('#frmMainLogin_UserName').val() + ':' + $('#frmMainLogin_Password').val());
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
+                    },
+                    error: function (xhr, exception) {
+                        var oError = $.parseJSON(xhr.responseText);
+                        if (oError.ErrorDescription != "")
+                        {
+                            swal({
+                                title: "warning",
+                                text: oError.ErrorDescription,
+                                type: "warning"
+                            });
+                        }
+                    },
+                    success: function (xhr) {
+                        $('.RMMLoader').hide();
+                        //clear cookies
+                        var cookies = document.cookie.split(";");
+                        for(var i=0; i < cookies.length; i++) {
+                            var equals = cookies[i].indexOf("=");
+                            var name = equals > -1 ? cookies[i].substr(0, equals) : cookies[i];
+                            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                        }
+                        _oRMM = {};
+                        _RMMGlobal.Set(_oRMM);
+                        window.location.href = "/";
+                    }
+                });
                 break;
         }
     };

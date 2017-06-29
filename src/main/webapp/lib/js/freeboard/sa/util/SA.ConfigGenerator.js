@@ -1,7 +1,6 @@
 /* 
  * Config Generator
  * It will create config of freeboard 
- * @author: ken.tsai@advantech.com.tw
  * @date 2015/11/04
  */
 var ConfigGenerator = function () {

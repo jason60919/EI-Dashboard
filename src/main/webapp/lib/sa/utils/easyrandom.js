@@ -1,6 +1,5 @@
 /* 
  *  Easy random function
- * @author ken.tsai@advantech.com.tw
  * @date 20141201
  */
 

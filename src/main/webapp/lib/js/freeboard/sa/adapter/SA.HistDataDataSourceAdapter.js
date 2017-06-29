@@ -1,6 +1,5 @@
 /*
  *  Get His Data API datasource adapter
- *  @ken.tsai@advantech.com.tw
  *  @date 2015/10/20
  */
 

@@ -1,6 +1,5 @@
 /*
  *  content pack generator template
- *  @ken.tsai@advantech.com.tw
  *  @date 2015/11/04
  */
 if (typeof (ContentPackGenerator) !== 'undefined') {

@@ -1,6 +1,5 @@
 /* 
  * SA ConnectionPool for data sources
- * @author: ken.tsai@advantech.com.tw
  * @date 2015/11/20
  * @required
  * @jquery.ajaxqueue2

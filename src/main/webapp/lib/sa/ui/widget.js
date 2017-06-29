@@ -1,6 +1,5 @@
 /* 
  *   widget plugin
- * @author ken.tsai@advantech.comt.w
  * @date 20141001
  * @requires 
  * js/libs/log4javascript/log4javascript.min.js

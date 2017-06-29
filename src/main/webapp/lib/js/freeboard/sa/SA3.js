@@ -1,7 +1,6 @@
 /* 
  * Glboal Config/function
  * !!! IMPORTANT , DONOT REMOVE ANY KEY
- * @author ken.tsai@advantech.com.tw
  * @date 2015/03/26
  */
 

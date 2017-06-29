@@ -1,6 +1,5 @@
 /* 
  * Convert mongodb result for morris.js
- * @author ken.tsai@advantech.com.tw
  * @date 2014/11/13
  * @required
  *  js/libs/log4javascript/log4javascript.min.js

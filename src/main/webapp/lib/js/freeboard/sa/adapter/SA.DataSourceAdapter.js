@@ -1,6 +1,5 @@
 /* 
  * Hist Data datasource adapter
- * @author ken.tsai@advantech.com.tw
  * @date 2015/10/07
  * @required
  *  jquery.js

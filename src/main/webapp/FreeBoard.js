@@ -1,6 +1,5 @@
 /* 
  * freeboard entry point
- * @author ken.tsai@adventech.com.tw
  * @date 2015/09/01
  */
 var myCookieExpiresDate = new Date();

@@ -1,6 +1,5 @@
 /* 
  *  Hareware Monitor  plugin
- * @author ken.tsai@advantech.com.tw
  * @date 20141113
  * @requires 
  * js/libs/log4javascript/log4javascript.min.js

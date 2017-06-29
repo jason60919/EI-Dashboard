@@ -651,34 +651,6 @@ var freeboard = (function () {
 
                 clicks++; //count clicks
                 if (clicks === 1) {
-//Bug 7778 - A账户 share给B，通过B账户切换到A的dashboard，不能对A的sheet页名称进行修改。
-//                    if ($('#queryShareAccount label').attr('aid') !== $.cookie('mobileacountId')) {
-//                        var overlay = $('<div id="modal_overlay"></div>');
-//                        $('body').append(overlay);
-//                        freeboardUI.showLoadingIndicator(true);
-//
-//                        timer = setTimeout(function () {
-//
-//                            $('div#tabs').tabs({
-//                                active: newSheet
-//                            });
-//
-//                            $.cookie('ActiveSheet', newSheet, {
-//                                path: '/'
-//                            });
-//
-//                            $('#tabs li').removeClass('ui-corner-top');
-//
-//                            theFreeboardModel.loadDashboardFromDataBase();
-//
-//                            clicks = 0; //after action performed, reset counter
-//
-//                        }, DELAY);
-//
-//                        return;
-//
-//                    }
-                    //SINGLE Click (LOAD SHEET)
                     if (newSheet != oringinalSheet) {
                         var prevData = JSON.parse($('body').data('Content'));
                         var content = freeboard.serialize();
@@ -730,8 +702,7 @@ var freeboard = (function () {
                                     success: function (data) {
                                         if (!TokenValidation(data))
                                             return;
-                                        if (!_.isUndefined(data.result.ErrorCode)) {
-
+                                        if (data != "") {
                                             $('div#tabs').tabs({
                                                 active: oringinalSheet
                                             });
@@ -741,31 +712,13 @@ var freeboard = (function () {
                                             $('#tabs li').removeClass('ui-corner-top');
                                             var _title = $.i18n.t('global.warning'),
                                                     _yes = $.i18n.t('global.yes'),
-                                                    _ask = $.i18n.t('global.dialogMsg.Error_Occurred') + $.i18n.t('global.dialogMsg.Errorcode') + data.result.ErrorCode;
-                                            var phraseElement = $('<p>' + _ask + '</p>');
-                                            var db = new DialogBox(phraseElement, _title, _yes);
-                                            _.delay(function () {
-                                                freeboardUI.showLoadingIndicator(false);
-                                            }, 100);
-                                        } else if (data.result == 'false') {
-
-                                            $('div#tabs').tabs({
-                                                active: oringinalSheet
-                                            });
-                                            $.cookie('ActiveSheet', oringinalSheet, {
-                                                path: '/'
-                                            });
-                                            $('#tabs li').removeClass('ui-corner-top');
-                                            var _title = $.i18n.t('global.warning'),
-                                                    _yes = $.i18n.t('global.yes'),
-                                                    _ask = $.i18n.t('global.dialogMsg.Error_SavedFail', sheetName);
+                                                    _ask = $.i18n.t('global.dialogMsg.Error_Occurred') + data;
                                             var phraseElement = $('<p>' + _ask + '</p>');
                                             var db = new DialogBox(phraseElement, _title, _yes);
                                             _.delay(function () {
                                                 freeboardUI.showLoadingIndicator(false);
                                             }, 100);
                                         } else {
-
                                             $('div#tabs').tabs({
                                                 active: newSheet
                                             });
@@ -1080,7 +1033,7 @@ var freeboard = (function () {
                         }
                     },
                     success: function (data) {
-                        if (data.success)
+                        if (typeof data.aid != "undefined")
                             theFreeboardModel.LoadDashboardSheetList();
                         else
                             window.location.href = "index.html";

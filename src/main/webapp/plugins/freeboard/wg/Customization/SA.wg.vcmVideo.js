@@ -16,7 +16,7 @@
                 name: 'serverUrl',
                 display_name: "Server URL",
                 type: 'text',
-                default_value: "https://portal-vcm.wise-paas.com"
+                default_value: "https://api-vcm.wise-paas.com"
             },
             {
                 name: 'enterpriseID',
@@ -44,7 +44,7 @@
                         value: 5
                     }
                 ],
-                default_value: 3
+                default_value: 1
             },
             {
                 name: 'channel',
@@ -142,7 +142,7 @@
         var widgetElement = $('<div id="' + currentID + '" style="text-align: center;"></div>');
 
         var strServer = "http://vcm.advantech.pcf-on-azure.net";
-        var strEnterpriseID = "3";
+        var strEnterpriseID = "1";
         var strUserName = "";
         var strPassword = "";
         var strIP = "";
@@ -198,9 +198,10 @@
 
         self.vcmInfo = function ()
         {
+            debugger;
             $.ajax({
                 cache: false,
-                url: strServer + "/enumeration?enterpriseid=" + strEnterpriseID,
+                url: strServer + "/vcm/vcm?enterprise_id=" + strEnterpriseID,
                 type: "get",
                 beforeSend: function (xhr) {
                 },
@@ -208,13 +209,13 @@
                 },
                 success: function (xhr) {
                     var oData = $.parseJSON(xhr)
-                    strUserName = oData.vcminfo[0].username;
-                    strPassword = oData.vcminfo[0].password;
-                    strVid = oData.vcminfo[0].vid;
-                    strIP = oData.vcminfo[0].domain;
-                    strIVSID = oData.vcminfo[0].ivsid;
-                    strAPIPort = oData.vcminfo[0].apiport;
-                    strDataPort = oData.vcminfo[0].dataport;
+                    strUserName = oData.dashinfo[0].username;
+                    strPassword = oData.dashinfo[0].password;
+                    strVid = oData.dashinfo[0].vcminfo[0].vid;
+                    strIP = oData.dashinfo[0].domain;
+                    strIVSID = oData.dashinfo[0].vcminfo[0].ivsid;
+                    strAPIPort = oData.dashinfo[0].apiport;
+                    strDataPort = oData.dashinfo[0].dataport;
                     self.channelInfo();
                 }
             });
@@ -223,7 +224,8 @@
         {
             $.ajax({
                 cache: false,
-                url: strServer + "/chanenumeration?vid=" + strVid,
+                url: strServer + '/vcm/channel?vcm_id=' + strVid + '&channel_id=' + nChannel,
+
                 type: "get",
                 beforeSend: function (xhr) {
                 },
@@ -231,8 +233,8 @@
                 },
                 success: function (xhr) {
                     var oData = $.parseJSON(xhr);
-                    if (oData.chaninfo.length > (nChannel-1))
-                        titleElement.html(oData.chaninfo[(nChannel-1)].channame);
+                    if (oData.chaninfo.length > 0)
+                        titleElement.html(oData.chaninfo[0].channame);
                     else    
                         titleElement.html("");
                     self.onLine();

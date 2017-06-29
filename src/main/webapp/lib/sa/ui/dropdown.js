@@ -1,6 +1,5 @@
 /* 
  *  dropdown  plugin for widget plugin
- * @author ken.tsai@advantech.com.tw
  * @date 2015/04/20
  */
 

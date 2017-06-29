@@ -1,6 +1,5 @@
 /* 
  * Content Pack Generator
- * @author: ken.tsai@advantech.com.tw
  * @date 2015/11/03
  */
 

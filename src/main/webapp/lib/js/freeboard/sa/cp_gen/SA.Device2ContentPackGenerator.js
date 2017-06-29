@@ -11,7 +11,6 @@
  * remote_kvm, 
  * SUSIControl, 
  * terminal
- * @author: ken.tsai@advantech.com.tw
  * @date 2015/11/09
  */
 var Device2ContentPackGenerator = (function (log4jq) {

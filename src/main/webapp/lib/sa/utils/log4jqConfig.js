@@ -1,6 +1,5 @@
 /* 
  * log4jq global logger debug
- * @auth ken.tsai@advantech.com.tw
  * @date 2015/9/9
  * @required
  * js/sa/utils/log4jq.js

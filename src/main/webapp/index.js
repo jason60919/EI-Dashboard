@@ -178,7 +178,6 @@ $(function () {
             url: "dashboard/api/account/login",
             type: "get",
             contentType: 'application/json',
-            dataType: 'json',
             xhrFields: {
                 withCredentials: true
             },
@@ -189,11 +188,11 @@ $(function () {
             },
             error: function (xhr, exception) {
                 var oError = $.parseJSON(xhr.responseText);
-                if (!oError.success)
+                if (oError.ErrorDescription != "")
                 {
                     swal({
                         title: "warning",
-                        text: "Authentication failed !!",
+                        text: oError.ErrorDescription,
                         type: "warning"
                     });
                 }
@@ -203,11 +202,12 @@ $(function () {
                 //window.location.href = "FreeBoard.html";
             },
             success: function (xhr) {
-                if (xhr.success)
+                if (typeof xhr.aid != "undefined")
                 {
                     var oRMM = _RMMGlobal.Get();
                     oRMM.Login = {};
-                    oRMM.Login.aid = xhr.result.aid;
+                    //oRMM.Login.aid = xhr.aid;
+                    oRMM.Login.aid = xhr.aid;
                     oRMM.Login.username = $('#frmMainLogin_UserName').val();
                     oRMM.Login.password = $('#frmMainLogin_Password').val();
                     oRMM.Login.type = "Self";
@@ -259,7 +259,6 @@ $(function () {
 
     //SSO URL : portal-sso.wise-paas.com/
     $('#frmMainLogin_rmmLoginBody').dblclick(function () {
-        debugger;
         if ($("#frmMainLogin_txtSSO").parent().is(":visible"))
             $("#frmMainLogin_txtSSO").parent().hide();
         else
