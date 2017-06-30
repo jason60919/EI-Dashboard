@@ -92,7 +92,6 @@ $(function () {
         }
     }
 
-    debugger;
     //Azure III
     if (typeof Cookies.get('WISEName') !== 'undefined')
     {
@@ -137,7 +136,7 @@ $(function () {
                         type: "warning"
                     });
                 }
-
+                $('.login-box').show();
                 $('#frmMainLogin_UserName').focus();
                 $('.RMMLoader').hide();
             },
@@ -158,6 +157,10 @@ $(function () {
                 $('.RMMLoader').hide();
             }
         });
+    }
+    else
+    {
+        $('.login-box').show();
     }
 
     $('input').iCheck({

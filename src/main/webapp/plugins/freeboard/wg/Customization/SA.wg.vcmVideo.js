@@ -135,7 +135,6 @@
 
     var vcmVideoWidget = function (settings)
     {
-        debugger;
         var self = this;
         var currentSettings = settings;
         var titleElement = $('<h2 class="section-title"></h2>');
@@ -188,7 +187,7 @@
             strServer = currentSettings.serverUrl;
             strEnterpriseID = currentSettings.enterpriseID;
             nChannel = currentSettings.channel;
-            self.realTime();
+            self.channelInfo();
         };
 
         self.onCalculatedValueChanged = function (settingName, newValue)
@@ -201,7 +200,6 @@
 
         self.vcmInfo = function ()
         {
-            debugger;
             $.ajax({
                 cache: false,
                 url: strServer + "/vcm/vcm?enterprise_id=" + strEnterpriseID,
@@ -217,9 +215,9 @@
                     var oData = $.parseJSON(xhr)
                     strUserName = oData.dashinfo[0].username;
                     strPassword = oData.dashinfo[0].password;
-                    strVid = oData.dashinfo[0].vcminfo[0].vid;
+                    strVid = oData.dashinfo[0].vmsinfo[0].vid;
                     strIP = oData.dashinfo[0].domain;
-                    strIVSID = oData.dashinfo[0].vcminfo[0].ivsid;
+                    strIVSID = oData.dashinfo[0].vmsinfo[0].ivsid;
                     strAPIPort = oData.dashinfo[0].apiport;
                     strDataPort = oData.dashinfo[0].dataport;
                     self.channelInfo();
@@ -242,8 +240,8 @@
                 },
                 success: function (xhr) {
                     var oData = $.parseJSON(xhr);
-                    if (oData.chaninfo.length > 0)
-                        titleElement.html(oData.chaninfo[0].channame);
+                    if (oData.channelinfo.length > 0)
+                        titleElement.html(oData.channelinfo[0].channame);
                     else    
                         titleElement.html("");
                     self.onLine();
