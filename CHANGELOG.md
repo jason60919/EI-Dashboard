@@ -4,6 +4,8 @@
    * Add Content-Security-Policy HTTP header.
    * Add X-Content-Type-Options HTTP header.
    * Add X-XSS-Protection HTTP header.
+   * Add password encryption in database.
+   * EI-Dashboard its own account can perform log out action.
 
 # 1.0.2: Maintenance Release
 ## Features
@@ -22,4 +24,4 @@
     * Change food court API default
 
 # 1.0.0: Milestone Release
- - The very first official release.
+ * The very first official release.

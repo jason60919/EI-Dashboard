@@ -15,11 +15,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.SecurityContext;
 import javax.persistence.EntityManager;
@@ -59,7 +57,7 @@ public class APIResource {
         Map<String, Object> aid = new HashMap<>();
         aid.put("aid", util.getAuth().getAccount().getAid());
         Response.ResponseBuilder builder = response.success(aid);
-        util.checkTokenRefresh(builder, sc.isSecure());
+        util.checkTokenRefresh(builder);
         return builder.build();
     }
 
@@ -68,10 +66,16 @@ public class APIResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout(@Context HttpHeaders headers,
                            @Context SecurityContext sc) {
+        AuthUtil util;
+        try {
+            util = new AuthUtil(headers, false, sc.isSecure());
+        } catch (APIException e) {
+            return e.getErrorResponse().build();
+        }
+
         Response.ResponseBuilder builder = response.success();
-        Cookie cookie = headers.getCookies().get(AuthUtil.CN_BUILTIN);
-        if (null != cookie) {
-            builder.cookie(new NewCookie(cookie, null, 0, sc.isSecure()));
+        if (headers.getCookies().get(AuthUtil.CN_BUILTIN) != null) {
+            util.purgeBuiltinCookie(builder);
         }
         return builder.build();
     }
@@ -114,7 +118,7 @@ public class APIResource {
         }
 
         Response.ResponseBuilder builder = response.success(content);
-        util.checkTokenRefresh(builder, sc.isSecure());
+        util.checkTokenRefresh(builder);
         return builder.build();
     }
 
@@ -184,7 +188,7 @@ public class APIResource {
 
         Response.ResponseBuilder builder = response
                 .success(Response.Status.CREATED, makeSheetJSON(sheet));
-        util.checkTokenRefresh(builder, sc.isSecure());
+        util.checkTokenRefresh(builder);
         return builder.build();
     }
 
@@ -304,7 +308,7 @@ public class APIResource {
         }
 
         Response.ResponseBuilder builder = response.success();
-        util.checkTokenRefresh(builder, sc.isSecure());
+        util.checkTokenRefresh(builder);
         return builder.build();
     }
 
@@ -369,7 +373,7 @@ public class APIResource {
         }
 
         Response.ResponseBuilder builder = response.success();
-        util.checkTokenRefresh(builder, sc.isSecure());
+        util.checkTokenRefresh(builder);
         return builder.build();
     }
 
