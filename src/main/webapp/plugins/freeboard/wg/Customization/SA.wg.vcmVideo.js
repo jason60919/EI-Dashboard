@@ -187,7 +187,7 @@
             strServer = currentSettings.serverUrl;
             strEnterpriseID = currentSettings.enterpriseID;
             nChannel = currentSettings.channel;
-            self.channelInfo();
+            self.vcmInfo();
         };
 
         self.onCalculatedValueChanged = function (settingName, newValue)
