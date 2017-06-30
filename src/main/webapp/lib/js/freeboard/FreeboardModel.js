@@ -1130,11 +1130,11 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                         var oError = $.parseJSON(xhr.responseText);
                         if (oError.ErrorDescription != "")
                         {
-                            swal({
-                                title: "warning",
-                                text: oError.ErrorDescription,
-                                type: "warning"
-                            });
+                            var _title = $.i18n.t('global.warning'),
+                                _yes = $.i18n.t('global.yes'),
+                                _ask = $.i18n.t('global.dialogMsg.Error') + '! ' + oError.ErrorDescription;
+                            var phraseElement = $('<p>' + _ask + '</p>');
+                            var db = new DialogBox(phraseElement, _title, _yes);
                         }
                     },
                     success: function (xhr) {
