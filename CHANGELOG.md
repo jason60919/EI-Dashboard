@@ -6,6 +6,8 @@
    * Add X-XSS-Protection HTTP header.
    * Add password encryption in database.
    * EI-Dashboard its own account can perform log out action.
+   * Hide defalut login , and provide a demo sso.
+   * Change api handle from vcm apis.
 
 # 1.0.2: Maintenance Release
 ## Features
