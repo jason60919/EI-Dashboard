@@ -7,10 +7,11 @@ import java.util.Map;
 import java.util.Base64;
 import java.sql.Timestamp;
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -111,8 +112,7 @@ class TokenRefreshResponse {
 
 //
 // FIXME:
-//   1) Use PasswordUtil for password encode and verification
-//   2) Introduce a logging framework instead of println()
+//   1) Introduce a logging framework instead of println()
 //      and printStackTrace()
 //
 public class AuthUtil {
@@ -169,6 +169,7 @@ public class AuthUtil {
     private final Algorithm jwtAlgorithm;
     private final JWTVerifier jwtVerifier;
     private final APIResponse response = new APIResponse();
+    private final PasswordUtil pu = new PasswordUtil();
 
     public Auth getAuth() {
         return auth;
@@ -180,18 +181,20 @@ public class AuthUtil {
 
     /**
      * There are 3 means supported for authorization in our system currently:
-     *
-     * 1) Uses HTTP header authorization with "Basic" data type.
+     * <p><ol>
+     * <li>
+     * Uses HTTP header authorization with "Basic" data type.
      * This way is only used for our own system account in login process.
      * If this step goes well, the client will acquire type 3 data.
-     *
-     * 2) Uses HTTP header authorization with "Bearer" data type.
+     * <li>
+     * Uses HTTP header authorization with "Bearer" data type.
      * This way is only used for native applications JWT token
      * from SSO by III.
-     *
-     * 3) Uses HTTP only cookie with JWT type.
+     * <li>
+     * Uses HTTP only cookie with JWT type.
      * This way is used for our own system account, and web applications
      * JWT token from SSO by III.
+     * </ol>
      */
     public AuthUtil(final HttpHeaders headers,
                     final boolean refreshLogin,
@@ -296,10 +299,8 @@ public class AuthUtil {
      * cookie for the response.
      *
      * @param builder A Jersey ResponseBuilder instance.
-     * @param isSecure Indicates whether this request runs on HTTPS or not
      */
-    public void checkTokenRefresh(Response.ResponseBuilder builder,
-                                  final boolean isSecure) {
+    public void checkTokenRefresh(Response.ResponseBuilder builder) {
         if (auth.isTokenRefreshed() && null != auth.getCookieName()) {
             builder.cookie(new NewCookie(
                     auth.getCookieName(), auth.getToken(),
@@ -309,8 +310,19 @@ public class AuthUtil {
     }
 
     /**
+     * Purge the give cookie.
+     *
+     * @param builder A Jersey ResponseBuilder instance.
+     */
+    public void purgeBuiltinCookie(Response.ResponseBuilder builder) {
+        builder.cookie(new NewCookie(
+                CN_BUILTIN, null, "/", COOKIE_DOMAIN, null, 0, isSecure, true)
+        );
+    }
+
+    /**
      * Decode our own system built-in JWT token. The content of JWT token
-     * can be found in {@link AuthUtil#makeBuiltinToken(AccountEntity)} method.
+     * can be found in {@link #makeBuiltinToken(AccountEntity)} method.
      *
      * @param eiToken JWT token from system built-in
      * @throws APIException Related exception
@@ -334,14 +346,17 @@ public class AuthUtil {
             e.printStackTrace();
             throw new APIException(response.fail(
                     Response.Status.INTERNAL_SERVER_ERROR,
-                    APIError.ServerError.getCode()
+                    APIError.ServerError.getCode(),
+                    "check server log for more information"
             ));
         }
         this.auth = new Auth(account, eiToken, CN_BUILTIN, false);
     }
 
     /**
-     * WISEAccessToken
+     * WISEAccessToken format:
+     * <pre>
+     * {@code
      *   header
      *   {
      *     "alg": "HS512",
@@ -362,8 +377,12 @@ public class AuthUtil {
      *     "email": "teddy15b@gmail.com",
      *     "refreshToken": "1c87ee60-f040-4db8-a006-b3450ee8ea16"
      *   }
-     *
-     * WISEAppToken
+     * }
+     * </pre>
+     * <p>
+     * WISEAppToken format:
+     * <pre>
+     * {@code
      *   header
      *   {
      *     "alg": "HS512",
@@ -390,9 +409,11 @@ public class AuthUtil {
      *     "email": "tung.yi@advantech.com.tw",
      *     "refreshToken": "1b002ded-e4bb-4d60-b776-31528a5ea74c"
      *   }
+     * }
+     * </pre>
      *
-     * @param ssoToken JWT token from SSO server by III,
-     *                 either WISEAccessToken or WISEAppToken
+     * @param ssoToken         JWT token from SSO server by III,
+     *                         either WISEAccessToken or WISEAppToken
      * @param refreshIfExpired A boolean value indicates whether token refresh
      *                         is necessary if it's expired
      * @throws APIException Related exception
@@ -432,7 +453,8 @@ public class AuthUtil {
             e.printStackTrace();
             throw new APIException(response.fail(
                     Response.Status.INTERNAL_SERVER_ERROR,
-                    APIError.ServerError.getCode()
+                    APIError.ServerError.getCode(),
+                    "check server log for more information"
             ));
         }
 
@@ -474,8 +496,9 @@ public class AuthUtil {
         String password = credentials[1];
         AccountEntity account = getAccountByName(username);
 
-        // TODO: use PasswordUtil for password encode and verification
-        if (!account.getPassword().equals(password)) {
+        boolean oldStyle = account.getPassword().equals(password);
+        boolean newStyle = pu.authenticate(password, account.getPassword());
+        if (!oldStyle && !newStyle) {
             throw new APIException(response.fail(
                     Response.Status.FORBIDDEN,
                     APIError.AuthDataError.getCode(),
@@ -495,14 +518,18 @@ public class AuthUtil {
     /**
      * This method check the given SSO token validation, and returns a boolean
      * value indicate whether this token is expired.
-     *
+     * <p>
      * The response JSON content looks like:
-     * {
-     * "tokenType": "Bearer",
-     * "accessToken": "ACCESS-TOKEN",
-     * "expiresIn": 1497840103,
-     * "refreshToken": "50a01650-cb86-446b-a192-fd763c14f3b6"
+     * <pre>
+     * {@code
+     *   {
+     *     "tokenType": "Bearer",
+     *     "accessToken": "ACCESS-TOKEN",
+     *     "expiresIn": 1497840103,
+     *     "refreshToken": "50a01650-cb86-446b-a192-fd763c14f3b6"
+     *   }
      * }
+     * </pre>
      *
      * @param token The token to be validated
      * @return A boolean value indicates whether the token is expired
@@ -551,14 +578,18 @@ public class AuthUtil {
 
     /**
      * This method renew a SSO token.
-     *
+     * <p>
      * The response JSON content looks like:
-     * {
-     * "tokenType": "Bearer",
-     * "accessToken": "NEW-ACCESS-TOKEN",
-     * "expiresIn": 1497840103,
-     * "refreshToken": "50a01650-cb86-446b-a192-fd763c14f3b6"
+     * <pre>
+     * {@code
+     *   {
+     *     "tokenType": "Bearer",
+     *     "accessToken": "NEW-ACCESS-TOKEN",
+     *     "expiresIn": 1497840103,
+     *     "refreshToken": "50a01650-cb86-446b-a192-fd763c14f3b6"
+     *   }
      * }
+     * </pre>
      *
      * @param refreshToken The SSO refresh token
      * @return New SSO token
@@ -666,7 +697,8 @@ public class AuthUtil {
             e.printStackTrace();
             throw new APIException(response.fail(
                     Response.Status.INTERNAL_SERVER_ERROR,
-                    APIError.ServerError.getCode()
+                    APIError.ServerError.getCode(),
+                    "check server log for more information"
             ));
         } finally {
             em.close();
@@ -692,8 +724,19 @@ public class AuthUtil {
             account.setFullname(String.format("%s %s", firstName, lastName));
         }
 
+        try {
+            account.setPassword(pu.hashedPassword("eipaas1234"));
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            System.err.println("Cannot set hashed password");
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.ServerError.getCode(),
+                    "check server log for more information"
+            ));
+        }
+
         account.setEnabled(true);
-        account.setPassword("eipaas1234");
         account.setCreatets(now);
         account.setLogints(now);
         saveAccount(account);
@@ -720,13 +763,13 @@ public class AuthUtil {
 
     /**
      * Method to make system built-in (our own) JWT token.
-     *
+     * <p>
      * The system built-in JWT token header looks like
      * {
      * "alg": "HS512",
      * "typ": "EI-Dashboard"
      * }
-     *
+     * <p>
      * The payload looks like the following
      * {
      * "iat": 1497593790,
