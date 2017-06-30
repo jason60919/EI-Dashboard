@@ -263,10 +263,10 @@ $(function () {
 
     //SSO URL : portal-sso.wise-paas.com/
     $('#frmMainLogin_rmmLoginBody').dblclick(function () {
-        if ($("#frmMainLogin_txtSSO").parent().is(":visible"))
-            $("#frmMainLogin_txtSSO").parent().hide();
+        if ($(".loginSelf").is(":visible"))
+            $(".loginSelf").hide();
         else
-            $("#frmMainLogin_txtSSO").parent().show();
+            $(".loginSelf").show();
     });
 
     $('#frmMainLogin_txtSSO').change(function () {
