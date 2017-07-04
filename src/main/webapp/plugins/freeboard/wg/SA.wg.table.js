@@ -47,7 +47,12 @@
                     var bodyHTML = $('<tr/>');
                     bodyHTML.append($('<td/>').html(stateObject.value.itemList[i].sensorId).addClass("td-0"));
                     bodyHTML.append($('<td/>').html(stateObject.value.itemList[i].ts).addClass("td-1"));
-                    bodyHTML.append($('<td/>').html(stateObject.value.itemList[i].v).addClass("td-2"));
+                    if (typeof stateObject.value.itemList[i].v != "undefined")
+                        bodyHTML.append($('<td/>').html(stateObject.value.itemList[i].v).addClass("td-2"));
+                    if (typeof stateObject.value.itemList[i].bv != "undefined")
+                        bodyHTML.append($('<td/>').html(stateObject.value.itemList[i].bv).addClass("td-2"));
+                    if (typeof stateObject.value.itemList[i].sv != "undefined")
+                        bodyHTML.append($('<td/>').html(stateObject.value.itemList[i].sv).addClass("td-2"));
                     stateElement.find('table').append(bodyHTML);
                 }
             }
