@@ -1,24 +1,4 @@
-/*
- * Template widget 
- * Integration with SA Fans
- * @date 2015/09/22
- * @requried 
- * js/libs/log4javascript/log4javascript.min.js
- * js/sa/utils/log4jq.js
- */
 (function () {
-
-    var logger = log4jq.getLogger({
-        loggerName: 'SA.wg.multigooglemap.js'
-    });
-    logger.info('SA.wg.multigooglemap.js loaded');
-
-    /*
-     * i18n 
-     */
-    if (typeof (i18n) != 'undefined') {
-        //i18n.addResource('en', 'translation', '<i18n_KEY>', '<i18n_VALUE>');
-    }
 
     freeboard.loadWidgetPlugin({
         type_name: 'multiGoogleMap',
@@ -30,7 +10,6 @@
                 name: 'title',
                 validate: 'optional,maxSize[100]',
                 display_name: $.i18n.t('global.title'),
-//                        $.i18n.t('plugins_wd.progressbar.title'),
                 type: 'text'
             },
             {
@@ -38,7 +17,6 @@
                 display_name: $.i18n.t('plugins_wd.multi_gmap.locations'),
                 description: $.i18n.t('plugins_wd.multi_gmap.locations_description'),
                 type: 'calculated'
-//                ,default_value: '[["Advantech",25.0589972,121.3835085]]'
             },
             {
                 name: 'zoom',
@@ -48,6 +26,14 @@
                 style: 'width:100px',
                 default_value: 12,
                 description: $.i18n.t('plugins_wd.multi_gmap.zoom_level_description'),
+                addClass: 'advancedSetting'
+            },
+            {
+                name: 'center',
+                display_name: $.i18n.t('plugins_wd.multi_gmap.center'),
+                type: 'text',
+                style: 'width:100px',
+                default_value: "0,0",
                 addClass: 'advancedSetting'
             },
             {
@@ -62,325 +48,218 @@
             {
                 name: 'blocks',
                 display_name: $.i18n.t('global.plugins_wd.blocks'),
-//                        $.i18n.t('plugins_wd.gmap.blocks'),
                 validate: 'required,custom[integer],min[4],max[20]',
                 type: 'number',
                 style: 'width:100px',
                 default_value: 4,
                 description: $.i18n.t('global.plugins_wd.blocks_desc'),
                 addClass: 'advancedSetting'
-//                        $.i18n.t('plugins_wd.gmap.blocks_desc')
             }
         ],
         newInstance: function (settings, newInstanceCallback)
         {
-            logger.info('freeboard.loadWidgetPlugin: MultiGoogleMapWidget newInstance');
-            bFitBounds = false;
             newInstanceCallback(new MultiGoogleMapWidget(settings));
         }
     });
 
 
-    var multiGMId = 0;
-    var bFitBounds = false;
     var MultiGoogleMapWidget = function (settings)
     {
-        logger.info('MultiGoogleMapWidget init');
-
-        var BLOCK_HEIGHT = 60;
-        var CENTER_LAT = 25.0635316;
-        var CENTER_LNG = 121.4820946;
-
-        var currentSettings = settings;
-        var locations = [];
-        /*
-         [
-         ['Bondi Beach', -33.890542, 151.274856, 4],
-         ['Coogee Beach', -33.923036, 151.259052, 5],
-         ['Cronulla Beach', -34.028249, 151.157507, 3],
-         ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
-         ['Maroubra Beach', -33.950198, 151.259302, 1]
-         ];
-         */
-
-        var markersArray = [];//keep markers
-
-        var map = null;//google map instance
-        var $mapElement = $('<div id="multi_gm_' + multiGMId + '" style="margin-top: 10px;"></div>');
-        multiGMId++;
-
         var self = this;
         var currentSettings = settings;
-        self.widgetType = 'multiGoogleMap';
+        var titleElement = $('<h2 class="section-title"></h2>');
+        var currentID = _.uniqueId('wgd_');
+        var $mapElement = $('<div id="' + currentID + '" style="text-align: center; width: 100%; height: 100%;"></div>');
 
-        function setBlocks(blocks) {
-            logger.info('setBlocks: ' + blocks);
+        var map = null;//google map instance
+        var BLOCK_HEIGHT = 60;
+        var markersArray = [];//keep markers
+        var locations = [];
+        var nMinZoom = 12;
+
+        $mapElement.resize(function () {
+            if (map != null)
+                google.maps.event.trigger(map, 'resize');
+        });
+
+        self.render = function (containerElement) {
+            $(containerElement).append(titleElement).append($mapElement);
+            titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
+
+            //Initial Goole Map
+            if (window.google && window.google.maps) {
+                self.initializeMap();
+            } else {
+                $.getScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyB_Ci0QO3N9TqWoR6ZfE46U90XGu-yH_g0&v=3.exp&sensor=false", function () {
+                    self.initializeMap();
+                });
+            }
+        };
+
+        self.initializeMap = function () {
+            var mapProp = {
+                center: new google.maps.LatLng(0, 0),
+                zoom: 1,
+            };
+            map = new google.maps.Map(document.getElementById(currentID), mapProp);
+            google.maps.event.addListener(map, 'zoom_changed', function () {
+                currentSettings.zoom = map.getZoom();
+            });
+            google.maps.event.addListener(map, 'dragend', function () {
+                var oCenter = map.getCenter();
+                currentSettings.center = oCenter.lat().toString() + "," + oCenter.lng().toString();
+                currentSettings.autoCenter = false;
+            });
+            self.setBlocks(currentSettings.blocks);
+        };
+        self.setBlocks = function (blocks) {
             if (_.isUndefined($mapElement) || _.isUndefined(blocks))
                 return;
             var height = BLOCK_HEIGHT * blocks - 30;
-            logger.debug('map new height: ' + height);
             $mapElement.css({
                 'height': height + 'px',
                 'width': '100%'
             });
             if (!_.isNull(map)) {
-                logger.debug('map resize');
                 google.maps.event.trigger($mapElement[0], 'resize');
-                updateMarkers();
+                //updateMarkers();
             }
         }
 
-        function createGoogleMap() {
-            logger.info('createGoogleMap');
-            if (_.isUndefined($mapElement))
-                return;
+        self.getHeight = function () {
+            return currentSettings.blocks;
+        };
 
-            function initializeMap() {
-                logger.info('initializeMap opts as below:');
-                logger.info('zoom:' + currentSettings.zoom);
+        self.onSettingsChanged = function (newSettings) {
+            titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+            if (newSettings.locations != currentSettings.locations) {
+                self.updateMarkers([]);
+            }
+            if (newSettings.zoom != currentSettings.zoom) {
+                map.setZoom(newSettings.zoom);
+            }
+            if (newSettings.blocks != currentSettings.blocks) {
+                self.setBlocks(newSettings.blocks);
+            }
+            currentSettings = newSettings;
+        };
 
-                var mapOptions = {
-                    zoom: parseInt(currentSettings.zoom),
-                    center: new google.maps.LatLng(CENTER_LAT, CENTER_LNG),
-                    disableDefaultUI: true,
-                    draggable: false,
-                    zoomControl: true,
-                    scrollwheel: true,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP
-                };
-                var bounds = new google.maps.LatLngBounds();
-
-                logger.debug('init map');
-                map = new google.maps.Map($mapElement[0], mapOptions);
-
-                google.maps.event.addListener(map, 'zoom_changed', function () {
-                    var zoomLevel = map.getZoom();
-                    logger.debug('zoom_changed to level: ' + zoomLevel);
-
-                    var fakeNewSetting = currentSettings;
-                    fakeNewSetting.zoom = zoomLevel;
-                    self.onSettingsChanged(fakeNewSetting);
-                    //    if (zoomLevel >= minFTZoomLevel) {
-                    //        FTlayer.setMap(map);
-                    //    } else {
-                    //        FTlayer.setMap(null);
-                    //    }
-                });
-//                google.maps.event.addDomListener($mapElement[0], 'mouseenter', function (e) {
-//                    logger.debug('mouseenter: ');
-//                    e.cancelBubble = true;
-//                    if (!map.hover) {
-//                        map.hover = true;
-//                        map.setOptions({zoomControl: true});
-//                    }
-//                });
-
-//
-//                google.maps.event.addDomListener($mapElement[0], 'mouseleave', function (e) {
-//                    logger.debug('mouseleave: ');
-//                    if (map.hover) {
-//                        map.setOptions({zoomControl: false});
-//                        map.hover = false;
-//                    }
-//                });
-
-                //create markers
-                updateMarkers();
+        self.onCalculatedValueChanged = function (settingName, newValue, agentConnection) {
+            if ((settingName == "locations") && $.isArray(newValue)) {
+                self.updateMarkers(newValue);
             }
 
-            if (window.google && window.google.maps) {
-                initializeMap();
-            } else {
-                //load google map api
-                window.gmap_initialize = initializeMap;
-                //head.js('https://maps.googleapis.com/maps/api/js?v=3&callback=gmap_initialize');
-                $.getScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyB_Ci0QO3N9TqWoR6ZfE46U90XGu-yH_g0&v=3.exp&sensor=false&callback=gmap_initialize", function () {
-                    //initializeMap();
-                });
-            }
-        }
-
-        // Removes the overlays from the map, but keeps them in the array
-        function clearOverlays() {
-            logger.info('clearOverlays: ');
-            if (markersArray) {
-                for (i in markersArray) {
-                    markersArray[i].setMap(null);
+            if ((settingName == "locations") && (newValue.hasOwnProperty('result'))) {
+                var locations = [];
+                var deviceItem = newValue.result.item;
+                if ($.isArray(deviceItem)) {
+                    for (var i = 0; i < newValue.result.item.length; i++) {
+                        var device = newValue.result.item[i];
+                        var marker = self.getMarkers(device);
+                        if (marker.length > 0)
+                            locations.push(marker);
+                    }
+                    self.updateMarkers(locations);
                 }
-                markersArray = [];
             }
-        }
+        };
 
-        function updateZoom(nZoom) {
+        self.onDispose = function () {
+        };
+
+        self.updateMarkers = function (aLocations) {
             if (map != null) {
-                map.setZoom(parseInt(nZoom));
-            } else {
-                logger.error('map instance doesnot initinal form updateZoom');
-            }
-        }
-        function updateMarkers() {
-            logger.info('updateMarkers: ');
-            $mapElement.parent().find(".section-title").html(currentSettings.title);
-            var bounds ;
-            if (map != null) {
-                clearOverlays();
+                if (markersArray) {
+                    for (i in markersArray) {
+                        markersArray[i].setMap(null);
+                    }
+                    markersArray = [];
+                }
 
-                //to center
-                bounds = new google.maps.LatLngBounds();
-                var infowindow = new google.maps.InfoWindow();
-                var marker, i;
-//                locations = currentSettings.locations;
-                var countOfLocations = locations.length;
-                if (countOfLocations == 0) {
-                    logger.warn('countOfLocations: ' + countOfLocations);
-
+                if (aLocations.length == 0) {
                     if (navigator.geolocation) {
-                        // Get current position
                         navigator.geolocation.getCurrentPosition(
                             function (position) {
-                                // Success!
                                 var newLatLon = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                                 map.panTo(newLatLon);
                             },
                             function () {
-                                // Failed!
                             }
                         );
                     }
-
-
                 } else {
-                    logger.debug('add markers');
-                    for (i = 0; i < countOfLocations; i++) {
-                        var location = locations[i];
-                        logger.debug('marker index: ' + i);
-                        logger.debug('marker index 1: ' + location[1]);
-                        logger.debug('marker index 2: ' + location[2]);
-                        location[1] = parseFloat(location[1]) + i/100000;
-                        location[2] = parseFloat(location[2]) + i/100000;
-                        marker = new google.maps.Marker({
+                    var bounds = new google.maps.LatLngBounds();
+                    for (var i = 0; i < aLocations.length; i++) {
+                        var location = aLocations[i];
+                        location[1] = parseFloat(location[1]) + i / 100000;
+                        location[2] = parseFloat(location[2]) + i / 100000;
+                        var marker = new google.maps.Marker({
                             position: new google.maps.LatLng(location[1], location[2]),
                             map: map,
                             title: location[0]
                         });
-
                         markersArray.push(marker);
-
-                        //extend the bounds to include each marker's position
                         bounds.extend(marker.position);
-
+                        var infowindow = new google.maps.InfoWindow();
                         google.maps.event.addListener(marker, 'click', (function (marker, i) {
                             return function () {
-                                logger.debug('click marker');
-//                                {H: 25.037647332991305, L: 121.37443147418207}
                                 var markerPos = marker.getPosition();
-
-                                //set center with curr pos
-//                                map.setZoom(8);
-//                                map.setZoom(currentSettings.zoom);
                                 map.setCenter(markerPos);
-
-                                //open infowinow
-
-//                                logger.debug(marker);
-                                var nameOfMarker = locations[i][0];
-                                logger.debug('click marker as below: ' + nameOfMarker);
-                                infowindow.setContent(nameOfMarker);
+                                infowindow.setContent(aLocations[i][0]);
                                 infowindow.open(map, marker);
                             };
                         })(marker, i));
                     }
-
-                    if (countOfLocations > 0)
+                    if (currentSettings.autoCenter)
                     {
-                        if (!bFitBounds)
-                        {
-                            if(currentSettings.autoCenter){
-                                logger.debug('map fitBounds');
-                                map.fitBounds(bounds);
-                                bFitBounds = true;
-                            }
-                        }
+                        google.maps.event.trigger(map, 'resize');
+                        setTimeout(function () {
+                            map.fitBounds(bounds);
+                            if (map.getZoom() > nMinZoom)
+                                map.setZoom(nMinZoom);
+                        }, 100);
                     }
-                    google.maps.event.trigger(map, 'resize');
+                    else {
+                        google.maps.event.trigger(map, 'resize');
+                        setTimeout(function () {
+                            if (currentSettings.zoom != map.getZoom())
+                                map.setZoom(currentSettings.zoom);
+                            var oCenter = map.getCenter();
+                            if (currentSettings.center != oCenter.lat().toString() + "," + oCenter.lng().toString()) {
+                                if (typeof currentSettings.center == "undefined") currentSettings.center = "0,0";
+                                var strCenter = currentSettings.center;
+                                var aCenter = strCenter.split(",");
+                                var oCenter = new google.maps.LatLng(parseFloat(aCenter[0]), parseFloat(aCenter[1]));
+                                map.panTo(oCenter);
+                            }
+                        }, 100);
+                    }
                 }
-            } else {
-                logger.error('map instance doesnot initinal form updatePosition');
             }
-
+            else {
+                setTimeout(function () {
+                    self.updateMarkers(aLocations);
+                }, 1000);
+            }
         }
 
-        self.render = function (containerElement)
+        self.getMarkers = function (device)
         {
-            logger.info('render');
-            //parent elem of widget
-            //<div class="widget fillsize" data-bind="widget: true, css:{fillsize:fillSize}">
-            //</div>
-            var $containerElement = $(containerElement);
-            $($containerElement).append('<h2 class="section-title"></h2>');
-            $containerElement.append($mapElement);
+            var marker = [];
+            var strLal = "";
+            if (device.hasOwnProperty('parent_lal'))
+                if (device.parent_lal != null)
+                    strLal = device.parent_lal;
 
-            //init map widget
-            setBlocks(currentSettings.blocks);
-            createGoogleMap();
-        };
-
-
-        self.getHeight = function () {
-            logger.info('getHeight');
-            return currentSettings.blocks;
-        };
-
-        self.onPaneWidgetChanged = function(e){
-            logger.info('onPaneWidgetChanged');
-            google.maps.event.trigger(map, 'resize');
-        };
-        self.onSettingsChanged = function (newSettings)
-        {
-            bFitBounds = false;
-            logger.info('onSettingsChanged');
-
-            if (_.isNull(map)) {
-                currentSettings = newSettings;
-                return;
+            if (strLal == "")
+                if (device.hasOwnProperty('lal'))
+                    if (device.lal != null)
+                        strLal = device.lal;
+            if (strLal != "") {
+                var latlng = strLal.split(';');
+                var marker = [device.name.toString(), latlng[0], latlng[1]];
             }
-
-            if (currentSettings.blocks != newSettings.blocks) {
-                logger.debug('block change');
-                setBlocks(newSettings.blocks);
-            }
-            if (currentSettings.zoom != newSettings.zoom) {
-                logger.debug('zoom change');
-                updateZoom(newSettings.zoom);
-            }
-            currentSettings = newSettings;
-            $mapElement.parent().find(".section-title").html(currentSettings.title);
-            google.maps.event.trigger(map, 'resize');
-        };
-
-        self.onCalculatedValueChanged = function (settingName, newValue, agentConnection)
-        {
-            logger.info('onCalculatedValueChanged: ' + settingName);
-
-            //Add icon to specify agent connect or not
-            if ((agentConnection === false && !$mapElement.parent().find(".section-title").hasClass('agentDisconnect')) || (agentConnection === true && $mapElement.parent().find(".section-title").hasClass('agentDisconnect'))) {
-                $mapElement.parent().find(".section-title").toggleClass('agentDisconnect');
-                $mapElement.parent().find(".section-title").removeAttr('title');
-            }
-
-            if (settingName === 'locations') {
-                locations = newValue;
-                updateMarkers();
-            }
-        };
-
-        self.onDispose = function ()
-        {
-            logger.info('onDispose');
-        };
-
-        self.onSettingsChanged(currentSettings);
+            return marker;
+        }
     };
-
-
 }());
