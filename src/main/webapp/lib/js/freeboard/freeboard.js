@@ -981,7 +981,7 @@ var freeboard = (function () {
             theFreeboardModel.themeWhite();
 
             //Login for check
-            if ((typeof _oRMM.Login) == "undefined")
+            if (((typeof _oRMM.Login) == "undefined") || (window.location.hash != ""))
             {
                 //window.location.href = "index.html";
                 //return;
