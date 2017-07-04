@@ -576,7 +576,7 @@ var _i18_local =
                             "cond_47": "Isolated thundershowers"
                         },
                         "SrvStatus": {
-                            "display_name": "WISE-PaaS/RMM - Server status",
+                            "display_name": "EI-PaaS - Server status",
                             "description": "This datasource will receive a Server Status JSON data.",
                             "refresh": "Refresh Every",
                             "refresh_suffix": "seconds",
@@ -586,13 +586,13 @@ var _i18_local =
                             "password": "Password"
                         },
                         "FuzzySearch": {
-                            "display_name": "WISE-PaaS/RMM : Device Information",
+                            "display_name": "EI-PaaS : Device Information",
                             "description": "This datasource will receive all device data by account.",
                             "refresh": "Refresh Every",
                             "refresh_suffix": "seconds"
                         },
                         "dataAnalyze": {
-                            "display_name": "WISE-PaaS/RMM : Data Analytics",
+                            "display_name": "EI-PaaS : Data Analytics",
                             "description": "This datasource will receive a JSON data Analyze result. Please make sure agent auto report is opened for getting data.",
                             "refresh": "Refresh Every",
                             "refresh_suffix": "seconds",
@@ -611,7 +611,7 @@ var _i18_local =
                             "custom": "Custom"
                         },
                         "realtimedata": {
-                            "display_name": "WISE-PaaS : Real-time Data",
+                            "display_name": "EI-PaaS : Real-time Data",
                             "description": "This datasource will receive a real time JSON data. Please make sure agent auto report is opened for getting data.",
                             "refresh": "Refresh Every",
                             "refresh_suffix": "seconds",
@@ -622,7 +622,7 @@ var _i18_local =
                             "source": "Source"
                         },
                         "getHistData": {
-                            "display_name": "WISE-PaaS : Historical data",
+                            "display_name": "EI-PaaS : Historical data",
                             "description": "This datasource will receive a historical data JSON data. Please make sure agent auto report is opened for getting data.",
                             "refresh": "Refresh Every",
                             "refresh_suffix": "seconds",

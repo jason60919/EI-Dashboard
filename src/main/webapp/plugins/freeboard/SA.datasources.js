@@ -993,7 +993,7 @@
     };
     freeboard.loadDatasourcePlugin({
         type_name: "getEcrAmount",
-        display_name: "WISE-PAAS : Get ECR Amount",
+        display_name: "EI-PaaS : Get ECR Amount",
         description: "Get Amount of Ecr",
         settings: [
             {
@@ -1173,7 +1173,7 @@
     };
     freeboard.loadDatasourcePlugin({
         type_name: "getEcrTotal",
-        display_name: "WISE-PAAS : Get ECR Total",
+        display_name: "EI-PaaS : Get ECR Total",
         description: "Get Amount of Total",
         settings: [
             {
