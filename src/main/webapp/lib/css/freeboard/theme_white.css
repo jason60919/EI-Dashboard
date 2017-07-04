@@ -263,11 +263,11 @@ body.theme_white  {
     background: #d3d4d4;
 }
 
-@media screen and (max-width : 960px) {
+@media screen and (max-width : 600px) {
 
     .theme_white #board-tools {
         background: #fff;
-        border-right: 1px solid #d4d4d4;
+        //border-right: 1px solid #d4d4d4;
     }
 
 }

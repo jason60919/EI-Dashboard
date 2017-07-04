@@ -1033,7 +1033,7 @@ header h1 {
 }
 
 #board-configs {
-    width: 400px;
+    //width: 400px;
     height: 100%;
     float: right;
     display: table;
@@ -1729,7 +1729,7 @@ html.boardtools-opening #hamburger:after
     transform: rotate(-45deg);
 }
 
-@media screen and (max-width : 960px) {
+@media screen and (max-width : 600px) {
     #board-logo {
         float: none;
     }
