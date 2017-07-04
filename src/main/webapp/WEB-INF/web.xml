@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
-         version="3.1">
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <filter>
+        <filter-name>CORS</filter-name>
+        <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
+        <init-param>
+            <param-name>cors.supportedMethods</param-name>
+            <param-value>GET,POST,HEAD,OPTIONS,PUT,DELETE</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.allowOrigin</param-name>
+            <param-value>*</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CORS</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <filter>
         <filter-name>ExpiresFilter</filter-name>
         <filter-class>org.apache.catalina.filters.ExpiresFilter</filter-class>
@@ -23,7 +37,6 @@
             <param-value>access plus 2 seconds</param-value>
         </init-param>
     </filter>
-
     <filter-mapping>
         <filter-name>ExpiresFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -38,7 +51,6 @@
             <param-value>SAMEORIGIN</param-value>
         </init-param>
     </filter>
-
     <filter-mapping>
         <filter-name>HeaderSecurityFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -49,10 +61,9 @@
         <filter-class>com.advantech.eipaas.dashboard.filters.CSPFilter</filter-class>
         <init-param>
             <param-name>default-src</param-name>
-            <param-value>https: 'self' 'unsafe-inline' 'unsafe-eval' blob:</param-value>
+            <param-value>* 'unsafe-inline' 'unsafe-eval' blob:</param-value>
         </init-param>
     </filter>
-
     <filter-mapping>
         <filter-name>ContentSecurityPolicyFilter</filter-name>
         <url-pattern>/*</url-pattern>
