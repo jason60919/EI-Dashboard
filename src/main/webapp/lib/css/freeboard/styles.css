@@ -429,6 +429,10 @@ body {
     -webkit-font-smoothing: subpixel-antialiased;
 }
 
+.ui-widget-content {
+    color: #8b8b8b !important;
+}
+
 .normal-text {
     color: #d3d4d4;
     font-weight: 100;
