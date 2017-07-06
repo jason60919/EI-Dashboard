@@ -65,148 +65,222 @@ function DialogBox(contentElement, title, okTitle, cancelTitle, closeCallback, i
                 if (title != $.i18n.t('global.warning')) {
                     if (!$('#plugin-editor').validationEngine('validate'))
                         return false;
-                    if ($('.styled-select select').val() == 'SrvStatus') {
-                        var loadingIndicator = $('<div class="wrapperloading"><div class="loading up" ></div><div class="loading down"></div></div>');
-                        loadingIndicator.removeClass('hide').appendTo('body').addClass('show');
-                        var currentUrl = document.URL;
-                        var httpsLength = currentUrl.toLowerCase().indexOf("https");
-                        currentUrl = $('#setting-value-container-serverurl input').val();
-                        if (httpsLength >= 0 && currentUrl.toLowerCase().indexOf("http:") >= 0) {
-                            var _title = $.i18n.t('global.warning'),
+                    switch ($('.styled-select select').val())
+                    {
+                        case "SrvStatus" :
+                            var loadingIndicator = $('<div class="wrapperloading"><div class="loading up" ></div><div class="loading down"></div></div>');
+                            loadingIndicator.removeClass('hide').appendTo('body').addClass('show');
+                            var currentUrl = document.URL;
+                            var httpsLength = currentUrl.toLowerCase().indexOf("https");
+                            currentUrl = $('#setting-value-container-serverurl input').val();
+                            if (httpsLength >= 0 && currentUrl.toLowerCase().indexOf("http:") >= 0) {
+                                var _title = $.i18n.t('global.warning'),
                                     _yes = $.i18n.t('global.yes'),
                                     _ask = $.i18n.t('global.dialogMsg.Info_httpsConnection');
-                            var phraseElement = $('<p>' + _ask + '</p>');
-                            var db = new DialogBox(phraseElement, _title, _yes);
-                            _.delay(function () {
-                                loadingIndicator.removeClass('show').addClass('hide');
+                                var phraseElement = $('<p>' + _ask + '</p>');
+                                var db = new DialogBox(phraseElement, _title, _yes);
                                 _.delay(function () {
-                                    loadingIndicator.remove();
+                                    loadingIndicator.removeClass('show').addClass('hide');
+                                    _.delay(function () {
+                                        loadingIndicator.remove();
+                                    }, 500);
                                 }, 500);
-                            }, 500);
-                        } else {
-                            var accountVeirfy;
-                            var errorStage = 0;
-                            var body = '{ "request" : { "item" : [ { "@name" : "username","@value" : "' + $('#setting-value-container-account input').val() + '"},{ "@name" : "password","@value" : "' + $('#setting-value-container-password input').val() + '"}] } }';
-                            var lastWord = currentUrl.substr(currentUrl.length - 1, currentUrl.length);
-                            if (lastWord != '/') {
-                                var URL = currentUrl + '/webresources/AccountMgmt/login';
                             } else {
-                                var URL = currentUrl + 'webresources/AccountMgmt/login';
+                                var accountVeirfy;
+                                var errorStage = 0;
+                                var body = '{ "request" : { "item" : [ { "@name" : "username","@value" : "' + $('#setting-value-container-account input').val() + '"},{ "@name" : "password","@value" : "' + $('#setting-value-container-password input').val() + '"}] } }';
+                                var lastWord = currentUrl.substr(currentUrl.length - 1, currentUrl.length);
+                                if (lastWord != '/') {
+                                    var URL = currentUrl + '/webresources/AccountMgmt/login';
+                                } else {
+                                    var URL = currentUrl + 'webresources/AccountMgmt/login';
+                                }
+                                $.ajax({
+                                    url: URL,
+                                    dataType: (errorStage == 1) ? "JSONP" : "JSON",
+                                    type: 'POST',
+                                    contentType: "application/json",
+                                    data: body,
+                                    xhrFields: {
+                                        withCredentials: true
+                                    },
+                                    beforeSend: function (xhr) {
+                                        switch (_oRMM.Login.type) {
+                                            case "Azure" :
+                                                var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                                                xhr.setRequestHeader("Authorization", authorization);
+                                                xhr.setRequestHeader("Accept", "application/json");
+                                                break;
+                                            case "AzureIII" :
+                                                var authorization = 'Bearer ' + _oRMM.Login.sso;
+                                                xhr.setRequestHeader("Authorization", authorization);
+                                                xhr.setRequestHeader("Accept", "application/json");
+                                                break;
+                                            case "Self" :
+                                            default:
+                                                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                                                xhr.setRequestHeader("Authorization", authorization);
+                                                xhr.setRequestHeader("Accept", "application/json");
+                                                break;
+                                        }
+                                    },
+                                    success: function (data) {
+                                        if (!TokenValidation(data)) return;
+                                        if (!_.isUndefined(data.result.ErrorCode)) {
+                                            accountVeirfy = false;
+                                        } else {
+                                            accountVeirfy = true;
+                                        }
+                                        $('#plugin-editor').data('settingVerification', accountVeirfy);
+                                        if ($('#plugin-editor').data('settingVerification')) {
+                                            if (_.isFunction(closeCallback))
+                                                hold = closeCallback('ok');
+                                            if (!hold) {
+                                                closeModal();
+                                            }
+                                        } else {
+                                            var _title = $.i18n.t('global.warning'),
+                                                _yes = $.i18n.t('global.yes'),
+                                                _ask = $.i18n.t('global.dialogMsg.Error_WrongAuth');
+                                            switch (data.result.ErrorCode)
+                                            {
+                                                case 1305:
+                                                    _ask = $.i18n.t('global.dialogMsg.Error_WrongAuth');
+                                                    break;
+                                                case 1006:
+                                                    _ask = $.i18n.t('global.dialogMsg.Error_NotMaster');
+                                                    break;
+                                                default:
+                                                    _ask = $.i18n.t('global.dialogMsg.Error_WrongAuth');
+                                                    break;
+                                            }
+                                            var phraseElement = $('<p>' + _ask + '</p>');
+                                            var db = new DialogBox(phraseElement, _title, _yes);
+                                        }
+                                        _.delay(function () {
+                                            loadingIndicator.removeClass('show').addClass('hide');
+                                            _.delay(function () {
+                                                loadingIndicator.remove();
+                                            }, 500);
+                                        }, 500);
+                                        return;
+                                    },
+                                    error: function (xhr, status, error) {
+                                        if (xhr.status == 404 || xhr.status == 0) {
+                                            var _title = $.i18n.t('global.warning'),
+                                                _yes = $.i18n.t('global.yes'),
+                                                _ask = $.i18n.t('global.dialogMsg.Error_ServerNotFound');
+                                            var phraseElement = $('<p>' + _ask + '</p>');
+                                            var db = new DialogBox(phraseElement, _title, _yes);
+                                        }
+                                        _.delay(function () {
+                                            loadingIndicator.removeClass('show').addClass('hide');
+                                            _.delay(function () {
+                                                loadingIndicator.remove();
+                                            }, 500);
+                                        }, 500);
+                                        return;
+                                    }
+                                });
                             }
-                            $.ajax({
-                                url: URL,
-                                dataType: (errorStage == 1) ? "JSONP" : "JSON",
-                                type: 'POST',
-                                contentType: "application/json",
-                                data: body,
-                                xhrFields: {
-                                    withCredentials: true
+                            break;
+                        case "NRwebsocket" :
+                            var URL = $('#setting-row-wsUrl input').val();
+                            try {
+                                var oWebSocket = new WebSocket(URL);
+                                oWebSocket.onmessage = function (msg) {
+                                };
+                                oWebSocket.onclose = function (evt) {
+                                };
+                                oWebSocket.onopen = function (evt) {
+                                    oWebSocket.close();
+                                    if (_.isFunction(closeCallback))
+                                        hold = closeCallback('ok');
+                                    if (!hold) {
+                                        closeModal();
+                                    }
+                                };
+                                oWebSocket.onerror = function (evt) {
+                                    var _title = $.i18n.t('global.warning'),
+                                        _yes = $.i18n.t('global.yes'),
+                                        _ask = $.i18n.t('global.dialogMsg.Error_ServerNotFound');
+                                    var phraseElement = $('<p>' + _ask + '</p>');
+                                    var db = new DialogBox(phraseElement, _title, _yes);
+                                };
+                            }
+                            catch (e) {
+                                var _title = $.i18n.t('global.warning'),
+                                    _yes = $.i18n.t('global.yes'),
+                                    _ask = e.message;
+                                var phraseElement = $('<p>' + _ask + '</p>');
+                                var db = new DialogBox(phraseElement, _title, _yes);
+                            }
+                            break;
+                        case "nodeRedThreshold" :
+                            var authorization = 'Basic ' + $.base64.encode(decryption($.cookie('selectedTabPageaccount')) + ':' + decryption($.cookie('selectedTabPagepassword')));
+                            jQuery.support.cors = true;
+                            var ajaxOpts = {
+                                cache: false,
+                                type: 'get',
+                                //contentType: 'application/json',
+                                url: '/webresources/HttpMgmt?url=' + $('#setting-value-container-url input').val() + "flows&authorization=" + authorization,
+                                async: false,
+                                timeout: 60 * 1000,
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    var _title = $.i18n.t('global.warning'),
+                                        _yes = $.i18n.t('global.yes'),
+                                        _ask = $.i18n.t('global.dialogMsg.Error_Occurred');
+                                    var phraseElement = $('<p>' + _ask + '</p>');
+                                    var db = new DialogBox(phraseElement, _title, _yes);
                                 },
                                 beforeSend: function (xhr) {
-                                    try {
-                                        var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);
-                                        xhr.setRequestHeader("Authorization", authorization);
-                                        xhr.setRequestHeader("Accept", "application/json");
+                                    switch (_oRMM.Login.type) {
+                                        case "Azure" :
+                                            var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
+                                            xhr.setRequestHeader("Authorization", authorization);
+                                            xhr.setRequestHeader("Accept", "application/json");
+                                            break;
+                                        case "AzureIII" :
+                                            var authorization = 'Bearer ' + _oRMM.Login.sso;
+                                            xhr.setRequestHeader("Authorization", authorization);
+                                            xhr.setRequestHeader("Accept", "application/json");
+                                            break;
+                                        case "Self" :
+                                        default:
+                                            var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
+                                            xhr.setRequestHeader("Authorization", authorization);
+                                            xhr.setRequestHeader("Accept", "application/json");
+                                            break;
                                     }
-                                    catch (e) {}
                                 },
-                                success: function (data) {
-                                    if (!TokenValidation(data)) return;
-                                    if (!_.isUndefined(data.result.ErrorCode)) {
-                                        accountVeirfy = false;
-                                    } else {
-                                        accountVeirfy = true;
+                                success: function (response, textStatus, xhr) {
+                                    if (response == null)
+                                    {
+                                        var _title = $.i18n.t('global.warning'),
+                                            _yes = $.i18n.t('global.yes'),
+                                            _ask = $.i18n.t('global.dialogMsg.Error_ServerNotFound');
+                                        var phraseElement = $('<p>' + _ask + '</p>');
+                                        var db = new DialogBox(phraseElement, _title, _yes);
                                     }
-                                    $('#plugin-editor').data('settingVerification', accountVeirfy);
-                                    if ($('#plugin-editor').data('settingVerification')) {
+                                    else
+                                    {
                                         if (_.isFunction(closeCallback))
                                             hold = closeCallback('ok');
                                         if (!hold) {
                                             closeModal();
                                         }
-                                    } else {
-                                        var _title = $.i18n.t('global.warning'),
-                                                _yes = $.i18n.t('global.yes'),
-                                                _ask = $.i18n.t('global.dialogMsg.Error_WrongAuth');
-                                        switch (data.result.ErrorCode)
-                                        {
-                                            case 1305:
-                                                _ask = $.i18n.t('global.dialogMsg.Error_WrongAuth');
-                                                break;
-                                            case 1006:
-                                                _ask = $.i18n.t('global.dialogMsg.Error_NotMaster');
-                                                break;
-                                            default:    
-                                                _ask = $.i18n.t('global.dialogMsg.Error_WrongAuth');
-                                                break;
-                                        }
-                                        var phraseElement = $('<p>' + _ask + '</p>');
-                                        var db = new DialogBox(phraseElement, _title, _yes);
                                     }
-                                    _.delay(function () {
-                                        loadingIndicator.removeClass('show').addClass('hide');
-                                        _.delay(function () {
-                                            loadingIndicator.remove();
-                                        }, 500);
-                                    }, 500);
-                                    return;
-                                },
-                                error: function (xhr, status, error) {
-                                    if (xhr.status == 404 || xhr.status == 0) {
-                                        var _title = $.i18n.t('global.warning'),
-                                                _yes = $.i18n.t('global.yes'),
-                                                _ask = $.i18n.t('global.dialogMsg.Error_ServerNotFound');
-                                        var phraseElement = $('<p>' + _ask + '</p>');
-                                        var db = new DialogBox(phraseElement, _title, _yes);
-                                    }
-                                    _.delay(function () {
-                                        loadingIndicator.removeClass('show').addClass('hide');
-                                        _.delay(function () {
-                                            loadingIndicator.remove();
-                                        }, 500);
-                                    }, 500);
-                                    return;
-                                }
-                            });
-                        }
-
-                    } else if ($('.styled-select select').val() == 'NRwebsocket') {
-                        var URL = $('#setting-row-wsUrl input').val();
-                        try {
-                            var oWebSocket = new WebSocket(URL);
-                            oWebSocket.onmessage = function (msg) {
-                            };
-                            oWebSocket.onclose = function (evt) {
-                            };
-                            oWebSocket.onopen = function (evt) {
-                                oWebSocket.close();
-                                if (_.isFunction(closeCallback))
-                                    hold = closeCallback('ok');
-                                if (!hold) {
-                                    closeModal();
                                 }
                             };
-                            oWebSocket.onerror = function (evt) {
-                                var _title = $.i18n.t('global.warning'),
-                                    _yes = $.i18n.t('global.yes'),
-                                    _ask = $.i18n.t('global.dialogMsg.Error_ServerNotFound');
-                                var phraseElement = $('<p>' + _ask + '</p>');
-                                var db = new DialogBox(phraseElement, _title, _yes);
-                            };
-                        }
-                        catch (e) {
-                            var _title = $.i18n.t('global.warning'),
-                                _yes = $.i18n.t('global.yes'),
-                                _ask = e.message;
-                            var phraseElement = $('<p>' + _ask + '</p>');
-                            var db = new DialogBox(phraseElement, _title, _yes);
-                        }
-                    } else {
-                        if (_.isFunction(closeCallback))
-                            hold = closeCallback('ok');
-                        if (!hold) {
-                            closeModal();
-                        }
+                            $.ajax(ajaxOpts);
+                            break;
+                        default:
+                            if (_.isFunction(closeCallback))
+                                hold = closeCallback('ok');
+                            if (!hold) {
+                                closeModal();
+                            }
+                            break;
                     }
                 } else {
                     if (_.isFunction(closeCallback))

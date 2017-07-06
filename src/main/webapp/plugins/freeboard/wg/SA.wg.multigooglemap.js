@@ -21,7 +21,7 @@
             {
                 name: 'zoom',
                 display_name: $.i18n.t('plugins_wd.multi_gmap.zoom_level'),
-                validate: 'required,custom[integer],min[0],max[21]',
+                validate: 'required,custom[integer],min[0],max[22]',
                 type: 'number',
                 style: 'width:100px',
                 default_value: 12,

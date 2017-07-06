@@ -296,7 +296,7 @@ var _i18_local =
                             "locations": "Locations",
                             "locations_description": "data format: [[\"Advantech\",25.0589972,121.3835085]]",
                             "zoom_level": "Zoom Level",
-                            "zoom_level_description": "zoom level: 0~21",
+                            "zoom_level_description": "zoom level: 0~22",
                             "auto_center": "Auto center",
                             "auto_center_description": "map auto center by locations"
                         },
