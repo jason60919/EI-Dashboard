@@ -163,7 +163,6 @@
 				if (avg>1) avg = parseInt(avg);
 				else avg = avg.toFixed(2);
 				// 標題
-				var myTitle = avg ;
 				// 顏色
 				var color_pattern=[];
 				color_pattern.push(currentSettings.myth0_color);
@@ -180,14 +179,9 @@
 							pattern : color_pattern,
 						},
 						donut: {
-							title: myTitle,
+							title: "Avg. " + avg,
 						}
 					});
-				/*
-				chart.load({
-					columns: cols,
-				});
-				*/
 			}
 			
         };

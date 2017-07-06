@@ -16,6 +16,13 @@
                 type: 'calculated'
             },
             {
+                name : 'Unit',
+                display_name : 'Unit',
+                validate: 'required',
+                type : 'text',
+                default_value: 'NTD'
+            },
+            {
                 name: "height",
                 display_name: "height",
                validate: "required,custom[integer],min[3],max[20]",
@@ -91,7 +98,13 @@
                         tick: {
                             centered: true
                         }
-                    }
+                    },
+                    y: {
+                        label: {
+                            text: currentSettings.Unit,
+                            position: 'outer-middle'
+                        }
+                    },
                 }
             });
         };

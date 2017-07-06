@@ -44,7 +44,7 @@
                 display_name: '數值顏色',
                 validate: 'required,custom[hexcolor]',
                 type: 'color',
-                default_value: '#ffffff',
+                default_value: '#8b8b8b',
 			},
 			{
 				name : 'myBgImg',
@@ -113,6 +113,7 @@
             mainContainer = $(containerElement);
             mainContainer.append('<h2 class="section-title"></h2>');
             mainContainer.append('<div id="'+currentID+'" >TEST3</div>');
+            self.createTable();
         };// end render
 
 		 self.getHeight = function ()
@@ -123,119 +124,118 @@
         {
             logger.info('IAQ_PicWidget : onSettingsChanged');
             currentSettings = newSettings;
+            self.createTable();
         };
 
         self.onCalculatedValueChanged = function (settingName, newValue, agentConnection)
         {
 			var oW = $('#'+currentID).parent('div').css("width");
 			var oH = $('#'+currentID).parent('div').css("height");
-			var imgPath = currentSettings.myBgImg;
-			$('#'+currentID).css("width", oW);
-			$('#'+currentID).css("height", oH);
-			$('#'+currentID).css("background-image", "url("+imgPath+")");
-			$('#'+currentID).css("background-size", oW +" "+oH);
-			$('#'+currentID).css("background-repeat", "no-repeat");
-			$('#'+currentID).html("<table width="+oW+" height= "+oH+" > " +
-								  "<tr>" + 
-								  "<td  height=13%></td> " + "<td  height=13%></td> " + 
-								  "<td  height=13%></td> " + "<td  height=13%></td> " + 
-								  "</tr>"+
-								  "<tr>" + 
-								  "<td width=18.75% height=14.5% > </td>" + 
-								  "<td width=18.75% height=14.5% align='center' id='vCo2'> </td>" + 
-								  "<td width=40.625% height=14.5% > </td>" + 
-								  "<td width=21.875% height=14.5% align='center' id='iCo2'> </td>"+
-								  "</tr>"+
-								  "<tr>" + 
-								  "<td width=18.75% height=14% > </td>" + 
-								  "<td width=18.75% height=14% align='center' id='vPM10'> </td>" + 
-								  "<td width=40.625% height=14% > </td>" + 
-								  "<td width=21.875% height=14% align='center' id='iPM10'> </td>"+
-								  "</tr>"+
-								  "<tr>" + 
-								  "<td width=18.75% height=14%> </td>" + 
-								  "<td width=18.75% height=14% align='center' id='vPM25'> </td>" + 
-								  "<td width=40.625% height=14%> </td>" + 
-								  "<td width=21.875% height=14% align='center' id='iPM25'> </td>"+
-								  "</tr>"+
-								  "<tr>" + 
-								  "<td width=18.75% height=14.5% > </td>" + 
-								  "<td width=18.75% height=14.5% align='center' id='vHCHO'> </td>" + 
-								  "<td width=40.625% height=14.5% > </td>"+
-								  "<td width=21.875% height=14.5% align='center' id='iHCHO'> </td>"+
-								  "</tr>"+
-								  "<tr>" + 
-								  "<td width=18.75%  height=13%> </td>" + 
-								  "<td width=18.75%  height=13% align='center' id='vTemp'> </td>" + 
-								  "<td width=40.625% height=13% > </td>"+
-								  "<td width=21.875% height=13% > </td>"+
-								  "</tr>"+
-								  "<tr>" + 
-								  "<td width=18.75% height=15% > </td>"+
-								  "<td width=18.75% height=15% align='center' id='vHum'> </td>" + 
-								  "<td width=40.625% height=15% > </td>"+
-								  "<td width=21.875% height=15% > </td>"+
-								  "</tr>"+
-								  "<tr>" + 
-								  "<td ></td> " + "<td ></td> " + 
-								  "<td ></td> " + "<td ></td> " + 
-								  "</tr>"+
-								  "</table>");
-			
 			if (newValue!= "undefined"){
-				// update
-				//var oItem = newValue.result.itemList;
+                //顯示數據
+                var text_size = currentSettings.myTextSize;
+                var text_color =currentSettings.myTextColor;
+                var PNG = "icon-5.png";
+                var pH = parseInt(oH)*0.101977107;
+                pH = pH +"px";
+                var pW = parseInt(oW)*0.16875;
+                pW = pW +"px";
+                pW = pH;
+
 				var oValue = {};
                 oValue.v = newValue;
                 var oItem = [oValue];
 				if (settingName=="myCo2"){
 					nCO2=oItem[0].v;
+                    $('#'+currentID).find('#vCo2').html("<font size='"+text_size+"' color='"+text_color+"'> " + nCO2.toFixed(0) + "</font>");
+                    if (nCO2<1000)PNG = "icon-1.png"; else if (nCO2<2000) PNG = "icon-3.png"; else PNG = "icon-5.png";
+                    $('#'+currentID).find('#iCo2').html("<img src=\"plugins/freeboard/wg/Customization/"+PNG+"\" width='"+pW+"' height='"+pH+"'>");
 				}// end myCo2
 				if (settingName=="myPM10"){
 					 nPM10 = oItem[0].v;
+                    $('#'+currentID).find('#vPM10').html("<font size='"+text_size+"' color='"+text_color+"'> " + nPM10.toFixed(1) + "</font>");
+                    if (nPM10<70)PNG = "icon-1.png"; else if (nPM10<140) PNG = "icon-3.png"; else PNG = "icon-5.png";
+                    $('#'+currentID).find('#iPM10').html("<img src=\"plugins/freeboard/wg/Customization/"+PNG+"\" width='"+pW+"' height='"+pH+"'>");
 				}// end myPM10
 				if (settingName=="myPM25"){
 					 nPM25 = oItem[0].v;
+                    $('#'+currentID).find('#vPM25').html("<font size='"+text_size+"' color='"+text_color+"'> " + nPM25.toFixed(1) + "</font>");
+                    if (nPM25<35)PNG = "icon-1.png"; else if (nPM25<70) PNG = "icon-3.png"; else PNG = "icon-5.png";
+                    $('#'+currentID).find('#iPM25').html("<img src=\"plugins/freeboard/wg/Customization/"+PNG+"\" width='"+pW+"' height='"+pH+"'>");
 				}// end myPM25
 				if (settingName=="myHCHO"){
 					 nHCHO = oItem[0].v;
+                    $('#'+currentID).find('#vHCHO').html("<font size='"+text_size+"' color='"+text_color+"'> " + nHCHO.toFixed(2) + "</font>");
+                    if (nHCHO<0.08)PNG = "icon-1.png"; else if (nHCHO<0.16) PNG = "icon-3.png"; else PNG = "icon-5.png";
+                    $('#'+currentID).find('#iHCHO').html("<img src=\"plugins/freeboard/wg/Customization/"+PNG+"\" width='"+pW+"' height='"+pH+"'>");
 				}// end myHCHO
 				if (settingName=="myTemp"){
 					 nTemp = oItem[0].v;
+                    $('#'+currentID).find('#vTemp').html("<font size='"+text_size+"' color='"+text_color+"'> " + nTemp.toFixed(1) + "</font>");
 				}// end myTemp
 				if (settingName=="myHum"){
 					 nHum = oItem[0].v;
+                    $('#'+currentID).find('#vHum').html("<font size='"+text_size+"' color='"+text_color+"'> " + nHum.toFixed(1) + "</font>");
 				}// end myHum
-				
-				//顯示數據
-				var text_size = currentSettings.myTextSize;
-				var text_color =currentSettings.myTextColor;
-				var PNG = "icon-5.png";
-				var pH = parseInt(oH)*0.101977107;
-				pH = pH +"px";
-				var pW = parseInt(oW)*0.16875;
-				pW = pW +"px";
-
-				$('#'+currentID).find('#vCo2').html("<font size='"+text_size+"' color='"+text_color+"'> " + nCO2.toFixed(0) + "</font>");
-				if (nCO2<1000)PNG = "icon-1.png"; else if (nCO2<2000) PNG = "icon-3.png"; else PNG = "icon-5.png";
-				$('#'+currentID).find('#iCo2').html("<img src=\"plugins/freeboard/wg/Customization/"+PNG+"\" width='"+pW+"' height='"+pH+"'>");
-								
-				$('#'+currentID).find('#vPM10').html("<font size='"+text_size+"' color='"+text_color+"'> " + nPM10.toFixed(1) + "</font>");
-				if (nPM10<70)PNG = "icon-1.png"; else if (nPM10<140) PNG = "icon-3.png"; else PNG = "icon-5.png";
-				$('#'+currentID).find('#iPM10').html("<img src=\"plugins/freeboard/wg/Customization/"+PNG+"\" width='"+pW+"' height='"+pH+"'>");
-				
-				$('#'+currentID).find('#vPM25').html("<font size='"+text_size+"' color='"+text_color+"'> " + nPM25.toFixed(1) + "</font>");
-				if (nPM25<35)PNG = "icon-1.png"; else if (nPM25<70) PNG = "icon-3.png"; else PNG = "icon-5.png";
-				$('#'+currentID).find('#iPM25').html("<img src=\"plugins/freeboard/wg/Customization/"+PNG+"\" width='"+pW+"' height='"+pH+"'>");
-				
-				$('#'+currentID).find('#vHCHO').html("<font size='"+text_size+"' color='"+text_color+"'> " + nHCHO.toFixed(2) + "</font>");
-				if (nHCHO<0.08)PNG = "icon-1.png"; else if (nHCHO<0.16) PNG = "icon-3.png"; else PNG = "icon-5.png";
-				$('#'+currentID).find('#iHCHO').html("<img src=\"plugins/freeboard/wg/Customization/"+PNG+"\" width='"+pW+"' height='"+pH+"'>");
-				
-				$('#'+currentID).find('#vTemp').html("<font size='"+text_size+"' color='"+text_color+"'> " + nTemp.toFixed(1) + "</font>");
-				$('#'+currentID).find('#vHum').html("<font size='"+text_size+"' color='"+text_color+"'> " + nHum.toFixed(1) + "</font>");
 			}// end newValue!= "undefined"
-			
         };
+
+        self.createTable = function ()
+		{
+            var oW = $('#'+currentID).parent('div').css("width");
+            var oH = $('#'+currentID).parent('div').css("height");
+            var imgPath = currentSettings.myBgImg;
+            $('#'+currentID).css("width", oW);
+            $('#'+currentID).css("height", oH);
+            $('#'+currentID).css("background-image", "url("+imgPath+")");
+            $('#'+currentID).css("background-size", oW +" "+oH);
+            $('#'+currentID).css("background-repeat", "no-repeat");
+            $('#'+currentID).html("<table width="+oW+" height= "+oH+" > " +
+                "<tr>" +
+                "<td  height=13%></td> " + "<td  height=13%></td> " +
+                "<td  height=13%></td> " + "<td  height=13%></td> " +
+                "</tr>"+
+                "<tr>" +
+                "<td width=18.75% height=14.5% > </td>" +
+                "<td width=18.75% height=14.5% align='center' id='vCo2'> </td>" +
+                "<td width=40.625% height=14.5% > </td>" +
+                "<td width=21.875% height=14.5% align='center' id='iCo2'> </td>"+
+                "</tr>"+
+                "<tr>" +
+                "<td width=18.75% height=14% > </td>" +
+                "<td width=18.75% height=14% align='center' id='vPM10'> </td>" +
+                "<td width=40.625% height=14% > </td>" +
+                "<td width=21.875% height=14% align='center' id='iPM10'> </td>"+
+                "</tr>"+
+                "<tr>" +
+                "<td width=18.75% height=14%> </td>" +
+                "<td width=18.75% height=14% align='center' id='vPM25'> </td>" +
+                "<td width=40.625% height=14%> </td>" +
+                "<td width=21.875% height=14% align='center' id='iPM25'> </td>"+
+                "</tr>"+
+                "<tr>" +
+                "<td width=18.75% height=14.5% > </td>" +
+                "<td width=18.75% height=14.5% align='center' id='vHCHO'> </td>" +
+                "<td width=40.625% height=14.5% > </td>"+
+                "<td width=21.875% height=14.5% align='center' id='iHCHO'> </td>"+
+                "</tr>"+
+                "<tr>" +
+                "<td width=18.75%  height=13%> </td>" +
+                "<td width=18.75%  height=13% align='center' id='vTemp'> </td>" +
+                "<td width=40.625% height=13% > </td>"+
+                "<td width=21.875% height=13% > </td>"+
+                "</tr>"+
+                "<tr>" +
+                "<td width=18.75% height=15% > </td>"+
+                "<td width=18.75% height=15% align='center' id='vHum'> </td>" +
+                "<td width=40.625% height=15% > </td>"+
+                "<td width=21.875% height=15% > </td>"+
+                "</tr>"+
+                "<tr>" +
+                "<td ></td> " + "<td ></td> " +
+                "<td ></td> " + "<td ></td> " +
+                "</tr>"+
+                "</table>");
+		}
     };
 }());
