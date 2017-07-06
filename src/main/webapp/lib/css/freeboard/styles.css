@@ -2897,5 +2897,22 @@ ui-tabs-nav li a:focus, ui-tabs-nav li:focus, ui-tabs-nav li.ui-state-focus  {
     background-color: red;
 }
 
-
+.c3-axis-y text {
+    fill: #8b8b8b;
+}
+.c3-axis-x text {
+    fill: #8b8b8b;
+}
+.c3-legend-item text {
+    fill: #8b8b8b;
+}
+.c3-chart-arcs text {
+    fill: #8b8b8b;
+}
+.c3 .c3-axis-x path, .c3 .c3-axis-x line {
+    stroke: #8b8b8b;
+}
+.c3 .c3-axis-y path, .c3 .c3-axis-y line {
+    stroke: #8b8b8b;
+}
 /* Loading style end===============*/
