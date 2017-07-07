@@ -1,40 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <filter>
-        <filter-name>CORS</filter-name>
-        <filter-class>com.thetransactioncompany.cors.CORSFilter</filter-class>
-        <init-param>
-            <param-name>cors.supportedMethods</param-name>
-            <param-value>GET,POST,HEAD,OPTIONS,PUT,DELETE</param-value>
-        </init-param>
-        <init-param>
-            <param-name>cors.allowOrigin</param-name>
-            <param-value>*</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>CORS</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter>
         <filter-name>ExpiresFilter</filter-name>
         <filter-class>org.apache.catalina.filters.ExpiresFilter</filter-class>
         <init-param>
             <param-name>ExpiresDefault</param-name>
-            <param-value>access plus 2 seconds</param-value>
+            <param-value>access plus 10 days</param-value>
         </init-param>
         <init-param>
             <param-name>ExpiresByType image</param-name>
-            <param-value>access plus 2 seconds</param-value>
+            <param-value>access plus 10 days</param-value>
         </init-param>
         <init-param>
             <param-name>ExpiresByType text/css</param-name>
-            <param-value>access plus 2 seconds</param-value>
+            <param-value>access plus 10 days</param-value>
         </init-param>
         <init-param>
             <param-name>ExpiresByType application/javascript</param-name>
-            <param-value>access plus 2 seconds</param-value>
+            <param-value>access plus 10 days</param-value>
         </init-param>
     </filter>
     <filter-mapping>
