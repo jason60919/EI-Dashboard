@@ -15,7 +15,7 @@ function FreeboardUI() {
     });
     logger.info('init FreeboardUI');
 
-    var PANE_MARGIN = 10;
+    var PANE_MARGIN = 9;
     var PANE_WIDTH = 300;
     var MIN_COLUMNS = 3;
     var MAX_SHEETS = 8;//added by ken 2015/11/15
@@ -205,24 +205,15 @@ function FreeboardUI() {
 
     ko.bindingHandlers.grid = {
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-            var available_width = $('#board-content').width();
-            var nMaxCol = Math.floor(available_width / COLUMN_WIDTH);
-            PANE_WIDTH = (available_width - PANE_MARGIN*(nMaxCol*2))/nMaxCol;
-            PANE_WIDTH = Math.floor(PANE_WIDTH);
-            COLUMN_WIDTH = PANE_MARGIN + PANE_WIDTH + PANE_MARGIN;
-            
             // Initialize our grid
             grid = $(element).gridster({
                 widget_margins: [PANE_MARGIN, PANE_MARGIN],
-                widget_base_dimensions: [PANE_WIDTH, 10],
+                widget_base_dimensions: [PANE_WIDTH, PANE_MARGIN],
                 resize: {
                     enabled: false,
                     axes: 'x'
                 }
             }).data('gridster');
-
-            processResize(false);
-
             grid.disable();
         }
     };

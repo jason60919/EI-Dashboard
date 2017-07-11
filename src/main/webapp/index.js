@@ -262,11 +262,15 @@ $(function () {
     });
 
     //SSO URL : portal-sso.wise-paas.com/
-    $('#frmMainLogin_rmmLoginBody').dblclick(function () {
-        if ($(".loginSelf").is(":visible"))
-            $(".loginSelf").hide();
-        else
-            $(".loginSelf").show();
+    $('body').keydown(function (evt) {
+        // ctrl + F12
+        if (evt.ctrlKey && (evt.keyCode == 123))
+        {
+            if ($(".loginSelf").is(":visible"))
+                $(".loginSelf").hide();
+            else
+                $(".loginSelf").show();
+        }
     });
 
     $('#frmMainLogin_txtSSO').change(function () {

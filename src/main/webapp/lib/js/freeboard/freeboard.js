@@ -977,7 +977,7 @@ var freeboard = (function () {
                 freeboard.emit('initialized');
             }
 
-            freeboardUI.processResize(true, true);
+            //freeboardUI.processResize(true, true);
             theFreeboardModel.themeWhite();
 
             //Login for check
