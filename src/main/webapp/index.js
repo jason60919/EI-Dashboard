@@ -280,7 +280,7 @@ $(function () {
     });
 
     var nIndex =  window.location.hostname.indexOf(".");
-    var strDomain = window.location.hostname.substr(nIndex + 1);
+    var strDomain = window.location.hostname.substr(nIndex + 1) + "/";
     var strSSOURL = "https://portal-sso." + strDomain;
     if (/-stage/g.test(window.location.hostname))
         strSSOURL = "https://portal-sso-stage." + strDomain;
