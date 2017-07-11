@@ -44,7 +44,7 @@
         <filter-class>com.advantech.eipaas.dashboard.filters.CSPFilter</filter-class>
         <init-param>
             <param-name>default-src</param-name>
-            <param-value>* 'unsafe-inline' 'unsafe-eval' blob:</param-value>
+            <param-value>'self' http: https: 'unsafe-inline' 'unsafe-eval' blob:</param-value>
         </init-param>
     </filter>
     <filter-mapping>
