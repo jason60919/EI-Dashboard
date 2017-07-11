@@ -1,3 +1,9 @@
+# 1.0.5: Maintenance Release
+## Features
+ * [+]
+   * Change filter of "Content-Security-Policy" to 'self' http: https: 'unsafe-inline' 'unsafe-eval' blob:.
+   * Change demo account to gdemo@wisesso.onmicrosoft.com.
+
 # 1.0.4: Maintenance Release
 ## Bugs
  * [#324]
