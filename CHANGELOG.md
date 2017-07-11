@@ -3,6 +3,9 @@
  * [+]
    * Change filter of "Content-Security-Policy" to 'self' http: https: 'unsafe-inline' 'unsafe-eval' blob:.
    * Change demo account to gdemo@wisesso.onmicrosoft.com.
+## Bugs
+ * [#405]
+    * [OCF]打开https://portal-dashboard.wise-paas.com.cn，点击Sign in by AD，URL中的redirect_uri=https://portal-sso.wise-paas.com/web/redirectPage.html，缺少.cn
 
 # 1.0.4: Maintenance Release
 ## Bugs
