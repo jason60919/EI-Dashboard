@@ -280,12 +280,14 @@ $(function () {
     });
 
     var nIndex =  window.location.hostname.indexOf(".");
-    var strDomain = window.location.hostname.substr(nIndex + 1) + "/";
-    var strSSOURL = "https://portal-sso." + strDomain;
+    var strDomain = "wise-paas.com/";
+    if (nIndex > 0)
+        strDomain = window.location.hostname.substr(nIndex + 1) + "/";
+    var strSSOURL = window.location.protocol + "//portal-sso." + strDomain;
     if (/-stage/g.test(window.location.hostname))
-        strSSOURL = "https://portal-sso-stage." + strDomain;
+        strSSOURL = window.location.protocol + "//portal-sso-stage." + strDomain;
     if (/-develop/g.test(window.location.hostname))
-        strSSOURL = "https://portal-sso-develop." + strDomain;
+        strSSOURL = window.location.protocol + "//portal-sso-develop." + strDomain;
     $("#frmMainLogin_txtSSO").val(strSSOURL);
     var oRMM = _RMMGlobal.Get();
     oRMM.ssoURL = strSSOURL;
