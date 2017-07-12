@@ -127,12 +127,23 @@ $(function () {
                 }
             },
             error: function (xhr, exception) {
-                var oError = $.parseJSON(xhr.responseText);
-                if (oError.ErrorDescription != "")
+                try
+                {
+                    var oError = $.parseJSON(xhr.responseText);
+                    if (oError.ErrorDescription != "")
+                    {
+                        swal({
+                            title: "warning",
+                            text: oError.ErrorDescription,
+                            type: "warning"
+                        });
+                    }
+                }
+                catch (e)
                 {
                     swal({
                         title: "warning",
-                        text: oError.ErrorDescription,
+                        text: xhr.responseText,
                         type: "warning"
                     });
                 }
