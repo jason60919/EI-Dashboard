@@ -22,8 +22,7 @@
 
     freeboard.loadWidgetPlugin({
         type_name: 'IAQ_Pie',
-        display_name: 'IAQ 圓餅圖',
-        description:'IAQ 圓餅圖 : (1) 取得資料來源的getCountSensorVal (例如: datasources["Co2"] ) (2)並設定門檻值畫出圓餅圖',
+        display_name: 'IAQ Donut  Chart',
         fill_size: true,
         settings: [
             {
@@ -33,28 +32,28 @@
             },
 			{
 				name : 'myWgHeight',
-				display_name : 'Widget高度',
+				display_name : 'Height',
 				type : 'number',
 				validate: 'required',
 				default_value: 6
 			},
 			{
 				name : 'myDataName',
-				display_name : '資料名稱',
+				display_name : 'Name',
 				//validate: 'required',
 				type : 'text',
 				default_value: 'C02'
 			},
 			{
 				name : 'myDataUnit',
-				display_name : '資料單位',
+				display_name : 'Unit',
 				validate: 'required',
 				type : 'text',
 				default_value: 'PPM'
 			},
 			{
 				name : 'myth0',
-				display_name : '門檻值 0 ',
+				display_name : 'Threshold value 0 ',
 				validate: 'required',
 				type : 'number',
 				default_value: 420
@@ -62,26 +61,26 @@
 
 			{
 				name : 'myth1',
-				display_name : '門檻值 1 ',
+				display_name : 'Threshold value 1 ',
 				type : 'number',
 				default_value: 430
 			},
 			{ 	name: 'myth0_color',
-                display_name: '顏色0',
+                display_name: 'Color 0',
                 validate: 'required,custom[hexcolor]',
                 type: 'color',
                 default_value: '#228adf',
 			},
 			{ 
 				name: 'myth1_color',
-                display_name: '顏色1',
+                display_name: 'Color 1',
                 validate: 'required,custom[hexcolor]',
                 type: 'color',
                 default_value: '#ec9720',
 			},
 			{ 
 				name: 'myth2_color',
-                display_name: '顏色2',
+                display_name: 'Color 2',
                 validate: 'required,custom[hexcolor]',
                 type: 'color',
                 default_value: '#ee534f',

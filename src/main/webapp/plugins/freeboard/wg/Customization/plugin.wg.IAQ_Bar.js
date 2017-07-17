@@ -6,7 +6,7 @@
 
     freeboard.loadWidgetPlugin({
         type_name: 'IAQ_Bar',
-        display_name: 'IAQ 柱狀圖',
+        display_name: 'IAQ Bar Chart',
         fill_size: true,
         settings: [
             {

@@ -21,8 +21,7 @@
 
     freeboard.loadWidgetPlugin({
         type_name: 'IAQ_Line',
-        display_name: 'IAQ 曲線圖',
-        description:'IAQ 曲線圖...',
+        display_name: 'IAQ Line Chart',
         fill_size: true,
         settings: [
             {
@@ -32,49 +31,49 @@
             },
 			{
 				name : 'myWgHeight',
-				display_name : 'Widget高度',
+				display_name : 'Height',
 				type : 'number',
 				validate: 'required',
 				default_value: 6
 			},
 			{
 				name : 'myXHeight',
-				display_name : 'X軸高度',
+				display_name : 'Height of Axis X',
 				type : 'number',
 				validate: 'required',
 				default_value: 40
 			},
 			{
 				name : 'myDataName',
-				display_name : '資料名稱',
+				display_name : ' Name',
 				//validate: 'required',
 				type : 'text',
 				default_value: 'C02'
 			},
 			{
 				name : 'myDataUnit',
-				display_name : '資料單位',
+				display_name : 'Unit',
 				validate: 'required',
 				type : 'text',
 				default_value: 'ppm'
 			},
 			{ 
 				name: 'line_color',
-                display_name: '資料顏色',
+                display_name: 'Color',
                 validate: 'required,custom[hexcolor]',
                 type: 'color',
                 default_value: '#228adf',
 			},
 			{
 				name : 'YHeight',
-				display_name : 'Y軸上限',
+				display_name : 'Max Value',
 				validate: 'required',
 				type : 'number',
 				default_value: 1000
 			},
 			{
 				name : 'YLow',
-				display_name : 'Y軸下限',
+				display_name : 'Min Value',
 				validate: 'required',
 				type : 'number',
 				default_value: 0

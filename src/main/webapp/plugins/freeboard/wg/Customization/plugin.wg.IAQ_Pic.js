@@ -21,66 +21,65 @@
 
     freeboard.loadWidgetPlugin({
         type_name: 'IAQ_Pic',
-        display_name: 'IAQ 圖片',
-        description:'IAQ PIC...',
+        display_name: 'IAQ Air Quality',
         fill_size: true,
         settings: [
 			{
 				name : 'myWgHeight',
-				display_name : 'Widget高度',
+				display_name : 'Height',
 				type : 'number',
 				validate: 'required',
 				default_value: 8
 			},
 			{
 				name : 'myTextSize',
-				display_name : '數值文字大小',
+				display_name : 'Font Size',
 				type : 'number',
 				validate: 'required',
 				default_value: 5
 			},
 
 			{ 	name: 'myTextColor',
-                display_name: '數值顏色',
+                display_name: 'Font Color',
                 validate: 'required,custom[hexcolor]',
                 type: 'color',
                 default_value: '#8b8b8b',
 			},
 			{
 				name : 'myBgImg',
-				display_name : '背景圖片',
+				display_name : 'Background Image',
 				validate: 'required',
 				type : 'text',
-				default_value: 'plugins/freeboard/wg/Customization/advantech.jpg'
+				default_value: 'plugins/freeboard/wg/Customization/advantech_eng.jpg'
 			},
             {
                 name: 'myCo2',
-                display_name: '二氧化碳(CO2)',
+                display_name: 'CO2',
                 type: 'calculated'
             },
 			{
                 name: 'myPM10',
-                display_name: '懸浮微粒(PM10)',
+                display_name: 'PM10',
                 type: 'calculated'
             },
 			{
                 name: 'myPM25',
-                display_name: '細懸浮微粒(PM2.5)',
+                display_name: 'PM2.5',
                 type: 'calculated'
             },
 			{
                 name: 'myHCHO',
-                display_name: '甲醛(HCHO)',
+                display_name: 'HCHO',
                 type: 'calculated'
             },
 			{
                 name: 'myTemp',
-                display_name: '溫度',
+                display_name: 'Temperature',
                 type: 'calculated'
             },
 			{
                 name: 'myHum',
-                display_name: '濕度',
+                display_name: 'Humidity',
                 type: 'calculated'
             },
 
