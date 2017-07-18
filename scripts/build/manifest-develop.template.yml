@@ -6,7 +6,3 @@ applications:
     - ${pcfAppHostname}-${pcfAppVersion}-develop
   services:
     - PSQL-Dashboard
-  env:
-    COOKIE_DOMAIN: .wise-paas.com
-    SSO_TOKEN_REFRESH_URL: portal-sso-develop.wise-paas.com/sso/token
-    SSO_TOKEN_VALIDATION_URL: portal-sso-develop.wise-paas.com/sso/tokenvalidation

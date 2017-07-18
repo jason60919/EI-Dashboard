@@ -5,13 +5,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.sql.Timestamp;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.security.KeyManagementException;
+import java.security.cert.X509Certificate;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -124,7 +132,6 @@ public class AuthUtil {
     // Cookie names, domain
     public static final String CN_BUILTIN = "EIToken";
     private static final String CN_SSO = "WISEAccessToken";
-    private final static String COOKIE_DOMAIN = System.getenv("COOKIE_DOMAIN");
 
     // Don't change the following values relevant JWT as possible.
     private static final String JWT_TYPE = "EI-Dashboard";
@@ -164,7 +171,12 @@ public class AuthUtil {
     }
 
     private Auth auth;
-    private final boolean isSecure;
+    private String domain;
+    private String scheme;
+    private boolean isSecure;
+    private String urlRefresh;
+    private String urlValidation;
+
     private final boolean refreshLogin;
     private final Algorithm jwtAlgorithm;
     private final JWTVerifier jwtVerifier;
@@ -173,10 +185,6 @@ public class AuthUtil {
 
     public Auth getAuth() {
         return auth;
-    }
-
-    private String getProtocol() {
-        return isSecure ? "https" : "http";
     }
 
     /**
@@ -197,11 +205,12 @@ public class AuthUtil {
      * </ol>
      */
     public AuthUtil(final HttpHeaders headers,
-                    final boolean refreshLogin,
-                    final boolean isSecure)
+                    final HttpServletRequest request,
+                    final boolean refreshLogin)
             throws APIException {
-        this.isSecure = isSecure;
+        parseRequest(request);
         this.refreshLogin = refreshLogin;
+
 
         try {
             this.jwtAlgorithm = Algorithm.HMAC512(JWT_SECRET);
@@ -302,9 +311,13 @@ public class AuthUtil {
      */
     public void checkTokenRefresh(Response.ResponseBuilder builder) {
         if (auth.isTokenRefreshed() && null != auth.getCookieName()) {
+            System.out.println("#########################################");
+            System.out.println("auth.getCookieName(): " + auth.getCookieName());
+            System.out.println("auth.getToken(): " + auth.getToken());
+            System.out.println("#########################################");
             builder.cookie(new NewCookie(
                     auth.getCookieName(), auth.getToken(),
-                    "/", COOKIE_DOMAIN, null, -1, isSecure, true
+                    "/", domain, null, -1, isSecure, true
             ));
         }
     }
@@ -316,7 +329,7 @@ public class AuthUtil {
      */
     public void purgeBuiltinCookie(Response.ResponseBuilder builder) {
         builder.cookie(new NewCookie(
-                CN_BUILTIN, null, "/", COOKIE_DOMAIN, null, 0, isSecure, true)
+                CN_BUILTIN, null, "/", domain, null, 0, isSecure, true)
         );
     }
 
@@ -537,21 +550,9 @@ public class AuthUtil {
      */
     private boolean validateSSOToken(final String token)
             throws APIException {
-        String urlValidation = System.getenv("SSO_TOKEN_VALIDATION_URL");
-        if (null == urlValidation) {
-            throw new APIException(response.fail(
-                    Response.Status.INTERNAL_SERVER_ERROR,
-                    APIError.AuthSSOValidationError.getCode(),
-                    "no token validation url specified in server"
-            ));
-        }
-
-        String uri = String.format("%s://%s", getProtocol(), urlValidation);
         TokenValidationRequest body = new TokenValidationRequest(token);
-        Client client = ClientBuilder.newClient();
-
-        final int status = client
-                .target(uri)
+        final int status = makeClient()
+                .target(urlValidation)
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(body, MediaType.APPLICATION_JSON))
                 .getStatus();
@@ -597,21 +598,9 @@ public class AuthUtil {
      */
     private String refreshSSOToken(final String refreshToken)
             throws APIException {
-        String urlRefresh = System.getenv("SSO_TOKEN_REFRESH_URL");
-        if (null == urlRefresh) {
-            throw new APIException(response.fail(
-                    Response.Status.INTERNAL_SERVER_ERROR,
-                    APIError.AuthSSORefreshError.getCode(),
-                    "no token refresh url specified in server"
-            ));
-        }
-
-        String uri = String.format("%s://%s", getProtocol(), urlRefresh);
         TokenRefreshRequest body = new TokenRefreshRequest(refreshToken);
-        Client client = ClientBuilder.newClient();
-
-        final Response response = client
-                .target(uri)
+        final Response response = makeClient()
+                .target(urlRefresh)
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(body, MediaType.APPLICATION_JSON));
 
@@ -803,6 +792,63 @@ public class AuthUtil {
         }
     }
 
+    // Method to parse request
+    private void parseRequest(final HttpServletRequest request) {
+        this.isSecure = request.isSecure();
+        this.scheme = request.getScheme();
+
+        // Per our convention and PCF rules,
+        // Each inbound request has the following URL:
+        //
+        //   <scheme>://<host>.<PCF_APP_DOMAIN>:<PORT>/<path>
+        //
+        // For example https://portal-abc-1-0-0-develop.wise-paas.com.cn
+        // The scheme is https, host is portal-abc-1-0-0-develop,
+        // and the PCF apps domain is wise-paas.com.cn
+        Pattern pattern = Pattern.compile(
+                "^([^:]+)://(?<host>[^.]+)\\.(?<domain>[^:/]+)(^\\d+)?(/.*)?$"
+        );
+
+        // Per W3 spec:
+        //   URLs in general are case-sensitive (with the exception of
+        //   machine names). There may be URLs, or parts of URLs, where
+        //   case doesn't matter, but identifying these may not be easy.
+        //   Users should always consider that URLs are case-sensitive.
+        //
+        // So we transform url into lower cases here!!!
+        String url = request.getRequestURL().toString().toLowerCase();
+        Matcher m = pattern.matcher(url);
+
+        if (!m.find()) {
+            System.out.println("The endpoint not follow convention: " + url);
+            System.out.println(
+                    "System assumes this runtime environment is local testing"
+            );
+            this.domain = null;
+            this.urlRefresh = null;
+            this.urlValidation = null;
+        } else {
+            this.domain = m.group("domain");
+            String host = m.group("host");
+            String space = "";
+
+            if (host.endsWith("-develop")) {
+                space = "-develop";
+            } else if (host.endsWith("-stage")) {
+                space = "-stage";
+            }
+
+            this.urlRefresh = String.format(
+                    "%s://portal-sso%s.%s/sso/token",
+                    this.scheme, space, this.domain
+            );
+            this.urlValidation = String.format(
+                    "%s://portal-sso%s.%s/sso/tokenvalidation",
+                    this.scheme, space, this.domain
+            );
+        }
+    }
+
     // Method to verify, and returns if successful, system built-in JWT token
     private DecodedJWT verifyBuiltinToken(final String token)
             throws APIException {
@@ -848,5 +894,51 @@ public class AuthUtil {
             ));
         }
         return claim;
+    }
+
+    // Method for convenient
+    private Client makeClient() throws APIException {
+        if (!isSecure) {
+            return ClientBuilder.newClient();
+        }
+
+        // for SSL, here we skip SSL verification,
+        // should remove once all certificates installed!!!
+        try {
+            TrustManager[] certs = new TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs,
+                                                       String authType) {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs,
+                                                       String authType) {
+                        }
+                    }
+            };
+
+            // install the all-trusting trust manager
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, certs, new java.security.SecureRandom());
+            return ClientBuilder.newBuilder()
+                    .sslContext(sc)
+                    .hostnameVerifier((v1, v2) -> true)
+                    .build();
+        } catch (NoSuchAlgorithmException|KeyManagementException e) {
+            System.err.println("Cannot set SSL certificate properly!");
+            e.printStackTrace();
+            throw new APIException(response.fail(
+                    Response.Status.INTERNAL_SERVER_ERROR,
+                    APIError.ServerError.getCode(),
+                    "check server log for more information"
+            ));
+        }
     }
 }

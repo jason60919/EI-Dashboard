@@ -1,3 +1,9 @@
+# 1.0.6: Maintenance Release
+## Features
+ * [+]
+   * The SSO token refresh, as well as token validation, URL now determined from clients' request URLs.
+   * Add skip mechanism for HTTPS.
+
 # 1.0.5: Maintenance Release
 ## Features
  * [+]
@@ -41,7 +47,6 @@
     * [Dashboard]新增谷歌地图小工具，放大地图到极限，查看工具的缩放比例为22，但是缩放比例的范围为0~21
  * [#8065]
     * [Dashboard]修改图表小工具的图表参数选项，图表的显示样式没有更新，需手动刷新后才能更新
-
 
 # 1.0.3: Maintenance Release
 ## Features
