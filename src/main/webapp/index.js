@@ -103,7 +103,8 @@ $(function () {
         _oRMM.Login.type = "AzureIII";
         _RMMGlobal.Set(_oRMM);
         $('.RMMLoader').show();
-        $.ajax({
+        setTimeout(function () {
+            $.ajax({
             cache: false,
             url: "dashboard/api/account/login",
             type: "get",
@@ -168,6 +169,7 @@ $(function () {
                 $('.RMMLoader').hide();
             }
         });
+        }, 1000);
     }
     else
     {
