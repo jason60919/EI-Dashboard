@@ -311,10 +311,6 @@ public class AuthUtil {
      */
     public void checkTokenRefresh(Response.ResponseBuilder builder) {
         if (auth.isTokenRefreshed() && null != auth.getCookieName()) {
-            System.out.println("#########################################");
-            System.out.println("auth.getCookieName(): " + auth.getCookieName());
-            System.out.println("auth.getToken(): " + auth.getToken());
-            System.out.println("#########################################");
             builder.cookie(new NewCookie(
                     auth.getCookieName(), auth.getToken(),
                     "/", domain, null, -1, isSecure, true
