@@ -19,8 +19,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.SecurityContext;
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 
@@ -46,10 +46,10 @@ public class APIResource {
     @Path("/account/login")
     @Produces(MediaType.APPLICATION_JSON)
     public Response login(@Context HttpHeaders headers,
-                          @Context SecurityContext sc) {
+                          @Context HttpServletRequest request) {
         AuthUtil util;
         try {
-            util = new AuthUtil(headers, true, sc.isSecure());
+            util = new AuthUtil(headers, request, true);
         } catch (APIException e) {
             return e.getErrorResponse().build();
         }
@@ -65,10 +65,10 @@ public class APIResource {
     @Path("/account/logout")
     @Produces(MediaType.APPLICATION_JSON)
     public Response logout(@Context HttpHeaders headers,
-                           @Context SecurityContext sc) {
+                           @Context HttpServletRequest request) {
         AuthUtil util;
         try {
-            util = new AuthUtil(headers, false, sc.isSecure());
+            util = new AuthUtil(headers, request, false);
         } catch (APIException e) {
             return e.getErrorResponse().build();
         }
@@ -84,10 +84,10 @@ public class APIResource {
     @Path("/sheet")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getSheets(@Context HttpHeaders headers,
-                              @Context SecurityContext sc) {
+                              @Context HttpServletRequest request) {
         AuthUtil util;
         try {
-            util = new AuthUtil(headers, false, sc.isSecure());
+            util = new AuthUtil(headers, request, false);
         } catch (APIException e) {
             return e.getErrorResponse().build();
         }
@@ -127,11 +127,11 @@ public class APIResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createSheet(@Context HttpHeaders headers,
-                                @Context SecurityContext sc,
+                                @Context HttpServletRequest request,
                                 String sheetData) {
         AuthUtil util;
         try {
-            util = new AuthUtil(headers, false, sc.isSecure());
+            util = new AuthUtil(headers, request, false);
         } catch (APIException e) {
             return e.getErrorResponse().build();
         }
@@ -197,12 +197,12 @@ public class APIResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateSheet(@Context HttpHeaders headers,
-                                @Context SecurityContext sc,
+                                @Context HttpServletRequest request,
                                 @PathParam("did") long did,
                                 String sheetData) {
         AuthUtil util;
         try {
-            util = new AuthUtil(headers, false, sc.isSecure());
+            util = new AuthUtil(headers, request, false);
         } catch (APIException e) {
             return e.getErrorResponse().build();
         }
@@ -316,11 +316,11 @@ public class APIResource {
     @Path("/sheet/{did}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteSheet(@Context HttpHeaders headers,
-                                @Context SecurityContext sc,
+                                @Context HttpServletRequest request,
                                 @PathParam("did") long did) {
         AuthUtil util;
         try {
-            util = new AuthUtil(headers, false, sc.isSecure());
+            util = new AuthUtil(headers, request, false);
         } catch (APIException e) {
             return e.getErrorResponse().build();
         }
