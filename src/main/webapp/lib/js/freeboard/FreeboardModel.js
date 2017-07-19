@@ -632,7 +632,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 }
             },
             success: function (data) {
-                if (typeof data.did == "undefined") {
+                if (data != "") {
                         var _title = $.i18n.t('global.warning'),
                                 _yes = $.i18n.t('global.yes'),
                                 _ask = $.i18n.t('global.dialogMsg.Error_Occurred');
