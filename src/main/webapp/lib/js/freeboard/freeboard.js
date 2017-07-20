@@ -990,6 +990,7 @@ var freeboard = (function () {
                 _oRMM.Login.username = "demo";
                 _oRMM.Login.password = "demo";
                 _oRMM.Login.type = "Auto";
+                _RMMGlobal.Set(_oRMM);
             }
             if (_oRMM.Login.username == "demo")
             {
@@ -998,6 +999,12 @@ var freeboard = (function () {
             if (location.protocol == "file:")
             {
                 g_ReadOnly = true;
+                _oRMM.Login = {};
+                _oRMM.Login.aid = -1;
+                _oRMM.Login.username = "demo";
+                _oRMM.Login.password = "demo";
+                _oRMM.Login.type = "Auto";
+                _RMMGlobal.Set(_oRMM);
                 //$('.isEditable').hide();
                 //$('.editLink').hide();
                 var content = '{"version":1,"allow_edit":true,"plugins":[],"panes":[],"datasources":[],"columns":3}';
