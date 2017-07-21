@@ -998,7 +998,7 @@ var freeboard = (function () {
             }
             if (location.protocol == "file:")
             {
-                g_ReadOnly = true;
+                g_ReadOnly = false;
                 _oRMM.Login = {};
                 _oRMM.Login.aid = -1;
                 _oRMM.Login.username = "demo";

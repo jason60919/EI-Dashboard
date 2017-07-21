@@ -128,7 +128,7 @@
 					mydata.push(oItem[i].v);
 					var t1 = oItem[i].ts;
 					var d1 = new Date(t1);
-					d1.setHours(d1.getHours()+8);
+					//d1.setHours(d1.getHours()+8);
 					var outTime="--";
 					outTime = d1.getHours() + ":"+d1.getMinutes();
 					myXLable.push(outTime);
