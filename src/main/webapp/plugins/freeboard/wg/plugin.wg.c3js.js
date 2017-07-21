@@ -81,12 +81,10 @@
                 for (var i = 0; i < data.itemList.length; i++)
                 {
                     aData[0] = data.itemList[i].sensorId;
-                    //var aDate = data.itemList[i].ts.split(" ")[0].split("-");
-                    //var aTime = data.itemList[i].ts.split(" ")[1].split(":");
-                    //var dDate = new Date(aDate[0], aDate[1]-1, aDate[2], aTime[0], aTime[1], aTime[2]);
-                    var dDate = new Date(data.itemList[i].ts);
-                    var nOffset = dDate.getTimezoneOffset();
-                    var dLocal = new Date(dDate - (nOffset * 60 * 1000));
+                    //var dDate = new Date(data.itemList[i].ts);
+                    //var nOffset = dDate.getTimezoneOffset();
+                    //var dLocal = new Date(dDate - (nOffset * 60 * 1000));
+                    var dLocal = new Date(data.itemList[i].ts);
                     var strLocal = dLocal.getFullYear() + "-" + (dLocal.getMonth() + 1) + "-" + dLocal.getDate() + " " + dLocal.getHours() + ":" + dLocal.getMinutes() + ":" + dLocal.getSeconds();
                     aX.push(strLocal);
                     aData.push(data.itemList[i].v);
