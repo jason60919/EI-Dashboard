@@ -4,6 +4,4 @@ applications:
   hosts:
     - ${pcfAppHostname}-stage
     - ${pcfAppHostname}-${pcfAppVersion}-stage
-  services:
-    - PSQL-Dashboard
 

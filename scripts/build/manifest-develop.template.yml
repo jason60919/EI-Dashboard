@@ -4,5 +4,3 @@ applications:
   hosts:
     - ${pcfAppHostname}-develop
     - ${pcfAppHostname}-${pcfAppVersion}-develop
-  services:
-    - PSQL-Dashboard
