@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Base64;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.sql.Timestamp;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
@@ -171,8 +169,8 @@ public class AuthUtil {
     }
 
     private Auth auth;
-    private String domain;
-    private String scheme;
+//    private String domain;
+//    private String scheme;
     private boolean isSecure;
     private String urlRefresh;
     private String urlValidation;
@@ -208,9 +206,21 @@ public class AuthUtil {
                     final HttpServletRequest request,
                     final boolean refreshLogin)
             throws APIException {
-        parseRequest(request);
-        this.refreshLogin = refreshLogin;
 
+        this.refreshLogin = refreshLogin;
+        this.isSecure = request.isSecure();
+        this.urlRefresh = String.format(
+                "%s://portal-sso%s.%s/sso/token",
+                request.getScheme(),
+                PCFUtil.getSpaceSuffix(),
+                PCFUtil.getDomainName()
+        );
+        this.urlValidation = String.format(
+                "%s://portal-sso%s.%s/sso/tokenvalidation",
+                request.getScheme(),
+                PCFUtil.getSpaceSuffix(),
+                PCFUtil.getDomainName()
+        );
 
         try {
             this.jwtAlgorithm = Algorithm.HMAC512(JWT_SECRET);
@@ -312,8 +322,8 @@ public class AuthUtil {
     public void checkTokenRefresh(Response.ResponseBuilder builder) {
         if (auth.isTokenRefreshed() && null != auth.getCookieName()) {
             builder.cookie(new NewCookie(
-                    auth.getCookieName(), auth.getToken(),
-                    "/", domain, null, -1, isSecure, true
+                    auth.getCookieName(), auth.getToken(), "/",
+                    PCFUtil.getDomainName(), null, -1, isSecure, true
             ));
         }
     }
@@ -325,7 +335,8 @@ public class AuthUtil {
      */
     public void purgeBuiltinCookie(Response.ResponseBuilder builder) {
         builder.cookie(new NewCookie(
-                CN_BUILTIN, null, "/", domain, null, 0, isSecure, true)
+                CN_BUILTIN, null, "/", PCFUtil.getDomainName(),
+                null, 0, isSecure, true)
         );
     }
 
@@ -785,63 +796,6 @@ public class AuthUtil {
                     APIError.ServerError.getCode(),
                     "server is running into problems of making JWT token"
             ));
-        }
-    }
-
-    // Method to parse request
-    private void parseRequest(final HttpServletRequest request) {
-        this.isSecure = request.isSecure();
-        this.scheme = request.getScheme();
-
-        // Per our convention and PCF rules,
-        // Each inbound request has the following URL:
-        //
-        //   <scheme>://<host>.<PCF_APP_DOMAIN>:<PORT>/<path>
-        //
-        // For example https://portal-abc-1-0-0-develop.wise-paas.com.cn
-        // The scheme is https, host is portal-abc-1-0-0-develop,
-        // and the PCF apps domain is wise-paas.com.cn
-        Pattern pattern = Pattern.compile(
-                "^([^:]+)://(?<host>[^.]+)\\.(?<domain>[^:/]+)(^\\d+)?(/.*)?$"
-        );
-
-        // Per W3 spec:
-        //   URLs in general are case-sensitive (with the exception of
-        //   machine names). There may be URLs, or parts of URLs, where
-        //   case doesn't matter, but identifying these may not be easy.
-        //   Users should always consider that URLs are case-sensitive.
-        //
-        // So we transform url into lower cases here!!!
-        String url = request.getRequestURL().toString().toLowerCase();
-        Matcher m = pattern.matcher(url);
-
-        if (!m.find()) {
-            System.out.println("The endpoint not follow convention: " + url);
-            System.out.println(
-                    "System assumes this runtime environment is local testing"
-            );
-            this.domain = null;
-            this.urlRefresh = null;
-            this.urlValidation = null;
-        } else {
-            this.domain = m.group("domain");
-            String host = m.group("host");
-            String space = "";
-
-            if (host.endsWith("-develop")) {
-                space = "-develop";
-            } else if (host.endsWith("-stage")) {
-                space = "-stage";
-            }
-
-            this.urlRefresh = String.format(
-                    "%s://portal-sso%s.%s/sso/token",
-                    this.scheme, space, this.domain
-            );
-            this.urlValidation = String.format(
-                    "%s://portal-sso%s.%s/sso/tokenvalidation",
-                    this.scheme, space, this.domain
-            );
         }
     }
 

@@ -2,7 +2,6 @@ package com.advantech.eipaas.dashboard.utils;
 
 
 import java.util.Map;
-import java.util.List;
 import java.util.HashMap;
 
 import javax.persistence.EntityManager;
@@ -19,22 +18,22 @@ public class JPAUtil implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        // Acquire environment variables from PCF
-        List<Map<String, Object>> properties = PCFUtil.getEnvFromVcapServices(
-                "$.user-provided[?(@.name=='PSQL-Dashboard')].credentials"
-        );
-        if (0 == properties.size()) {
-            emf = Persistence.createEntityManagerFactory("DashboardPU");
-        } else {
-            Map<String, Object> property = properties.get(0);
-            Map<String, Object> env = new HashMap<>();
+        String url = PCFUtil.getDatabaseURL();
+        String username = PCFUtil.getDatabaseUsername();
+        String password = PCFUtil.getDatabasePassword();
 
-            env.put("hibernate.connection.url", property.get("url"));
-            env.put("hibernate.connection.username", property.get("username"));
-            env.put("hibernate.connection.password", property.get("password"));
-
-            emf = Persistence.createEntityManagerFactory("DashboardPU", env);
+        Map<String, Object> env = new HashMap<>();
+        if (! "".equals(url)) {
+            env.put("javax.persistence.jdbc.url", url);
         }
+        if (! "".equals(username)) {
+            env.put("javax.persistence.jdbc.user", username);
+        }
+        if (! "".equals(password)) {
+            env.put("javax.persistence.jdbc.password", password);
+        }
+
+        emf = Persistence.createEntityManagerFactory("DashboardPU", env);
     }
 
     @Override
