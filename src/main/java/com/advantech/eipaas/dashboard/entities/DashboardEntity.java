@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 
 
 @Entity
-@Table(name = "dashboard", schema = "dashboard", catalog = "wisepaas")
+@Table(name = "dashboard")
 public class DashboardEntity {
     private long did;
     private long aid;

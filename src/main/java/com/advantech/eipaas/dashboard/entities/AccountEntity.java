@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 
 
 @Entity
-@Table(name = "account", schema = "dashboard", catalog = "wisepaas")
+@Table(name = "account")
 public class AccountEntity {
     private long aid;
     private String name;
