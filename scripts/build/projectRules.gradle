@@ -51,6 +51,10 @@ class ProjectRules {
         return this.TO_SPACE
     }
 
+    String getSpaceSuffix(spaceName) {
+        return SUFFIX[TO_SPACE]
+    }
+
     /**
      * A function to extract version information from PCF's manifest.yml file.
      * By rule, each project has to add a line of version information inside
@@ -156,7 +160,7 @@ class ProjectRules {
      */
     String getPCFappHostname(withVersion = true, withSuffix = true) {
         String hostname = getPCFappName(withVersion).replace('.', '-')
-        return withSuffix ? (hostname + SUFFIX[TO_SPACE]) : hostname
+        return withSuffix ? (hostname + getSpaceSuffix(TO_SPACE)) : hostname
     }
 }
 
@@ -203,10 +207,24 @@ task pushToPCF(dependsOn: makeManifest) {
     description 'Push the project to PCF environment.'
 
     doLast {
+        String spaceName = rules.getTargetSpace()
+        String appName = rules.getPCFappName()
+        String manifest = String.format(
+                "build/libs/manifest-%s.yml", spaceName
+        )
+        String serviceName = String.format(
+                'postgresql%s', rules.getSpaceSuffix(spaceName)
+        )
+        String json = 'scripts/build/database-group.json'
+
         exec {
-            String manifest = String.format(
-                    "build/libs/manifest-%s.yml", rules.getTargetSpace())
-            commandLine 'cf', 'push', '-f', manifest
+            commandLine 'cf', 'push', '-f', manifest, '--no-start'
+        }
+        exec {
+            commandLine 'cf', 'bind-service', appName, serviceName, '-c', json
+        }
+        exec {
+            commandLine 'cf', 'start', appName
         }
     }
 }
