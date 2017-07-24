@@ -78,14 +78,14 @@ public class PCFUtil {
                 uri = "";
             }
 
-            Pattern pattern = Pattern.compile("^([^.]+)\\.(?<domain>.+)");
+            Pattern pattern = Pattern.compile("^[^.]+\\.(?<domain>.+)");
             Matcher matcher = pattern.matcher(uri.toLowerCase());
             if (matcher.find()) {
                 domainName = matcher.group("domain");
             } else {
                 System.out.println("Cannot acquire URI from PCF environment.");
                 System.out.println("System assumes this is local testing");
-                domainName = "localhost";
+                domainName = "";
             }
         }
         return domainName;
