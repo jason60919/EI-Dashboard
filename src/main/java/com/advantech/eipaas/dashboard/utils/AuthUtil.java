@@ -169,8 +169,6 @@ public class AuthUtil {
     }
 
     private Auth auth;
-//    private String domain;
-//    private String scheme;
     private boolean isSecure;
     private String urlRefresh;
     private String urlValidation;
