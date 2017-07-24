@@ -5,10 +5,13 @@
         <class>com.advantech.eipaas.dashboard.entities.AccountEntity</class>
         <class>com.advantech.eipaas.dashboard.entities.DashboardEntity</class>
         <properties>
-            <property name="hibernate.connection.url" value="jdbc:postgresql://wise-pgsql.eastasia.cloudapp.azure.com:5432/wisepaas_dev"/>
-            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.connection.username" value="dashboard"/>
-            <property name="hibernate.connection.password" value="dashboard"/>
+            <!-- JDBC properties -->
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://wise-pgsql.eastasia.cloudapp.azure.com:5432/wisepaas_dev"/>
+            <property name="javax.persistence.jdbc.user" value="dashboard"/>
+            <property name="javax.persistence.jdbc.password" value="dashboard"/>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+
+            <!-- Hibernate properties -->
             <property name="hibernate.archive.autodetection" value="class"/>
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="true"/>
