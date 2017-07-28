@@ -123,6 +123,8 @@
         {
             logger.info('IAQ_PieWidget : onSettingsChanged');
             currentSettings = newSettings;
+            mainContainer.find(".section-title").html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
+            mainContainer.find(".section-title").prop('title', mainContainer.find(".section-title").html());
         };
 
         self.onCalculatedValueChanged = function (settingName, newValue, agentConnection)

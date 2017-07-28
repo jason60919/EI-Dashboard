@@ -154,6 +154,7 @@
                 updateCalculate = true;
             currentSettings = newSettings;
             mapElement.parent().find(".section-title").html(currentSettings.title);
+            mapElement.parent().find(".section-title").prop('title', currentSettings.title);
             return updateCalculate;
         };
 

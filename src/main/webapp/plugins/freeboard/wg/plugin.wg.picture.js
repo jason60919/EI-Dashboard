@@ -56,6 +56,7 @@
         this.render = function(element) {
             $(element).append(titleElement).append(widgetElement);
             titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
+            titleElement.prop('title', titleElement.html());
             setBlocks(currentSettings.blocks);
         };
 
@@ -70,6 +71,7 @@
                 timer = setInterval(updateImage, Number(newSettings.refresh) * 1000);
 
             titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+            titleElement.prop('title', titleElement.html());
             if (_.isUndefined(newSettings.title) || newSettings.title === '')
                 titleElement.css('display', 'none');
             else

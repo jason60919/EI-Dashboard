@@ -85,6 +85,7 @@
         self.render = function (containerElement) {
             $(containerElement).append(titleElement).append($mapElement);
             titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
+            titleElement.prop('title', titleElement.html());
 
             //Initial Goole Map
             if (window.google && window.google.maps) {
@@ -132,6 +133,7 @@
 
         self.onSettingsChanged = function (newSettings) {
             titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+            titleElement.prop('title', titleElement.html());
             if (newSettings.locations != currentSettings.locations) {
                 self.updateMarkers([]);
             }

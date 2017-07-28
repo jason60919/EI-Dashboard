@@ -135,6 +135,7 @@
         this.onSettingsChanged = function (newSettings) {
             currentSettings = newSettings;
             titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+            titleElement.prop('title', titleElement.html());
             if (currentSettings.displayAll)
             {
                 $(mainContainer).find(".single").hide();

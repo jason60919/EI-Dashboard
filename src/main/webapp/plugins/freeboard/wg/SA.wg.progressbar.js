@@ -43,7 +43,7 @@
             progressBarWidgetLog.info('updateTitle as below: ' + newTitle);
             if (newTitle.length > 0) {
                 $widgetTitle.html(newTitle);
-
+                $widgetTitle.prop('title', newTitle);
             }
 
         };

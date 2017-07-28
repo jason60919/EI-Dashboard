@@ -113,6 +113,7 @@
         this.render = function (element) {
             $(element).append(titleElement).append(chartElement);
             titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
+            titleElement.prop('title', titleElement.html());
             setBlocks(currentSettings.blocks);
         };
 
@@ -123,6 +124,7 @@
             }
 
             titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+            titleElement.prop('title', titleElement.html());
             if (_.isUndefined(newSettings.title) || newSettings.title === '')
                 titleElement.css('display', 'none');
             else

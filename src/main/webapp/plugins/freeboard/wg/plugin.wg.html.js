@@ -63,7 +63,8 @@
             currentSettings = newSettings;
             //title
             htmlElement.parent().find(".section-title").html(currentSettings.title);
-            
+            htmlElement.parent().find(".section-title").prop('title', currentSettings.title);
+
             return updateCalculate;
         };
 

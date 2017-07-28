@@ -165,7 +165,7 @@
         this.onSettingsChanged = function (newSettings) {
             currentSettings = newSettings;
             titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
-
+            titleElement.prop('title', titleElement.html());
             if (newSettings.include_legend) {
                 addSparklineLegend(sparklineLegend, newSettings.legend.split(","));
             }

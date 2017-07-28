@@ -171,6 +171,7 @@
         this.render = function (element) {
             $(element).append(titleElement).append(widgetElement);
             titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
+            titleElement.prop('title', titleElement.html());
             setBlocks(currentSettings.blocks);
             createWidget();
         };
@@ -182,6 +183,7 @@
             }
 
             titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+            titleElement.prop('title', titleElement.html());
             if (_.isUndefined(newSettings.title) || newSettings.title === '')
                 titleElement.css('display', 'none');
             else

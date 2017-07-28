@@ -133,6 +133,7 @@
             currentSettings = newSettings;
             //title
             mainContainer.find(".section-title").html(currentSettings.title);
+            mainContainer.find(".section-title").prop('title', currentSettings.title);
         };
 
         self.onCalculatedValueChanged = function (settingName, newValue, agentConnection)

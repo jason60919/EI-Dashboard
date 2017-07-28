@@ -96,4 +96,14 @@
 .widget-htmlimage img{
     margin: auto 0;
 }
+
+.widget .section-title{
+    text-overflow: ellipsis;
+    margin-right: 45px;
+}
+
+.gridster header h1{
+    text-overflow: ellipsis;
+    margin-right: 80px;
+}
 /*Widget HtmlImage END*/

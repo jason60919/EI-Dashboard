@@ -49,6 +49,7 @@
         this.onSettingsChanged = function (newSettings) {
             currentSettings = newSettings;
             titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+            titleElement.prop('title', titleElement.html());
             updateState();
             return true;
         };

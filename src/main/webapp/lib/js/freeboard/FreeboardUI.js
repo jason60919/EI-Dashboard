@@ -289,6 +289,7 @@ function FreeboardUI() {
         logger.debug('truncatedText: ' + newTitle);
         if (typeof (newTitle) != 'undefined') {
             var truncatedValue = newTitle.length > length ? newTitle.substring(0, Math.min(newTitle.length, length)) + " ..." : newTitle;
+            truncatedValue = newTitle;
             logger.debug('truncatedValue: ' + truncatedValue);
             $element.html(truncatedValue).attr('title', newTitle);
             var escapeTitle = $('<div/>').html(newTitle).text();

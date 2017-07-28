@@ -717,6 +717,7 @@
         this.render = function (element) {
             $(element).append(titleElement).append(widgetElement);
             titleElement.html((_.isUndefined(currentSettings.title) ? '' : currentSettings.title));
+            titleElement.prop('title', titleElement.html());
             setBlocks(self.getHeight());
             createWidget();
         };
@@ -742,6 +743,7 @@
             }
 
             titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
+            titleElement.prop('title', titleElement.html());
             if (_.isUndefined(newSettings.title) || newSettings.title === '')
                 titleElement.css('display', 'none');
             else
@@ -799,6 +801,7 @@
                             .attr('fill', option.chart.spotcolor.max);
                 }
             }
+            self.onCalculatedValueChanged("value", currentSettings.value);
             return updateCalculate;
         };
 

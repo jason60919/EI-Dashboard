@@ -102,7 +102,8 @@
         this.onSettingsChanged = function (newSettings) {
             
             titleElement.html((_.isUndefined(newSettings.title) ? '' : newSettings.title));
-            
+            titleElement.prop('title', titleElement.html());
+
             if (_.isNull(gauge)) {
                 currentSettings = newSettings;
                 return;

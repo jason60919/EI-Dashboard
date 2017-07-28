@@ -71,7 +71,7 @@
             $(containerElement).append($fansElem);
             //init fans plguin
             $fansElem.fans({
-                icon: '../images/fans.png'
+                icon: '../img/fans.png'
             });
         };
 
@@ -93,6 +93,7 @@
             // Normally we'd update our text element with the value we defined in the user settings above (the_text), but there is a special case for settings that are of type **"calculated"** -- see below.
             currentSettings = newSettings;
             $fansElem.parent().find(".section-title").html(currentSettings.title);
+            $fansElem.parent().find(".section-title").prop('title', currentSettings.title);
         };
 
         // **onCalculatedValueChanged(settingName, newValue)** (required) : A public function we must implement that will be called when a calculated value changes. Since calculated values can change at any time (like when a datasource is updated) we handle them in a special callback function here.

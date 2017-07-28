@@ -40,7 +40,7 @@
             headerRow.append($('<th/>').html("ts"));
             headerRow.append($('<th/>').html("v"));
             stateElement.find('thead').append(headerRow);
-            if (typeof stateObject.value != "undefined")
+            try
             {
                 for (var i=0; i<stateObject.value.itemList.length; i++)
                 {
@@ -56,6 +56,7 @@
                     stateElement.find('table').append(bodyHTML);
                 }
             }
+            catch (e){}
 
             //show or hide the header based on the setting
             if (currentSettings.show_header) {
@@ -81,6 +82,7 @@
         this.onSettingsChanged = function (newSettings) {
             currentSettings = newSettings;
             titleElement.html((_.isUndefined(newSettings.title) ? "" : newSettings.title));
+            titleElement.prop('title', titleElement.html());
             updateState();
         };
 
