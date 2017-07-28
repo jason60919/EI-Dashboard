@@ -1,3 +1,20 @@
+# 1.0.7: Maintenance Release
+## Bugs
+ * [#324]
+    * [Stage]新增Widget-Chart，选择WISE-PaaS：Historical data的资料来源，显示的图形不正确
+ * [#439]
+    * [Stage]EI-Dashboard页面，操作如新建Sheet，点击保存， 成功保存，但提示“Error Occurred in Process”
+ * [#440]
+    * [Stage]EI-Dashboard页面，点击Widget Extension Guide，链接的不是最新版的Guide
+ * [#408]
+    * [stage] widget 中的title信息显示不完整
+ * [#410]
+    * [stage] widget 中的title信息显示与widget修改，删除图标重叠，样式存在问题
+ * [#411]
+    * [stage] data文本框内容清除后保存，widget中仍显示
+ * [#418]
+    * [stage] Widget--Table ,data文本框内容进行修改后无法保存
+
 # 1.0.6: Maintenance Release
 ## Features
  * [+]
