@@ -632,13 +632,13 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                 }
             },
             success: function (data) {
-                if (data != "") {
-                        var _title = $.i18n.t('global.warning'),
-                                _yes = $.i18n.t('global.yes'),
-                                _ask = $.i18n.t('global.dialogMsg.Error_Occurred');
-                        var phraseElement = $('<p>' + _ask + '</p>');
-                        var db = new DialogBox(phraseElement, _title, _yes);
-                } else {
+                //if (data != "") {
+                //        var _title = $.i18n.t('global.warning'),
+                //                _yes = $.i18n.t('global.yes'),
+                //                _ask = $.i18n.t('global.dialogMsg.Error_Occurred');
+                //        var phraseElement = $('<p>' + _ask + '</p>');
+                //        var db = new DialogBox(phraseElement, _title, _yes);
+                //} else {
                     if (!_.isUndefined(targetItem) && targetItem[0]) {
                         if (targetItem.hasClass('newTab')) {
                             targetItem.data('did', data.did);
@@ -662,7 +662,7 @@ function FreeboardModel(datasourcePlugins, widgetPlugins, freeboardUI)
                     _.delay(function () {
                         freeboardUI.showLoadingIndicator(false);
                     }, 3000);
-                }
+                //}
             },
             error: function (xhr, status, error) {
 
