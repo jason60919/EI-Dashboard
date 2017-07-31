@@ -1,3 +1,8 @@
+# 1.0.8: Maintenance Release
+## Bugs
+ * [#439]
+    * [Stage]EI-Dashboard页面，操作如新建Sheet，点击保存， 成功保存，但提示“Error Occurred in Process”
+
 # 1.0.7: Maintenance Release
 ## Bugs
  * [#324]
