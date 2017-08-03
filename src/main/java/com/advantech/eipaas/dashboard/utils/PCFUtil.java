@@ -30,7 +30,9 @@ public class PCFUtil {
     public static <T> T getEnvFromVcapServices(final String path) {
         if (null == vcapServices) {
             String json = System.getenv("VCAP_SERVICES");
+            System.out.println(("VCAP_SERVICES: " + json));
             if (null == json || "".equals(json)) {
+                System.err.println("No 'VCAP_SERVICES' acquired.");
                 json = "{}";
             }
             vcapServices = JsonPath.using(CONF).parse(json);
@@ -40,30 +42,38 @@ public class PCFUtil {
 
     public static <T> T getEnvFromVcapApplication(final String path) {
         if (null == vcapApplication) {
-            String va_json = System.getenv("VCAP_APPLICATION");
-            if (null == va_json || "".equals(va_json)) {
-                va_json = "{}";
+            String json = System.getenv("VCAP_APPLICATION");
+            System.out.println(("VCAP_APPLICATION: " + json));
+            if (null == json || "".equals(json)) {
+                System.err.println("NO 'VCAP_APPLICATION' acquired.");
+                json = "{}";
             }
-            vcapApplication = JsonPath.using(CONF).parse(va_json);
+            vcapApplication = JsonPath.using(CONF).parse(json);
         }
         return vcapApplication.read(path);
     }
 
     public static String getSpaceName() {
         if (null == spaceName) {
-            String name = getEnvFromVcapApplication("$.space_name");
+            String path = "$.space_name";
+            String name = getEnvFromVcapApplication(path);
             if (null == name) {
-                name = "";
+                spaceName = "";
+            } else {
+                spaceName = name.toLowerCase();
+                System.out.println(("Determined space name by PCF. " +
+                        "JSONPath=[" + path + "], " +
+                        "spaceName=[" + spaceName + "]"
+                ));
             }
-            spaceName = name.toLowerCase();
         }
         return spaceName;
     }
 
     public static String getSpaceSuffix() {
-        if ("stage".equals(spaceName)) {
+        if ("stage".equals(getSpaceName())) {
             return "-stage";
-        } else if ("develop".equals(spaceName)) {
+        } else if ("develop".equals(getSpaceName())) {
             return "-develop";
         } else {
             // return empty string even it's not inside production space
@@ -73,7 +83,8 @@ public class PCFUtil {
 
     public static String getDomainName() {
         if (null == domainName) {
-            String uri = getEnvFromVcapApplication("$.application_uris[0]");
+            String path = "$.application_uris[0]";
+            String uri = getEnvFromVcapApplication(path);
             if (null == uri) {
                 uri = "";
             }
@@ -82,6 +93,10 @@ public class PCFUtil {
             Matcher matcher = pattern.matcher(uri.toLowerCase());
             if (matcher.find()) {
                 domainName = matcher.group("domain");
+                System.out.println(("Determined domain name by PCF. " +
+                        "JSONPath=[" + path + "], " +
+                        "domainName=[" + domainName + "]"
+                ));
             } else {
                 System.out.println("Cannot acquire URI from PCF environment.");
                 System.out.println("System assumes this is local testing");
@@ -117,6 +132,9 @@ public class PCFUtil {
         String path = String.format(
                 "$.%s[?(@.label=='%s')].credentials", key, key
         );
+        System.out.println((
+                "Getting database parameters using JSONPATH=[" + path
+        ));
         List<Map<String, Object>> properties = getEnvFromVcapServices(path);
 
         if (0 == properties.size()) {
@@ -125,9 +143,19 @@ public class PCFUtil {
             databasePassword = "";
         } else {
             Map<String, Object> property = properties.get(0);
-            databaseURL = property.get("uri").toString();
             databaseUsername = property.get("username").toString();
             databasePassword = property.get("password").toString();
+            databaseURL = String.format(
+                    "jdbc:postgresql://%s:%s/%s",
+                    property.get("host").toString(),
+                    property.get("port").toString(),
+                    property.get("database").toString()
+            );
+            System.out.println(("Determined database parameters by PCF. " +
+                    "URL=[" + databaseURL + "], " +
+                    "username=[" + databaseUsername + "], " +
+                    "password=[" + databasePassword + "]"
+            ));
         }
     }
 }
