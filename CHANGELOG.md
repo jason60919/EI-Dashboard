@@ -2,6 +2,8 @@
 ## Features
  * [+]
    * Set read only for login account "Global SSO Demo".
+   * Apply Flyway automating database migration.
+   * Acquire database connection parameters from service broker.
 ## Bugs
  * [#456]
     * [Stage]登录EI-Dashboard之后，点击Logout，页面先转到SSO登出，提示账户已注销，然后又转到FreeBoard.html页面转了圈，才退出
