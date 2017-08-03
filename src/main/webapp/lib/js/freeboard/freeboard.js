@@ -680,24 +680,9 @@ var freeboard = (function () {
                                         withCredentials: true
                                     },
                                     beforeSend: function (xhr) {
-                                        switch (_oRMM.Login.type) {
-                                            case "Azure" :
-                                                var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
-                                                xhr.setRequestHeader("Authorization", authorization);
-                                                xhr.setRequestHeader("Accept", "application/json");
-                                                break;
-                                            case "AzureIII" :
-                                                var authorization = 'Bearer ' + _oRMM.Login.sso;
-                                                xhr.setRequestHeader("Authorization", authorization);
-                                                xhr.setRequestHeader("Accept", "application/json");
-                                                break;
-                                            case "Self" :
-                                            default:
-                                                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
-                                                xhr.setRequestHeader("Authorization", authorization);
-                                                xhr.setRequestHeader("Accept", "application/json");
-                                                break;
-                                        }
+                                        var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);
+                                        xhr.setRequestHeader("Authorization", authorization);
+                                        xhr.setRequestHeader("Accept", "application/json");
                                     },
                                     success: function (data) {
                                         if (!TokenValidation(data))
@@ -998,6 +983,7 @@ var freeboard = (function () {
             }
             if (location.protocol == "file:")
             {
+
                 g_ReadOnly = false;
                 _oRMM.Login = {};
                 _oRMM.Login.aid = -1;
@@ -1005,6 +991,9 @@ var freeboard = (function () {
                 _oRMM.Login.password = "demo";
                 _oRMM.Login.type = "Auto";
                 _RMMGlobal.Set(_oRMM);
+                setTimeout(function () {
+                    $('.pos-bottom ul li').hide();
+                }, 1000);
                 //$('.isEditable').hide();
                 //$('.editLink').hide();
                 var content = '{"version":1,"allow_edit":true,"plugins":[],"panes":[],"datasources":[],"columns":3}';
@@ -1020,24 +1009,9 @@ var freeboard = (function () {
                         withCredentials: true
                     },
                     beforeSend: function (xhr) {
-                        switch (_oRMM.Login.type) {
-                            case "Azure" :
-                                var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
-                                xhr.setRequestHeader("Authorization", authorization);
-                                xhr.setRequestHeader("Accept", "application/json");
-                                break;
-                            case "AzureIII" :
-                                var authorization = 'Bearer ' + _oRMM.Login.sso;
-                                xhr.setRequestHeader("Authorization", authorization);
-                                xhr.setRequestHeader("Accept", "application/json");
-                                break;
-                            case "Self" :
-                            default:
-                                var authorization = 'Basic ' + $.base64.encode(_oRMM.Login.username + ':' + _oRMM.Login.password);
-                                xhr.setRequestHeader("Authorization", authorization);
-                                xhr.setRequestHeader("Accept", "application/json");
-                                break;
-                        }
+                        var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);
+                        xhr.setRequestHeader("Authorization", authorization);
+                        xhr.setRequestHeader("Accept", "application/json");
                     },
                     success: function (data) {
                         if (typeof data.aid != "undefined")

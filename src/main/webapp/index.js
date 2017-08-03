@@ -114,18 +114,9 @@ $(function () {
                 withCredentials: true
             },
             beforeSend: function (xhr) {
-                switch (_oRMM.Login.type) {
-                    case "Azure" :
-                        var authorization = 'Bearer ' + $.base64.encode(JSON.stringify(_oRMM.Login.sso));
-                        xhr.setRequestHeader("Authorization", authorization);
-                        xhr.setRequestHeader("Accept", "application/json");
-                        break;
-                    case "AzureIII" :
-                        var authorization = 'Bearer ' + _oRMM.Login.sso;
-                        xhr.setRequestHeader("Authorization", authorization);
-                        xhr.setRequestHeader("Accept", "application/json");
-                        break;
-                }
+                var authorization = 'Basic ' + $.base64.encode(_RMMGlobal.Get().Login.username + ':' + _RMMGlobal.Get().Login.password);
+                xhr.setRequestHeader("Authorization", authorization);
+                xhr.setRequestHeader("Accept", "application/json");
             },
             error: function (xhr, exception) {
                 try
