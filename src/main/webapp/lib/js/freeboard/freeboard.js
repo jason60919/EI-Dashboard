@@ -977,7 +977,7 @@ var freeboard = (function () {
                 _oRMM.Login.type = "Auto";
                 _RMMGlobal.Set(_oRMM);
             }
-            if (_oRMM.Login.username == "demo")
+            if ((_oRMM.Login.username == "demo") || ($.cookie('WISEName') == '"Global SSO Demo"'))
             {
                 g_ReadOnly = true;
             }
