@@ -1,3 +1,13 @@
+# 1.0.9: Maintenance Release
+## Features
+ * [+]
+   * Set read only for login account "Global SSO Demo".
+## Bugs
+ * [#456]
+    * [Stage]登录EI-Dashboard之后，点击Logout，页面先转到SSO登出，提示账户已注销，然后又转到FreeBoard.html页面转了圈，才退出
+ * [#465]
+    * [Stage]OCF新建设备相关的DataSource，url选择PCF Common，保存后再次登录，DataSource显示Never，点击DataSource查看才恢复正常
+
 # 1.0.8: Maintenance Release
 ## Bugs
  * [#439]
