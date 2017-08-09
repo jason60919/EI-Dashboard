@@ -11,9 +11,7 @@
 -- If the target schema does not exist yet, Flyway will, of course,
 -- create it for us via setSchema() action! As such, first of all here,
 -- what we only need to do is assigning the proper owner to the schema.
--- Also, need to grant all privileges to the target owner.
 ALTER SCHEMA ${SCHEMA} OWNER TO ${GROUP};
-GRANT ALL ON ALL TABLES IN SCHEMA ${SCHEMA} TO ${GROUP};
 
 
 -- Create 'account' table
@@ -48,3 +46,5 @@ CREATE TABLE dashboard (
 );
 
 
+-- Also, need to grant all privileges to the target owner.
+GRANT ALL ON ALL TABLES IN SCHEMA ${SCHEMA} TO ${GROUP};
