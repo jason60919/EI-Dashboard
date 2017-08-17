@@ -6,7 +6,7 @@
         <class>com.advantech.eipaas.dashboard.entities.DashboardEntity</class>
         <properties>
             <!-- JDBC properties -->
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/wisepaas_dev"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://wise-pgsql.eastasia.cloudapp.azure.com:5432/wisepaas_dev"/>
             <property name="javax.persistence.jdbc.user" value="dashboard"/>
             <property name="javax.persistence.jdbc.password" value="dashboard"/>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
